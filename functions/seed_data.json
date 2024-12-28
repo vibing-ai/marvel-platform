@@ -1156,10 +1156,10 @@
     "id": "syllabus-generator",
     "inputs": [
       {
-        "defaultValue": "5th grade",
+        "defaultValue": "Elementary",
         "label": "Grade Level",
         "name": "grade_level",
-        "placeholder": "Enter the grade level (e.g., 10th Grade)",
+        "placeholder": "Select the grade level",
         "type": "select",
         "values": [
           {
@@ -1171,112 +1171,24 @@
             "label": "Kindergarten"
           },
           {
-            "key": "1st grade",
-            "label": "1st grade"
+            "key": "Elementary",
+            "label": "Elementary"
           },
           {
-            "key": "2nd grade",
-            "label": "2nd grade"
+            "key": "Middle",
+            "label": "Middle"
           },
           {
-            "key": "3rd grade",
-            "label": "3rd grade"
-          },
-          {
-            "key": "4th grade",
-            "label": "4th grade"
-          },
-          {
-            "key": "5th grade",
-            "label": "5th grade"
-          },
-          {
-            "key": "6th grade",
-            "label": "6th grade"
-          },
-          {
-            "key": "7th grade",
-            "label": "7th grade"
-          },
-          {
-            "key": "8th grade",
-            "label": "8th grade"
-          },
-          {
-            "key": "9th grade",
-            "label": "9th grade"
-          },
-          {
-            "key": "10th grade",
-            "label": "10th grade"
-          },
-          {
-            "key": "11th grade",
-            "label": "11th grade"
-          },
-          {
-            "key": "12th grade",
-            "label": "12th grade"
+            "key": "High",
+            "label": "High"
           },
           {
             "key": "University",
             "label": "University"
           },
           {
-            "key": "Professional Staff",
-            "label": "Professional Staff"
-          },
-          {
-            "key": "Year 1",
-            "label": "Year 1"
-          },
-          {
-            "key": "Year 2",
-            "label": "Year 2"
-          },
-          {
-            "key": "Year 3",
-            "label": "Year 3"
-          },
-          {
-            "key": "Year 4",
-            "label": "Year 4"
-          },
-          {
-            "key": "Year 5",
-            "label": "Year 5"
-          },
-          {
-            "key": "Year 6",
-            "label": "Year 6"
-          },
-          {
-            "key": "Year 7",
-            "label": "Year 7"
-          },
-          {
-            "key": "Year 8",
-            "label": "Year 8"
-          },
-          {
-            "key": "Year 9",
-            "label": "Year 9"
-          },
-          {
-            "key": "Year 10",
-            "label": "Year 10"
-          },
-          {
-            "key": "Year 11",
-            "label": "Year 11"
-          },
-          {
-            "key": "Year 12",
-            "label": "Year 12"
-          },
-          {
-            "key": "Year 13",
-            "label": "Year 13"
+            "key": "Professional",
+            "label": "Professional"
           }
         ]
       },

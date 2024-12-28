@@ -20,7 +20,7 @@ const styles = {
     width: '100%',
   },
   name: {
-    maxWidth: "150px", // Incrementamos el ancho máximo para permitir dos palabras completas
+    maxWidth: "150px", 
     width: "auto",
     height: "24px",
     fontFamily: "Satoshi Bold",
@@ -30,7 +30,7 @@ const styles = {
     lineHeight: "16px",
     whiteSpace: "nowrap",
     overflow: "hidden",
-    textOverflow: "ellipsis", // Aseguramos truncamiento con "..."
+    textOverflow: "ellipsis", 
   },
   nameContainer: {
     position: "relative",

@@ -14,6 +14,51 @@ import { useSelector } from "react-redux";
 
 import styles from "./styles";
 
+/**
+* Renders the response from the Syllabus Generator tool in a structured format.
+ *
+ * The component displays course information in a table-like format using
+ * Material-UI components. The layout includes two primary columns: "Section"
+ * and "Details".
+ *
+ * Structure:
+ * Each section is displayed within a `Paper` component for separation and clarity.
+ * The data is organized as follows:
+ *
+ * - Course Information:
+ *   - Course Title: Displays the title of the course.
+ *   - Grade Level: Indicates the grade level for the course.
+ *   - Description: A brief overview of the course content.
+ * 
+ * - Instructor Information:
+ *   - Instructor Name: The name of the course instructor.
+ *   - Instructor Title: The title or designation of the instructor.
+ *
+ * - Objectives and Learning Outcomes:
+ *   - Objectives: Key objectives of the course displayed as a bullet list.
+ *   - Learning Outcomes: The intended learning outcomes for students.
+ * - Course Content:
+ *   - Week-by-week breakdown of topics covered in the course, formatted as a list.
+ * - Policies and Procedures:
+ *   - Attendance Policy: Guidelines for attendance.
+ *   - Late Submission Policy: Rules for late submissions.
+ *   - Academic Honesty: Expectations for academic integrity.
+ *
+ * - Assessment and Grading:
+ *   - Assessment Methods: Evaluation criteria and their respective weights.
+ *   - Grading Scale: The grading scale used for the course.
+ *
+ * - Learning Resources:
+ *   - A list of books, articles, or tools recommended for the course.
+ *
+ * - Course Schedule:
+ *   - Detailed schedule of activities, including topics, assignments, and due dates.
+ *
+ * Usage:
+ * Import this component and pass the syllabus data through a `response` object.
+ * Ensure that the data follows the required structure to be displayed correctly.
+*/
+
 const SyllabusGeneratorResponse = () => {
   const { response } = useSelector((state) => state.tools);
 

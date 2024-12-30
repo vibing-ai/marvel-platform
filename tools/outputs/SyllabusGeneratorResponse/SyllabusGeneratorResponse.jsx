@@ -8,7 +8,13 @@ import {
   ListItemText,
   Fade,
   Grid,
-  Button
+  Button,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody
 } from "@mui/material";
 
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
@@ -84,9 +90,16 @@ const SyllabusGeneratorResponse = () => {
       },
       {
         header: "Objectives and Learning Outcomes",
-        content: response.course_description_objectives.objectives.map(
-          (obj, idx) => `Objective ${idx + 1}: ${obj}`
-        ),
+        content: [
+          ...response.course_description_objectives.objectives.map(
+            (obj, idx) => `Objective ${idx + 1}: ${obj}`
+          ),
+          "",
+          "Intended Learning Outcomes:",
+          ...response.course_description_objectives.intended_learning_outcomes.map(
+            (outcome, idx) => `Outcome ${idx + 1}: ${outcome}`
+          ),
+        ],
       },
       {
         header: "Course Content",
@@ -150,7 +163,6 @@ const SyllabusGeneratorResponse = () => {
   };
 
 
-
   const renderCourseInfo = () => (
     <Paper elevation={3} sx={{ padding: 3, marginBottom: 4 }}>
       <Typography variant="h5" gutterBottom>📘 Course Information</Typography>
@@ -185,29 +197,61 @@ const SyllabusGeneratorResponse = () => {
 
   const renderCourseContent = () => (
     <Paper elevation={3} sx={{ padding: 3, marginBottom: 4 }}>
-      <Typography variant="h5" gutterBottom>📜 Course Content</Typography>
-      <Divider sx={{ marginBottom: 2 }} />
-      {response.course_content.map((content, idx) => (
-        <Paper
-          key={idx}
-          elevation={3}
-          sx={{ padding: 3, marginBottom: 3 }}
-        >
-          <Typography variant="h6" gutterBottom>
-            📅 Week {content.unit_time_value}: {content.topic.split("\n")[0]}
-          </Typography>
-          <Divider sx={{ marginBottom: 1 }} />
-          <List>
-            {content.topic.split("\n").map((item, index) => (
-              <ListItem key={index}>
-                <ListItemText primary={`• ${formatContent(item.trim())}`} />
-              </ListItem>
+      <Typography
+        variant="h5"
+        gutterBottom
+        sx={{
+          color: '#ffffff',
+          fontWeight: 'bold',
+          paddingBottom: 1,
+        }}
+      >
+        📜 Course Content
+      </Typography>
+      <Divider sx={{ marginBottom: 2, backgroundColor: '#444' }} />
+      <TableContainer
+        component={Paper}
+        sx={{ background: 'none', boxShadow: 'none' }}
+      >
+        <Table sx={{ background: 'none', borderCollapse: 'separate', borderSpacing: '0 10px' }}>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: '#444' }}>
+              <TableCell sx={{ fontWeight: 'bold', padding: '12px', fontSize: '16px', color: '#ffffff' }}>Week</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', padding: '12px', fontSize: '16px', color: '#ffffff' }}>Topic</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {response.course_content.map((content, idx) => (
+              <TableRow
+                key={idx}
+                sx={{
+                  backgroundColor: idx % 2 === 0 ? '#333' : '#3c3c3c',
+                  borderBottom: '1px solid #555',
+                }}
+              >
+                <TableCell sx={{ padding: '12px', fontSize: '14px', color: '#ffffff', fontWeight: 'bold' }}>
+                  Week {content.unit_time_value}
+                </TableCell>
+                <TableCell sx={{ padding: '12px', fontSize: '14px', color: '#dcdcdc' }}>
+                  <Typography variant="body1" sx={{ marginBottom: 1, fontWeight: 'bold', color: '#ffffff' }}>
+                    {content.topic.split("\n")[0]}
+                  </Typography>
+                  <List>
+                    {content.topic.split("\n").slice(1).map((item, index) => (
+                      <ListItem key={index} sx={{ padding: 0 }}>
+                        <ListItemText primary={`• ${formatContent(item.trim())}`} sx={{ color: '#c9c9c9' }} />
+                      </ListItem>
+                    ))}
+                  </List>
+                </TableCell>
+              </TableRow>
             ))}
-          </List>
-        </Paper>
-      ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Paper>
   );
+
 
   const renderPoliciesAndProcedures = () => (
     <Paper elevation={3} sx={{ padding: 3, marginBottom: 4 }}>
@@ -224,25 +268,82 @@ const SyllabusGeneratorResponse = () => {
 
   const renderAssessmentAndGrading = () => (
     <Paper elevation={3} sx={{ padding: 3, marginBottom: 4 }}>
-      <Typography variant="h5" gutterBottom>📈 Assessment and Grading</Typography>
-      <Typography variant="subtitle1"><strong>Assessment Methods:</strong></Typography>
-      <List>
-        {response.assessment_grading_criteria.assessment_methods.map((method, idx) => (
-          <ListItem key={idx}>
-            <ListItemText
-              primary={`📊 ${method.type_assessment} - Weight: ${method.weight}%`}
-            />
-          </ListItem>
-        ))}
-      </List>
-      <Typography variant="subtitle1" sx={{ marginTop: 2 }}><strong>Grading Scale:</strong></Typography>
-      <List>
-        {Object.entries(response.assessment_grading_criteria.grading_scale).map(([range, grade], idx) => (
-          <ListItem key={idx}>
-            <ListItemText primary={`📝 ${range}: ${grade}`} />
-          </ListItem>
-        ))}
-      </List>
+      <Typography
+        variant="h5"
+        gutterBottom
+        sx={{
+          color: '#ffffff',
+          fontWeight: 'bold',
+          paddingBottom: 1,
+        }}
+      >
+        📈 Assessment and Grading
+      </Typography>
+      <Typography variant="subtitle1" sx={{ marginBottom: 2, fontWeight: 'bold', color: '#ffffff' }}>
+        Assessment Methods
+      </Typography>
+      <TableContainer
+        component={Paper}
+        sx={{ background: 'none', boxShadow: 'none' }}
+      >
+        <Table sx={{ background: 'none', borderCollapse: 'separate', borderSpacing: '0 10px' }}>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: '#444' }}>
+              <TableCell sx={{ fontWeight: 'bold', padding: '12px', fontSize: '16px', color: '#ffffff' }}>📊 Type</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', padding: '12px', fontSize: '16px', color: '#ffffff' }}>Weight</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {response.assessment_grading_criteria.assessment_methods.map((method, idx) => (
+              <TableRow
+                key={idx}
+                sx={{
+                  backgroundColor: idx % 2 === 0 ? '#333' : '#3c3c3c',
+                  borderBottom: '1px solid #555',
+                }}
+              >
+                <TableCell sx={{ padding: '12px', fontSize: '14px', color: '#ffffff' }}>
+                  {method.type_assessment}
+                </TableCell>
+                <TableCell sx={{ padding: '12px', fontSize: '14px', color: '#c9c9c9' }}>
+                  {method.weight}%
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Typography variant="subtitle1" sx={{ marginTop: 4, marginBottom: 2, fontWeight: 'bold', color: '#ffffff' }}>
+        Grading Scale
+      </Typography>
+      <TableContainer
+        component={Paper}
+        sx={{ background: 'none', boxShadow: 'none' }}
+      >
+        <Table sx={{ background: 'none', borderCollapse: 'separate', borderSpacing: '0 10px' }}>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: '#444' }}>
+              <TableCell sx={{ fontWeight: 'bold', padding: '12px', fontSize: '16px', color: '#ffffff' }}>📝 Range</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', padding: '12px', fontSize: '16px', color: '#ffffff' }}>Grade</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Object.entries(response.assessment_grading_criteria.grading_scale).map(([range, grade], idx) => (
+              <TableRow
+                key={idx}
+                sx={{
+                  backgroundColor: idx % 2 === 0 ? '#333' : '#3c3c3c',
+                  borderBottom: '1px solid #555',
+                }}
+              >
+                <TableCell sx={{ padding: '12px', fontSize: '14px', color: '#ffffff' }}>{range}</TableCell>
+                <TableCell sx={{ padding: '12px', fontSize: '14px', color: '#c9c9c9' }}>{grade}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Paper>
   );
 
@@ -264,14 +365,31 @@ const SyllabusGeneratorResponse = () => {
   const renderCourseSchedule = () => (
     <Paper elevation={3} sx={{ padding: 3, marginBottom: 4 }}>
       <Typography variant="h5" gutterBottom>🗓️ Course Schedule</Typography>
-      {response.course_schedule.map((schedule, idx) => (
-        <Box key={idx} sx={{ marginBottom: 2 }}>
-          <Typography variant="subtitle1">
-            Week {schedule.unit_time_value} ({schedule.date}): {schedule.topic}
-          </Typography>
-          <Typography variant="body2">{schedule.activity_desc}</Typography>
-        </Box>
-      ))}
+      <TableContainer
+        component={Paper}
+        sx={{ background: 'none', boxShadow: 'none' }}
+      >
+        <Table sx={{ background: 'none' }}>
+          <TableHead>
+            <TableRow>
+              <TableCell><strong>Week</strong></TableCell>
+              <TableCell><strong>Date</strong></TableCell>
+              <TableCell><strong>Topic</strong></TableCell>
+              <TableCell><strong>Activity</strong></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {response.course_schedule.map((schedule, idx) => (
+              <TableRow key={idx}>
+                <TableCell>Week {schedule.unit_time_value}</TableCell>
+                <TableCell>{schedule.date}</TableCell>
+                <TableCell>{schedule.topic}</TableCell>
+                <TableCell>{schedule.activity_desc}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Paper>
   );
 

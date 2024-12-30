@@ -108,10 +108,20 @@ const SyllabusGeneratorResponse = () => {
       },
       {
         header: "Assessment and Grading",
+        content: [`Grading Scale:`],
         table: {
           head: [["Assessment Type", "Weight"]],
           body: response.assessment_grading_criteria.assessment_methods.map(
             (method) => [method.type_assessment, `${method.weight}%`]
+          ),
+        },
+      },
+      {
+        header: "Grading Scale",
+        table: {
+          head: [["Grade Range", "Grade"]],
+          body: Object.entries(response.assessment_grading_criteria.grading_scale).map(
+            ([range, grade]) => [range, grade]
           ),
         },
       },
@@ -122,10 +132,24 @@ const SyllabusGeneratorResponse = () => {
             `Resource ${idx + 1}: ${resource.title} by ${resource.author} (${resource.year})`
         ),
       },
+      {
+        header: "Course Schedule",
+        table: {
+          head: [["Week", "Date", "Topic", "Activity"]],
+          body: response.course_schedule.map((schedule) => [
+            `Week ${schedule.unit_time_value}`,
+            schedule.date,
+            schedule.topic,
+            schedule.activity_desc,
+          ]),
+        },
+      },
     ];
 
     createPdf(sections);
   };
+
+
 
   const renderCourseInfo = () => (
     <Paper elevation={3} sx={{ padding: 3, marginBottom: 4 }}>

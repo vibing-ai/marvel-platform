@@ -8,9 +8,14 @@ import {
   ListItemText,
   Fade,
   Grid,
+  Button
 } from "@mui/material";
 
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+
 import { useSelector } from "react-redux";
+
+import { createPdf } from "../../libs/utils/createPdf";
 
 import styles from "./styles";
 
@@ -64,8 +69,63 @@ const SyllabusGeneratorResponse = () => {
 
   const formatContent = (content) =>
     content
-      .split("\n") 
-      .map((item) => item.trim().replace(/^[-*]+\s*/, "")); 
+      .split("\n")
+      .map((item) => item.trim().replace(/^[-*]+\s*/, ""));
+
+  const handleExportPdf = () => {
+    const sections = [
+      {
+        header: "Course Information",
+        content: [
+          `Title: ${response.course_information.course_title}`,
+          `Grade Level: ${response.course_information.grade_level}`,
+          `Description: ${response.course_information.description}`,
+        ],
+      },
+      {
+        header: "Objectives and Learning Outcomes",
+        content: response.course_description_objectives.objectives.map(
+          (obj, idx) => `Objective ${idx + 1}: ${obj}`
+        ),
+      },
+      {
+        header: "Course Content",
+        table: {
+          head: [["Week", "Topic"]],
+          body: response.course_content.map((content) => [
+            `Week ${content.unit_time_value}`,
+            content.topic,
+          ]),
+        },
+      },
+      {
+        header: "Policies and Procedures",
+        content: [
+          `Attendance Policy: ${response.policies_procedures.attendance_policy}`,
+          `Late Submission Policy: ${response.policies_procedures.late_submission_policy}`,
+          `Academic Honesty: ${response.policies_procedures.academic_honesty}`,
+        ],
+      },
+      {
+        header: "Assessment and Grading",
+        table: {
+          head: [["Assessment Type", "Weight"]],
+          body: response.assessment_grading_criteria.assessment_methods.map(
+            (method) => [method.type_assessment, `${method.weight}%`]
+          ),
+        },
+      },
+      {
+        header: "Learning Resources",
+        content: response.learning_resources.map(
+          (resource, idx) =>
+            `Resource ${idx + 1}: ${resource.title} by ${resource.author} (${resource.year})`
+        ),
+      },
+    ];
+
+    createPdf(sections);
+  };
 
   const renderCourseInfo = () => (
     <Paper elevation={3} sx={{ padding: 3, marginBottom: 4 }}>
@@ -191,6 +251,44 @@ const SyllabusGeneratorResponse = () => {
     </Paper>
   );
 
+  const renderExportPdfButton = () => (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 4,
+      }}
+    >
+      <Button
+        variant="contained"
+        color="error"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "8px 28px",
+          fontWeight: "bold",
+          fontSize: "20px",
+          textTransform: "none",
+          borderRadius: "50px",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+          backgroundColor: "#FF4C4C",
+          "&:hover": {
+            backgroundColor: "#e84343",
+            boxShadow: "0px 6px 10px rgba(0, 0, 0, 0.25)",
+          },
+        }}
+        startIcon={<PictureAsPdfIcon style={{ fontSize: "28px" }} />}
+        onClick={handleExportPdf}
+      >
+        Export PDF
+      </Button>
+    </Box>
+
+
+  );
+
   return (
     <Fade in>
       <Grid {...styles.mainGridProps}>
@@ -202,6 +300,7 @@ const SyllabusGeneratorResponse = () => {
           {renderAssessmentAndGrading()}
           {renderLearningResources()}
           {renderCourseSchedule()}
+          {renderExportPdfButton()}
         </Box>
       </Grid>
     </Fade>

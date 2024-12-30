@@ -28,6 +28,8 @@
     "dotenv": "^16.4.5",
     "firebase": "^9.22.0",
     "firebase-admin": "^11.8.0",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "moment": "^2.29.4",
     "next": "12.3.0",
     "next-transpile-modules": "^10.0.1",

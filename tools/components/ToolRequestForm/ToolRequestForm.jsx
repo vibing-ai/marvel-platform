@@ -13,6 +13,7 @@ import PrimaryDatePickerInput from '@/components/PrimaryDatePickerInput';
 import PrimaryFileUpload from '@/components/PrimaryFileUpload';
 import PrimarySelectorInput from '@/components/PrimarySelectorInput';
 import PrimaryTextFieldInput from '@/components/PrimaryTextFieldInput';
+import HybridInput from '@/components/HybridInput';
 
 import styles from './styles';
 
@@ -50,13 +51,11 @@ const ToolRequestForm = (props) => {
 
   const handleSubmitMultiForm = async (values) => {
     try {
-      // eslint-disable-next-line no-console
       console.log('Form submission started with values:', values);
       dispatch(setResponse(null));
       dispatch(setCommunicatorLoading(true));
 
       let updateData = Object.entries(values).map(([name, originalValue]) => {
-        // Convert numeric strings to integers using Number.isNaN instead of isNaN
         let value = originalValue;
         if (
           typeof originalValue === 'string' &&
@@ -72,28 +71,45 @@ const ToolRequestForm = (props) => {
       const fileInputs = inputs.filter(
         (input) =>
           input.type === INPUT_TYPES.FILE ||
-          input.type === INPUT_TYPES.FILE_TYPE_SELECTOR
+          input.type === INPUT_TYPES.FILE_TYPE_SELECTOR ||
+          input.type === INPUT_TYPES.HYBRID
       );
 
-      // Replace for...of loop with Promise.all and map
       const fileUploadPromises = fileInputs.map(async (input) => {
-        // omit previous values
+        const inputName = input.name;
+        const isHybrid = input.type === INPUT_TYPES.HYBRID;
+
+        // Remove all related fields to prevent duplicates
         updateData = updateData.filter(
           (item) =>
-            item.name !== `${input.name}_file` &&
-            item.name !== `${input.name}_url` &&
-            item.name !== input.name
+            item.name !== `${inputName}_file` &&
+            item.name !== `${inputName}_url` &&
+            item.name !== `${inputName}_file_url` &&
+            item.name !== `${inputName}_file_type` &&
+            item.name !== `${inputName}_type` &&
+            item.name !== inputName
         );
+
+        // Add base field with empty value since it's a file input
+        if (isHybrid) {
+          updateData.push({
+            name: inputName,
+            value: values[inputName] || ''
+          });
+        }
+
+        // Get the type value from the base field
+        const typeValue = values[inputName]?.toLowerCase() || '';
+
+        // Add the type field
         updateData.push({
-          name: `${input.name}_type`,
-          value: values[`${input.name}`].toLowerCase(),
+          name: isHybrid ? `${inputName}_file_type` : `${inputName}_type`,
+          value: typeValue  // This will contain "PDF" (or whatever was selected)
         });
 
-        const fileKey =
-          input.type === INPUT_TYPES.FILE_TYPE_SELECTOR
-            ? `${input.name}_file`
-            : input.name;
+        const fileKey = `${inputName}_file`;
         const files = watchedValues[fileKey];
+
         if (files && files.length > 0) {
           const storage = getStorage();
           const uploadPromises = files.map(async (file) => {
@@ -104,21 +120,23 @@ const ToolRequestForm = (props) => {
           });
           const urls = await Promise.all(uploadPromises);
 
-          if (input.type === INPUT_TYPES.FILE_TYPE_SELECTOR) {
-            fileUrls.push({ name: `${input.name}_url`, value: urls[0] });
-          } else {
-            fileUrls.push({ name: input.name, value: urls[0] });
-          }
+          fileUrls.push({
+            name: isHybrid ? `${inputName}_file_url` : `${inputName}_url`,
+            value: urls[0]
+          });
+        } else {
+          fileUrls.push({
+            name: isHybrid ? `${inputName}_file_url` : `${inputName}_url`,
+            value: ''
+          });
         }
       });
 
       await Promise.all(fileUploadPromises);
 
-      // Remove any existing file inputs from updateData to avoid duplicates
       const finalData = [...updateData, ...fileUrls];
 
-      // eslint-disable-next-line no-console
-      console.log('Files uploaded, sending request to endpoint with data:', {
+      console.log('Files uploaded, sending request with data:', {
         toolData: { toolId: id, inputs: finalData },
       });
 
@@ -140,7 +158,6 @@ const ToolRequestForm = (props) => {
       dispatch(setCommunicatorLoading(false));
       dispatch(fetchToolHistory({ firestore }));
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error('Error during form submission:', error);
 
       dispatch(setCommunicatorLoading(false));
@@ -352,6 +369,41 @@ const ToolRequestForm = (props) => {
     );
   };
 
+  const renderHybridInput = (inputProps) => {
+    const { name: inputName, tooltip, label, placeholder, values } = inputProps;
+
+    const renderLabel = () => (
+      <Grid {...styles.textFieldLabelGridProps}>
+        <Typography {...styles.labelProps(errors?.[inputName])}>
+          {label}
+        </Typography>
+        {tooltip && (
+          <Tooltip placement="top" title={tooltip} sx={{ ml: 1 }}>
+            <Help />
+          </Tooltip>
+        )}
+      </Grid>
+    );
+
+    return (
+      <Grid key={inputName} {...styles.inputGridProps}>
+        <HybridInput
+          id={inputName}
+          name={inputName}
+          label={renderLabel()}
+          placeholder={placeholder}
+          error={errors?.[inputName]}
+          helperText={errors?.[inputName]?.message}
+          control={control}
+          setValue={setValue}
+          ref={register}
+          fileTypes={values}
+
+        />
+      </Grid>
+    );
+  };
+
   const renderActionButtons = () => (
     <Grid mt={4} {...styles.actionButtonGridProps}>
       <GradientOutlinedButton
@@ -390,6 +442,8 @@ const ToolRequestForm = (props) => {
         return renderFileTypeSelectorInput(inputProps);
       case INPUT_TYPES.DATE:
         return renderDateInput(inputProps);
+      case INPUT_TYPES.HYBRID:
+        return renderHybridInput(inputProps);
       default:
         return null;
     }

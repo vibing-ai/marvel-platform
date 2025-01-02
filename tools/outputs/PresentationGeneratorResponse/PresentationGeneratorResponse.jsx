@@ -3,6 +3,7 @@ import { Fade, Grid, Typography, Button } from '@mui/material';
 import { useSelector } from 'react-redux';
 import pptxgen from "pptxgenjs";
 import styles from './styles';
+import { saveAs } from 'file-saver';
 
 /**
  * PresentationGenerator component renders a list of slides generated from the response data.
@@ -59,6 +60,21 @@ const PresentationGeneratorResponse = () => {
         await pres.writeFile('presentation.pptx');
     };
 
+    const handleTextExport = () => {
+        if (!response?.list_slides) return;
+
+        const textContent = response.list_slides.map((slide, index) => {
+            return `Slide ${index + 1}\n` +
+                `Title: ${slide.title}\n` +
+                `Content: ${slide.content}\n` +
+                `${slide.suggestions ? `Suggestions: ${slide.suggestions}\n` : ''}` +
+                `\n`;
+        }).join('');
+
+        const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+        saveAs(blob, 'presentation.txt');
+    };
+
     const renderSlides = () => (
         <Grid {...styles.slidesGridProps}>
             {response?.list_slides?.map((slide, index) => (
@@ -92,6 +108,14 @@ const PresentationGeneratorResponse = () => {
                             {...styles.exportButtonProps}
                         >
                             Export as PowerPoint
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            onClick={handleTextExport}
+                            {...styles.exportButtonProps}
+                            sx={{ ...styles.exportButtonProps.sx, ml: 2 }}
+                        >
+                            Export as Text
                         </Button>
                     </Grid>
                 )}

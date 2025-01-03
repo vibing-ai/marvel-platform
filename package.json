@@ -26,7 +26,7 @@
     "axios": "^1.4.0",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
-    "firebase": "^9.22.0",
+    "firebase": "^9.23.0",
     "firebase-admin": "^11.8.0",
     "moment": "^2.29.4",
     "next": "12.3.0",
@@ -44,6 +44,7 @@
     "remark-gfm": "^4.0.0",
     "remark-html": "^16.0.1",
     "remark-parse": "^11.0.0",
+    "ts-lint": "^4.5.1",
     "unified": "^11.0.2"
   },
   "devDependencies": {

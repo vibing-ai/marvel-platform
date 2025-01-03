@@ -278,7 +278,8 @@ const createChatSession = onCall(async (props) => {
     DEBUG && logger.log('Updated chat session: ', updatedChatSession.data());
 
     /**
-     * Creates a new chat session object by extracting relevant data from the Firestore document. Converts Firestore timestamps to ISO strings and includes the document ID.
+     * Creates a new chat session object by extracting relevant data from the Firestore document. 
+     * Converts Firestore timestamps to ISO strings and includes the document ID.
      * @param {Object} updatedChatSession The Firestore document containing the chat session data.
      * @return {Object} The new chat session object.
      */

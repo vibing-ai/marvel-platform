@@ -47,13 +47,14 @@ const OnboardingPage = ({ onboardingData }) => {
       dispatch(setTempData(formData));
     }
 
+    ////  bypass
     if (onboardingComponents?.[onboardingData.id] === Complete) {
       let downloadURL = null;
       const file = tempData.profileImage;
       if (file) {
         // Ensure the user is authenticated
         if (!user || !user.id) {
-          throw new Error('User not authenticated');
+          return;// throw new Error('User not authenticated');
         }
 
         // Use a user-specific path for storage

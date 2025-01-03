@@ -17,7 +17,7 @@ const ToolCardSkeleton = () => {
         width="100%"
         sx={{
           borderRadius: '10px',
-          bgcolor: (theme) => theme.palette.Common.Black['30p'],
+          bgcolor: (theme) => theme.palette.common.black['30p'],
         }}
       />
     </Grid>

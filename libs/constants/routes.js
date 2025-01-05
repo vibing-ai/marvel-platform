@@ -8,6 +8,7 @@ const ROUTES = {
   PASSWORD_RESET: '/password-reset',
   REDIRECT: '/redirect',
   CHAT: '/chat',
+  RUBRIC: '/rubric',
   HISTORY: '/history',
   DISCOVERY: '/discovery',
   ONBOARDING: '/onboarding/[onboardingId]',

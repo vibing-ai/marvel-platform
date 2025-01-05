@@ -30,6 +30,12 @@ const PAGES = [
     icon: <HistoryIcon />,
     id: 'page_4',
   },
+  {
+    name: 'Rubric',
+    link: ROUTES.RUBRIC,
+    icon: <HistoryIcon />,
+    id: 'page_5',
+  },
 ];
 
 /**

@@ -1,6 +1,6 @@
 import { Button, Card, Grid, Typography } from '@mui/material';
 import moment from 'moment';
-import Image from 'next/image';
+import Image from "next/image";
 
 import ToolImage from '@/assets/images/BookImage.png';
 
@@ -30,9 +30,16 @@ const ToolHistoryCard = (props) => {
 
   const renderImage = () => {
     return (
-      <Grid {...styles.imageGridProps(backgroundImgURL)}>
-        <Image src={logo || ToolImage} alt="tool logo" {...styles.imageProps} />
-      </Grid>
+      (<Grid {...styles.imageGridProps(backgroundImgURL)}>
+        <Image
+          src={logo || ToolImage}
+          alt="tool logo"
+          {...styles.imageProps}
+          style={{
+            maxWidth: "100%",
+            height: "auto"
+          }} />
+      </Grid>)
     );
   };
 

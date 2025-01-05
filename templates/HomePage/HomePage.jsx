@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { Search } from '@mui/icons-material';
 import { Box, Grid, TextField, Typography } from '@mui/material';
-import Image from 'next/image';
+import Image from "next/image";
 
 import TabButton from '@/components/TabButton';
 
@@ -24,19 +24,21 @@ const HomePage = (props) => {
 
   const renderWelcomeBanner = () => {
     return (
-      <Grid {...styles.bannerGridProps}>
+      (<Grid {...styles.bannerGridProps}>
         <Image
           src={ImageURLs.WelcomeBannerImg}
           alt="welcome_banner_img"
           {...styles.image1Props}
-        />
+          style={{
+            maxWidth: "100%",
+            height: "auto"
+          }} />
         <Box {...styles.star1Props}>
           <Star />
         </Box>
         <Box {...styles.star2Props}>
           <Star />
         </Box>
-
         <Grid>
           <Typography {...styles.titleProps}>
             Hello! Welcome to Marvel AI Tools. 👋
@@ -49,16 +51,18 @@ const HomePage = (props) => {
             and <b>more</b>!
           </Typography>
         </Grid>
-
         <Image
           src={ImageURLs.CapsulesImg}
           alt="capsules_img"
           {...styles.image2Props}
-        />
+          style={{
+            maxWidth: "100%",
+            height: "auto"
+          }} />
         <Box {...styles.star3Props}>
           <Star />
         </Box>
-      </Grid>
+      </Grid>)
     );
   };
 

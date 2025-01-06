@@ -5,10 +5,8 @@ import { createElement } from 'react';
 
 const NoteGenSkeleton = () => {
 
-    const toolButton = createElement("button")
-
-    toolButton.key = 0;
-    
+    const toolButton = createElement("button");
+ 
     return (
         <Grid {...styles.mainNotesGeneratorLayout}>
         </Grid>

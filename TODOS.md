@@ -7,8 +7,24 @@ The tool should allow users to:
     Input content directly or upload files to generate notes.
     Provide a focus or topic for the notes to tailor the generated output.
     Accept file uploads (one file per prompt) in supported formats:
-        Upload: CSV, PDF, DOCX, PPT, Plain Text
-        URLs: YouTube Video, Website, Google Sheets
+
+| PDF       | Portable Document Format | `load_pdf_documents` |
+| CSV       | Comma-Separated Values | `load_csv_documents` |
+| TXT       | Plain Text | `load_txt_documents` |
+| MD        | Markdown | `load_md_documents` |
+| URL       | Web URL | `load_url_documents` |
+| Youtube URL       | Youtube URL | `summarize_transcript_youtube_url` |
+| PPTX      | PowerPoint Presentation | `load_pptx_documents` |
+| DOCX      | Word Document | `load_docx_documents` |
+| XLS       | Excel Spreadsheet | `load_xls_documents` |
+| XLSX      | Excel Spreadsheet | `load_xlsx_documents` |
+| XML       | XML Document | `load_xml_documents` |
+| Google Docs | Documents from Google Drive | `load_gdocs_documents` |
+| Google Sheets | Spreadsheets from Google Drive | `load_gsheets_documents` |
+| Google Slides | Presentations from Google Drive | `load_gslides_documents` |
+| Google PDFs | PDFs from Google Drive | `load_gpdf_documents` |
+| Images | PNG, JPG, JPEG | `generate_concepts_from_img` |
+
     Generate structured notes based on the input, organized into bullet points, paragraphs, or tables.
     Export notes in formats such as plain text, DOCX, or PDF.
 

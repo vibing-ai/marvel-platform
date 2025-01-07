@@ -19,7 +19,9 @@ import { TOOLS_ID } from '@/tools/libs/constants/tools';
  * @return {JSX.Element} The Tool Card component.
  */
 const ToolCard = (props) => {
-  const { id, maskedToolUrl, backgroundImgURL, name, description } = props;
+  const { id, maskedToolUrl, 
+    backgroundImgURL,
+     name, description } = props;
 
   // Check if TOOLS_ID is an object and id is present
   const isPublished =

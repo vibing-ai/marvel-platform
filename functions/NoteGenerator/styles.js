@@ -23,7 +23,8 @@ const styles = {
         boxSizing: 'content-box',
         display: 'inline',
         float: 'none', 
-        cursor: returnedNotes ? 'pointer' : 'default !important',
+        cursor: returnedNotes ? 'pointer' 
+        : 'default !important',
         p: 800,
     }),
     backButton: () => ({

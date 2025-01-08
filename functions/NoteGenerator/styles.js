@@ -28,12 +28,28 @@ const styles = {
         p: 800,
     }),
     backButton: () => ({
-        boxSizing: borderBox,
-        display: block,
-        float: left,
+        boxSizing: 'borderBox',
+        display: 'block',
+        float: 'left',
         lineHeight: 17.3333,
         position: 'static',
-        zIndex :auto,
+        zIndex :'auto',
         padding: 202 + 'x' + 402
+    }),
+
+    Uyw: () =>({
+        display: 'block',
+        zIndex: 'top',
+        alignProperty: 'right',
+        borderColor: 'purple',
+        background: 'black'
+    }),
+    ArrowD: () =>({
+        display: 'block',
+        zIndex: 'top',
+        alignProperty: 'right',
+        border: '1px', 
+        borderColor: 'purple',
+        background: 'black'
     })
 }

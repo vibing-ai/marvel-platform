@@ -6,13 +6,20 @@ import { useRouter } from 'next/router';
 
 import styles from './styles';
 
-import { useEffect } from 'react'; 
 import axios from 'axios';
 import { json, request, response } from 'express'; 
 import ROUTES from '@/libs/constants/routes';
-import Link from 'next/link';
+import { Link } from 'next/link';
 import { post } from 'request';
+import path from 'path';
+import style from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 
+const KAIAvatar = require('/home/zero/Documents/marvel-platform/marvel-platform/assets/svg/KAIAvatar.svg');
+
+// consts 
+
+const fs = require('fs');
+const pdf = require('pdf-parse');
 
 // needed functions
 
@@ -41,46 +48,55 @@ URLs: YouTube Video, Website, Google Sheets
  * (file config, generation layout,
  *  notesOutput page)
  */ 
-
-
+ 
 // I need help with:
 
 //  the routes: 
 // TOOLS, ASSISTS, HISTORY
 
 // making the figma css? or find the tools?
-// where are all the styles?
-// How do I navigate? <- use Router? learn router?
-// Where is the ai Icon? do I make it?
+// where are all the styles?  
 
-// fix the navigation
-// fix the aesthetics
-// fix the routing
-// fix the links?
-// add the parsing
-// add the data from parsing
+// fix the navigation // done kinda
+// fix the aesthetics // not quite
+// fix the routing // omw
+// fix the links?  // Use Link from the library in Next.js
+// add the parsing // omw
+// add the data from parsing  // ok
 // somehow make a function that puts 
 //  all the requested data 
-//  into a buttnugget
+//  into a buttnugget 
 // and allows for it to 
-// be used as inputable info?
+// be used as inputable info? // not sure yet
+// we gotta style this stuff
 
 const router = useRouter();
 
-// I have not the single idea if this will work
-setNotesMemory = useEffect(() => {
-      axios.get('/NotesHistory').then(response.json());
-    });
+let gen = '';
+let renderUyw = false;
 
-const Post = (pr) =>
-{  
-  // post('/notes', (json(pr)));
-}
-
-const GetNotes = (n) =>{
-  axios.get()
-}
+const PdfParserN = (pathFromBrowse) => {
+  let dataBuffer = fs.readFileSync(pathFromBrowse);
+ 
+  let eduPdf = pdf(dataBuffer).then(function(data) {
   
+      // number of pages
+      console.log(data.numpages);
+      // number of rendered pages
+      console.log(data.numrender);
+      // PDF info
+      console.log(data.info);
+      // PDF metadata
+      console.log(data.metadata); 
+      // PDF.js version
+      // check https://mozilla.github.io/pdf.js/getting_started/
+      console.log(data.version);
+      // PDF text
+      console.log(data.text);  
+  });
+  return eduPdf;
+}
+
 // for parsing the files WIP
 function PrintFile(file) {
   const reader = new FileReader();
@@ -89,36 +105,49 @@ function PrintFile(file) {
   };
   reader.readAsText(file);
 } 
+ 
+const LargeNote = (arr = []) => {
 
-const NotesPage = () =>{
+} 
+ 
+const Post = (data) =>
+{ 
+  let res;
+  // The routes don't exist. 
+  axios.post('/notesHistory', data).then(res = response.json()).then(Generate); 
+  res = response.data.notes; // notes or responce?
+  return res;
+} 
 
+// style
+const Generate = (prompt) => {
+   // call the generation from a route
+  gen = Post(prompt) // this is what is then returned
   return (
-    <>
-    
-    </>
+    <p>
+      {
+        gen
+      }
+    </p>
   )
 }
 
-const Generate = () =>{
-  let toChat = '/notes' // use a route?
-  return (
-    <button onSubmit={Post(toChat)}>Generate</button> 
-  )
-}
-
+// style
 const AiIcon = () => {
   return (
-    <svg>
-      {/* {teaching assist goes here } */}
-    </svg>
+    <Grid>
+      <svg>
+        {KAIAvatar}
+      </svg>
+    </Grid>
   )
 }
 
-// still working on this
+// still working on this then style
 const Navbar = () => {
-  let toolL = <a href=''/>;
-  let assiL = <a href=''/>;
-  let histL = <a href=''/>;  
+  let toolL = <Link href='/tools'/>;
+  let assiL = <Link href='/assistants'/>;
+  let histL = <Link href='/history'/>;  
   return(
     // the style to use the background bar seen in figma
     // goes here 
@@ -132,6 +161,7 @@ const Navbar = () => {
   )
 }
 
+// style
 const Back = () => { 
   return (
     <Grid {...styles.backButton}>
@@ -149,7 +179,8 @@ const Back = () => {
   );
 }
 
-const FForms = () =>{
+// style
+const FForms = () => {
   return (
     <>
       <Container>
@@ -160,21 +191,19 @@ const FForms = () =>{
             <input type="text" defaultValue={'Enter Topic'}/>
           </label>
           Page Layout:  
-          <label defaultValue={'Choose Page Layout'}>  
-            <ArrowDropDown>
-              <ul class="dropdown-menu">
-                <li><a href="#">Portrait</a></li>
-                <li><a href="#">Landscape</a></li> 
-              </ul>
-            </ArrowDropDown>  
+          <label>  
+            <input defaultValue={'Choose Page Layout'}/> <ArrowDst><ArrowD/></ArrowDst>
           </label>
           <label>
-            Text or File Upload:
-            <textarea style={'italics = true'} defaultValue={'Enter Text or Choose Files to Upload'}> 
-              <input type="text" />
-              <input type='file'/>
-              {/* upload icon thing */}
-            </textarea> 
+            Text or File Upload: 
+            {(renderUyw != false)?<Uyw/>: null}
+            <input type="text" style={'italics = true'} defaultValue={'Enter Text or Choose Files to Upload'}> 
+              {/* find where to parse and send upload data  */}
+            </input>
+             {/* upload icon thing upload*/} 
+              <a id={'fileup'} onClick={renderUyw = true}/>
+            {/*upload icon */}
+            <></>
           </label>
             <Generate/> 
         </form>
@@ -183,13 +212,49 @@ const FForms = () =>{
   )
 }
 
+// Upload, YouTube Video, Website style this thing too
+const Uyw = () =>{
+  return (
+    <ul class="uyw-blockbox">
+      <li><a><svg></svg>Upload</a></li>
+      <li><a><svg></svg>YouTube</a></li> 
+      <li><a><svg></svg>Website</a></li> 
+    </ul> 
+  )
+}
+// the styler for the arrow dropdown
+const ArrowDst = () =>{
+  return(
+    <></>
+  )
+}
+const ArrowD = () =>{
+  // stylize 
+  return ( 
+  <ArrowDropDown>
+              <ul class="dropdown-menu">
+                <li><a href="#">Portrait</a></li>
+                <li><a href="#">Landscape</a></li> 
+              </ul>
+            </ArrowDropDown> 
+             )
+}
+
+const NotesPage = () =>{
+
+  return (
+    <>
+    
+    </>
+  )
+}
+
 const NoteGen = () => {  
     return (
       <>
-        <AiIcon/>
-        <Navbar/>
-        <Back/>
-        <FForms/> 
+        <Back/><AiIcon/><Navbar/>
+        <br/>
+        {gen ==! null ? <NotesPage/> : <FForms/> }
       </>
     );
 }; 

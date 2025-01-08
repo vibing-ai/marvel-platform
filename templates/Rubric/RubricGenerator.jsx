@@ -7,9 +7,15 @@ import {
   TextField,
   Typography,
   CircularProgress,
+  InputLabel,
+  Select,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { styles } from "./styles";
+import { ArrowDropDown, UploadFile } from "@mui/icons-material";
 
 const RubricGenerator = ({ onGenerateRubric }) => {
     const user = useSelector((state) => state.user.data);
@@ -80,34 +86,37 @@ const RubricGenerator = ({ onGenerateRubric }) => {
     };
   
     return (
-      <Grid
+        <Grid
         container
         direction="column"
         alignItems="center"
         justifyContent="center"
-        sx={{
-          backgroundColor: "#0F0E14",
-          borderRadius: "16px",
-          boxShadow: 3,
-          padding: "24px",
-          maxWidth: "500px",
-          margin: "0 auto",
-        }}
+        sx={styles.generatorContainer}
       >
-        <Typography
-          variant="h5"
-          sx={{ marginBottom: "16px", fontWeight: "bold" }}
-        >
+        <Typography variant="h5" sx={styles.generatorTitle}>
           Rubric Generator
         </Typography>
+        <Typography variant="subtitle1" sx={styles.generatorSubtitle}>
+          Create a table rubric based on assignment-specific information or uploaded documents!
+        </Typography>
+        <InputLabel sx={styles.inputLabel}>Grade Level</InputLabel>
         <TextField
           fullWidth
           select
-          label="Select Grade Level"
           value={gradeLevel}
           onChange={(e) => setGradeLevel(e.target.value)}
-          sx={{ marginBottom: "24px" }}
+          sx={styles.inputFieldCustom}
+          displayEmpty
+          InputProps={{
+            style: styles.inputField,
+            endAdornment: (
+              <InputAdornment position="end">
+                <ArrowDropDown />
+              </InputAdornment>
+            ),
+          }}
         >
+          <MenuItem value="">Enter Grade Level</MenuItem>
           <MenuItem value="pre-k">Pre-K</MenuItem>
           <MenuItem value="kindergarten">Kindergarten</MenuItem>
           <MenuItem value="elementary">Elementary</MenuItem>
@@ -116,57 +125,90 @@ const RubricGenerator = ({ onGenerateRubric }) => {
           <MenuItem value="university">University</MenuItem>
           <MenuItem value="professional">Professional</MenuItem>
         </TextField>
+        <InputLabel sx={styles.inputLabel}>Point Scale</InputLabel>
         <TextField
-          label="Point Scale"
-          select
           fullWidth
+          select
           value={pointScale}
           onChange={(e) => setPointScale(e.target.value)}
-          sx={{ marginBottom: "16px" }}
+          sx={styles.inputFieldCustom}
+          InputProps={{
+            style: styles.inputField,
+            endAdornment: (
+              <InputAdornment position="end">
+                <ArrowDropDown />
+              </InputAdornment>
+            ),
+          }}
         >
+          <MenuItem value="">Choose Point Scale</MenuItem>
           <MenuItem value="1">1</MenuItem>
           <MenuItem value="2">2</MenuItem>
           <MenuItem value="3">3</MenuItem>
           <MenuItem value="4">4</MenuItem>
         </TextField>
+        <InputLabel sx={styles.inputLabel}> Standards/Objectives</InputLabel>
         <TextField
-          label="Standards / Objectives"
           fullWidth
           multiline
           rows={3}
           value={standards}
           onChange={(e) => setStandards(e.target.value)}
-          sx={{ marginBottom: "16px" }}
+          placeholder="Enter Standards or Choose Files to Upload"
+          sx={styles.inputFieldCustom}
+          InputProps={{
+            style: styles.inputField,
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton>
+                  <UploadFile sx={styles.uploadFile} />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
+        <InputLabel sx={styles.inputLabel}> Assignment Description</InputLabel>
         <TextField
-          label="Assignment Description"
           fullWidth
           multiline
           rows={3}
           value={assignmentDescription}
           onChange={(e) => setAssignmentDescription(e.target.value)}
-          sx={{ marginBottom: "24px" }}
+          placeholder="Enter Description or Choose Files to Upload"
+          sx={styles.inputField}
+          InputProps={{
+            style: styles.inputField,
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton>
+                  <UploadFile sx={styles.uploadFile} />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         {error && (
           <Typography color="error" sx={{ marginBottom: "16px" }}>
             {error}
           </Typography>
         )}
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          disabled={loading}
-          onClick={handleGenerateRubric}
+  
+        <Box
           sx={{
-            backgroundColor: "#6200ea",
-            padding: "12px 24px",
-            borderRadius: "8px",
-            fontWeight: "bold",
+            display: "flex",
+            justifyContent: "right",
+            width: "100%",
+            marginTop: "16px",
           }}
         >
-          Generate
-        </Button>
+          <Button
+            disabled={loading}
+            onClick={handleGenerateRubric}
+            sx={styles.generateButton}
+          >
+            Generate
+          </Button>
+        </Box>
         {loading && (
           <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <CircularProgress disableShrink size={75} color="primary" />

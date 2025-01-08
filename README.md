@@ -28,7 +28,7 @@ Marvel AI is an open-source project by Reality AI, designed to provide smart too
 - [License](#license)
 
 ## Architecture
-The "Marvel" platform is structured into two main components: Firebase and AI. The Firebase side, detailed in this repository, encompasses both the frontend, developed with NextJS and hosted on Firebase Hosting, and the backend, which includes user management and session handling via Firebase Functions like `signUpUser` and `createChatSession`. The `communicator` function acts as a proxy for chat interactions between the Firebase infrastructure and the AI services. Tool requests (like "Quizify" and "YouTube Flashcard Generator") are sent directly from the frontend to the AI endpoints. Firestore DB is utilized for data storage. The AI endpoints are housed in a separate repository, including a chatbot and tools like "Quizify" and "Flashcard Generator." 
+The "Marvel" platform is structured into two main components: Firebase and AI. The Firebase side, detailed in this repository, encompasses both the frontend, developed with NextJS and hosted on Firebase Hosting, and the backend, which includes user management and session handling via Firebase Functions like `signUpUser` and `createChatSession`. The `communicator` function acts as a proxy for chat interactions between the Firebase infrastructure and the AI services. Tool requests (like "Quizify" and "YouTube Flashcard Generator") are sent directly from the frontend to the AI endpoints. Firestore DB is utilized for data storage. The AI endpoints are housed in a separate repository, including a chatbot and tools like "Quizify" and "Flashcard Generator."
 
 
 ### Folder Structure
@@ -106,6 +106,7 @@ Note: If you experience any issues with hanging emulator processes after stoppin
 ```bash
 npm run kill-emulators
 ```
+Important: With this method, it is not necessary to have your Firebase project set up. The default environment configurations will work fine, allowing you to start developing without needing to configure Firebase locally.
 
 ## Cloud Deployment
 Before deploying, ensure you have the correct Firebase project setup:

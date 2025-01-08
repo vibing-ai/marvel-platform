@@ -13,8 +13,19 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
 import TotalPoints from "./TotalPoints";
 import { styles } from "./styles";
+import { useRouter } from "next/router";
 
-const RubricDisplay = ({ rubric }) => {
+const RubricDisplay = ({ rubric, setRubric }) => {
+  const router = useRouter();
+
+  const handleBackClick = () => {
+    router.back();
+  };
+
+  const handleEditClick = () => {
+    setRubric(null);
+  };
+
   if (!rubric || !rubric.data) {
     return <Typography>No rubric data available</Typography>;
   }
@@ -22,7 +33,11 @@ const RubricDisplay = ({ rubric }) => {
 
   return (
     <Box sx={styles.rubricContainer}>
-      <Button startIcon={<ArrowBackIcon />} sx={styles.backButton}>
+      <Button
+        startIcon={<ArrowBackIcon />}
+        sx={styles.backButton}
+        onClick={handleBackClick}
+      >
         Back
       </Button>
       <Box sx={styles.headerBox}>
@@ -30,7 +45,11 @@ const RubricDisplay = ({ rubric }) => {
         <Typography sx={styles.headerTitle}>
           AI Resistant Assignments
         </Typography>
-        <Button startIcon={<EditIcon />} sx={styles.editButton}>
+        <Button
+          startIcon={<EditIcon />}
+          sx={styles.editButton}
+          onClick={handleEditClick}
+        >
           Edit Prompt
         </Button>
       </Box>
@@ -54,14 +73,9 @@ const RubricDisplay = ({ rubric }) => {
           <TableBody>
             {criterias.map((criteria, index) => (
               <TableRow key={index}>
-                <TableCell sx={styles.tableCell}>
-                  {criteria.criteria}
-                </TableCell>
+                <TableCell sx={styles.tableCell}>{criteria.criteria}</TableCell>
                 {criteria.criteria_description.map((description, idx) => (
-                  <TableCell
-                    key={idx}
-                    sx={styles.tableCell}
-                  >
+                  <TableCell key={idx} sx={styles.tableCell}>
                     {description.description.map((desc, i) => (
                       <Typography
                         key={i}

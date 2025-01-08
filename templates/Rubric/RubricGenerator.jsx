@@ -8,7 +8,6 @@ import {
   Typography,
   CircularProgress,
   InputLabel,
-  Select,
   InputAdornment,
   IconButton,
 } from "@mui/material";
@@ -93,10 +92,10 @@ const RubricGenerator = ({ onGenerateRubric }) => {
         justifyContent="center"
         sx={styles.generatorContainer}
       >
-        <Typography variant="h5" sx={styles.generatorTitle}>
+        <Typography sx={styles.generatorTitle}>
           Rubric Generator
         </Typography>
-        <Typography variant="subtitle1" sx={styles.generatorSubtitle}>
+        <Typography  sx={styles.generatorSubtitle}>
           Create a table rubric based on assignment-specific information or uploaded documents!
         </Typography>
         <InputLabel sx={styles.inputLabel}>Grade Level</InputLabel>

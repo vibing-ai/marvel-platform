@@ -89,7 +89,12 @@ export const styles = {
     },
     generatorTitle: {
       marginBottom: "16px",
-      fontWeight: "bold",
+      fontWeight: "700",
+      fontSize: "24px",
+    },
+    generatorSubtitle: {
+      marginBottom: "26px",
+      color: "#B3B2B2",
     },
     generateButton: {
       borderRadius: "26px",

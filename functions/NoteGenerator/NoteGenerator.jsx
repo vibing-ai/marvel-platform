@@ -1,7 +1,7 @@
 // get the imports
 
-import { ArrowDropDown, AutoAwesome, Grid4x4 } from '@mui/icons-material';
-import { Card, Chip, Container, Grid, Skeleton, Typography } from '@mui/material';
+import { ArrowDropDown, AutoAwesome, Grid4x4, Grid4x4Sharp } from '@mui/icons-material';
+import { Backdrop, Card, Chip, Container, Grid, Skeleton, Typography } from '@mui/material';
 import { useRouter } from 'next/router'; 
 
 import styles from './styles';
@@ -56,8 +56,7 @@ URLs: YouTube Video, Website, Google Sheets
 
 // making the figma css? or find the tools?
 // where are all the styles?  
-
-// fix the navigation // done kinda
+ 
 // fix the aesthetics // not quite
 // fix the routing // omw
 // fix the links?  // Use Link from the library in Next.js
@@ -68,8 +67,23 @@ URLs: YouTube Video, Website, Google Sheets
 //  into a buttnugget 
 // and allows for it to 
 // be used as inputable info? // not sure yet
-// we gotta style this stuff
+// ask about the data
 
+
+// we gotta style this stuff
+// STYLE CHECKLIST
+/*
+  LargeNote done (generatedNotes)
+  Generate N/A (large note is what comes outta this)
+  Navbar done
+  FForms done
+  Uyw done 
+  ArrowD done
+  NotesPage done
+  backButton done
+  NoteGen < backgroundstufff done
+*/
+ 
 const router = useRouter();
 
 let gen = '';
@@ -107,8 +121,27 @@ function PrintFile(file) {
 } 
  
 const LargeNote = (arr = []) => {
-
+  return (
+    <>
+      {
+        arr.forEach((e) => {
+          e.title,
+          e.bulletPoint
+        })
+      }
+    </>
+  )
 } 
+
+const EditButton = () =>{
+  return (
+    <>
+      <div>
+
+      </div>
+    </>
+  )
+}
  
 const Post = (data) =>
 { 
@@ -145,19 +178,16 @@ const AiIcon = () => {
 
 // still working on this then style
 const Navbar = () => {
-  let toolL = <Link href='/tools'/>;
-  let assiL = <Link href='/assistants'/>;
-  let histL = <Link href='/history'/>;  
   return(
     // the style to use the background bar seen in figma
     // goes here 
-    <Card>
-        <span>
-        <button onSubmit={toolL}/>
-        <button onSubmit={assiL}/>
-        <button onSubmit={histL}/>
+    <nav>
+      <span>
+        <svg><Link href='/submit-tool'/></svg>
+        <svg><Link href='/assistant-chat'/></svg>
+        <svg><Link href='/history'/></svg>
       </span>
-    </Card> 
+    </nav> 
   )
 }
 
@@ -213,7 +243,7 @@ const FForms = () => {
 }
 
 // Upload, YouTube Video, Website style this thing too
-const Uyw = () =>{
+const Uyw = () => {
   return (
     <ul class="uyw-blockbox">
       <li><a><svg></svg>Upload</a></li>
@@ -221,26 +251,21 @@ const Uyw = () =>{
       <li><a><svg></svg>Website</a></li> 
     </ul> 
   )
-}
-// the styler for the arrow dropdown
-const ArrowDst = () =>{
-  return(
-    <></>
-  )
-}
+} 
+
 const ArrowD = () =>{
   // stylize 
   return ( 
-  <ArrowDropDown>
-              <ul class="dropdown-menu">
-                <li><a href="#">Portrait</a></li>
-                <li><a href="#">Landscape</a></li> 
-              </ul>
-            </ArrowDropDown> 
-             )
+      <ArrowDropDown>
+        <ul class="dropdown-menu">
+          <li><a href="#">Portrait</a></li>
+          <li><a href="#">Landscape</a></li> 
+        </ul>
+      </ArrowDropDown> 
+    )
 }
 
-const NotesPage = () =>{
+const NotesPage = () => {
 
   return (
     <>
@@ -251,11 +276,14 @@ const NotesPage = () =>{
 
 const NoteGen = () => {  
     return (
-      <>
+      <Backdrop>
+        <Grid4x4Sharp>
         <Back/><AiIcon/><Navbar/>
         <br/>
         {gen ==! null ? <NotesPage/> : <FForms/> }
-      </>
+        </Grid4x4Sharp>
+      </Backdrop>
     );
 }; 
+
 export {NoteGen}

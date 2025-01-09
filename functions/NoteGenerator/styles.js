@@ -1,3 +1,4 @@
+import NavBar from '@/layouts/MainAppLayout/NavBar';
 import { getRandomBackgroundColor } from '@/libs/utils/MiscellaneousUtils';
 import { alignProperty } from '@mui/material/styles/cssUtils';
 import zIndex from '@mui/material/styles/zIndex'; 
@@ -15,8 +16,8 @@ const styles = {
     },
     generatedNotes: (returnedNotes) => 
     ({ 
-        padding: 39.0667 + 'x' + 17,
-        border: 0,
+        padding: 39.0667 + 'x' + '17px',
+        border: '0px',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'flex-end',
@@ -29,6 +30,7 @@ const styles = {
     }),
     backButton: () => ({
         boxSizing: 'borderBox',
+        alignProperty: 'top',  
         display: 'block',
         float: 'left',
         lineHeight: 17.3333,
@@ -37,19 +39,49 @@ const styles = {
         padding: 202 + 'x' + 402
     }),
 
-    Uyw: () =>({
-        display: 'block',
-        zIndex: 'top',
+    Uyw: () => ({
+        display: 'flex', 
         alignProperty: 'right',
         borderColor: 'purple',
+        alignProperty: 'top',  
         background: 'black'
     }),
-    ArrowD: () =>({
-        display: 'block',
-        zIndex: 'top',
+
+    ArrowD: () => ({
+        display: 'flex', 
         alignProperty: 'right',
         border: '1px', 
         borderColor: 'purple',
-        background: 'black'
+        background: 'black', 
+    }),
+
+    NavBar: () => ({
+        display: 'flex',
+        alignProperty: 'top',  
+    }),
+
+    FForms: () => ({  
+        position: 'absolute',
+        left: '0px',
+        top: '0px',
+        zIndex: -1
+    }),
+
+    NotesPage: () => ({
+        boxSizing: 'inherit',
+        alignItems: 'center', 
+        position: 'flex',
+        left: '0px',
+        top: '0px',
+        backgroundColor: 'dark-purple'
+    }),
+    NavBar: () => ({
+        alignProperty: 'top',  
+        alignItems: 'center',
+    }),
+    ButtonsStyu: () => ({
+        alignProperty: 'top',
+        boxSizing: '15px',
+        borderColor: '#7551A0'
     })
 }

@@ -14,7 +14,7 @@ import {
 import { styles } from "./styles";
 import { ArrowDropDown, UploadFile } from "@mui/icons-material";
 import FileUploadDialog from "./FileUploadDialog";
-import useRubricGenerator from '@/libs/hooks/useRubricGenerator';
+import {useRubricGenerator} from '@/libs/hooks/useRubricGenerator';
 
 
 const RubricGenerator = ({ onGenerateRubric }) => {

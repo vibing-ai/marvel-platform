@@ -138,5 +138,18 @@ export const styles = {
       fontSize: "14px",
       padding: "10px 16px",
     },
+    exportButton: {
+      borderRadius: "26px",
+      width: "155px",
+      height: "44px",
+      padding: "6px 12px",
+      backgroundColor: "#9D74FF",
+      color: "#FFF",
+      textTransform: "none",
+      fontWeight: "bold",
+      "&:hover": {
+        backgroundColor: "#5200C5",
+      },
+    },
   };
   

@@ -13,18 +13,12 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
 import TotalPoints from "./TotalPoints";
 import { styles } from "./styles";
-import { useRouter } from "next/router";
+import {useRubricDisplay} from '@/libs/hooks/useRubricDisplay';
+
 
 const RubricDisplay = ({ rubric, setRubric }) => {
-  const router = useRouter();
-
-  const handleBackClick = () => {
-    router.back();
-  };
-
-  const handleEditClick = () => {
-    setRubric(null);
-  };
+  const { handleBackClick, handleEditClick, exportAsPDF, exportAsDOCX } =
+  useRubricDisplay(rubric, setRubric);
 
   if (!rubric || !rubric.data) {
     return <Typography>No rubric data available</Typography>;
@@ -96,8 +90,16 @@ const RubricDisplay = ({ rubric, setRubric }) => {
       </Box>
       <TotalPoints criterias={criterias} />
       <Typography variant="body1" sx={styles.totalPoints}>
-        Note to Teacher: {feedback}
+        Note to Teacher:: {feedback}
       </Typography>
+      <Box sx={{ display: "flex", gap: "12px", marginTop: "16px" }}>
+        <Button onClick={exportAsPDF} sx={styles.exportButton}>
+          Export as PDF
+        </Button>
+        <Button onClick={exportAsDOCX} sx={styles.exportButton}>
+          Export as DOCX
+        </Button>
+      </Box>
     </Box>
   );
 };

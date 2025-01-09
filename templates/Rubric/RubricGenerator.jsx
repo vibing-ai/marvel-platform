@@ -15,88 +15,97 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { styles } from "./styles";
 import { ArrowDropDown, UploadFile } from "@mui/icons-material";
+import FileUploadDialog from "./FileUploadDialog";
 
 const RubricGenerator = ({ onGenerateRubric }) => {
-    const user = useSelector((state) => state.user.data);
-    const [gradeLevel, setGradeLevel] = useState("");
-    const [pointScale, setPointScale] = useState("");
-    const [standards, setStandards] = useState("");
-    const [assignmentDescription, setAssignmentDescription] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-  
-    const headers = {
-      "API-Key": "dev",
-      "Content-Type": "application/json",
+  const user = useSelector((state) => state.user.data);
+  const [gradeLevel, setGradeLevel] = useState("");
+  const [pointScale, setPointScale] = useState("");
+  const [standards, setStandards] = useState("");
+  const [assignmentDescription, setAssignmentDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [openFileUploadDialog, setOpenFileUploadDialog] = useState(false);
+  const [objectivesFileUrl, setObjectivesFileUrl] = useState("");
+  const [assignmentDescriptionFileUrl, setAssignmentDescriptionFileUrl] = useState("");
+
+  const handleFileUploadClick = () => {
+    setOpenFileUploadDialog(true);
+  };
+
+  const handleFileUpload = (fileType, fileUrl) => {
+    if (fileType === "objectives") {
+      setObjectivesFileUrl(fileUrl);
+    } else if (fileType === "assignment_description") {
+      setAssignmentDescriptionFileUrl(fileUrl);
+    }
+  };
+
+
+  const headers = {
+    "API-Key": "dev",
+    "Content-Type": "application/json",
+  };
+
+  const handleGenerateRubric = async () => {
+    if (!gradeLevel || !pointScale || !assignmentDescription) {
+      setError("All fields are required.");
+      return;
+    }
+
+    const payload = {
+      user: user,
+      type: "chat",
+      tool_data: {
+        tool_id: "rubric-generator",
+        inputs: [
+          { name: "grade_level", value: gradeLevel },
+          { name: "point_scale", value: parseInt(pointScale) },
+          { name: "objectives", value: standards },
+          { name: "assignment_description", value: assignmentDescription },
+          { name: "objectives_file_url", value: objectivesFileUrl },
+          { name: "objectives_file_type", value: "pdf" },
+          { name: "assignment_description_file_url", value: assignmentDescriptionFileUrl },
+          { name: "assignment_description_file_type", value: "gdoc" },
+          { name: "lang", value: "en" },
+        ],
+      },
     };
-  
-    const handleGenerateRubric = async () => {
-      if (!gradeLevel || !pointScale || !assignmentDescription) {
-        setError("All fields are required.");
-        return;
+
+    try {
+      setError("");
+      setLoading(true);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_MARVEL_ENDPOINT}submit-tool`,
+        payload,
+        { headers }
+      );
+      onGenerateRubric(response.data);
+    } catch (err) {
+      console.error("Error response:", err.response || err.message);
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to generate rubric. Please try again later.");
       }
-  
-      const payload = {
-        user: user,
-        type: "chat",
-        tool_data: {
-          tool_id: "rubric-generator",
-          inputs: [
-            { name: "grade_level", value: gradeLevel },
-            { name: "point_scale", value: parseInt(pointScale) },
-            { name: "objectives", value: standards },
-            { name: "assignment_description", value: assignmentDescription },
-            {
-              name: "objectives_file_url",
-              value:
-                "https://firebasestorage.googleapis.com/v0/b/kai-ai-f63c8.appspot.com/o/uploads%2F510f946e-823f-42d7-b95d-d16925293946-Linear%20Regression%20Stat%20Yale.pdf?alt=media&token=caea86aa-c06b-4cde-9fd0-42962eb72ddd",
-            },
-            { name: "objectives_file_type", value: "pdf" },
-            {
-              name: "assignment_description_file_url",
-              value:
-                "https://docs.google.com/document/d/1IsTPJSgWMdD20tXMm1sXJSCc0xz9Kxmn/edit?usp=drive_link&ouid=107052763106493355624&rtpof=true&sd=true",
-            },
-            { name: "assignment_description_file_type", value: "gdoc" },
-            { name: "lang", value: "en" },
-          ],
-        },
-      };
-  
-      try {
-        setError("");
-        setLoading(true);
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_MARVEL_ENDPOINT}submit-tool`,
-          payload,
-          { headers }
-        );
-        onGenerateRubric(response.data);
-      } catch (err) {
-        console.error("Error response:", err.response || err.message);
-        if (err.response?.data?.message) {
-          setError(err.response.data.message);
-        } else {
-          setError("Failed to generate rubric. Please try again later.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    return (
-        <Grid
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <Grid
         container
         direction="column"
         alignItems="center"
         justifyContent="center"
         sx={styles.generatorContainer}
       >
-        <Typography sx={styles.generatorTitle}>
-          Rubric Generator
-        </Typography>
-        <Typography  sx={styles.generatorSubtitle}>
-          Create a table rubric based on assignment-specific information or uploaded documents!
+        <Typography sx={styles.generatorTitle}>Rubric Generator</Typography>
+        <Typography sx={styles.generatorSubtitle}>
+          Create a table rubric based on assignment-specific information or
+          uploaded documents!
         </Typography>
         <InputLabel sx={styles.inputLabel}>Grade Level</InputLabel>
         <TextField
@@ -159,7 +168,7 @@ const RubricGenerator = ({ onGenerateRubric }) => {
             style: styles.inputField,
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton>
+                <IconButton onClick={handleFileUploadClick}>
                   <UploadFile sx={styles.uploadFile} />
                 </IconButton>
               </InputAdornment>
@@ -179,7 +188,7 @@ const RubricGenerator = ({ onGenerateRubric }) => {
             style: styles.inputField,
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton>
+                <IconButton onClick={handleFileUploadClick}>
                   <UploadFile sx={styles.uploadFile} />
                 </IconButton>
               </InputAdornment>
@@ -191,7 +200,7 @@ const RubricGenerator = ({ onGenerateRubric }) => {
             {error}
           </Typography>
         )}
-  
+
         <Box
           sx={{
             display: "flex",
@@ -215,7 +224,13 @@ const RubricGenerator = ({ onGenerateRubric }) => {
           </Box>
         )}
       </Grid>
-    );
-  };
+      <FileUploadDialog
+        open={openFileUploadDialog}
+        onClose={() => setOpenFileUploadDialog(false)}
+        onFileUpload={handleFileUpload}
+      />
+    </>
+  );
+};
 
 export default RubricGenerator;

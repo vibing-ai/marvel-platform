@@ -126,5 +126,17 @@ export const styles = {
       color: "#9D74FF",
       marginTop: "-36px",
     },
+    iconStyle: {
+      color: "#9D74FF"
+    },
+    iconButton: {
+      borderBlockColor: "transparent",
+      justifyContent: "flex-start",
+      color: "#FFF",
+      borderColor: "#6c63ff",
+      textTransform: "none",
+      fontSize: "14px",
+      padding: "10px 16px",
+    },
   };
   

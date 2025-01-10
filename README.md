@@ -68,10 +68,11 @@ To set up the project, follow these steps:
 4. Get firebase config from firebase project settings in firebase console
 5. Create a `.env` file in the root of the project using `sample.env` as a template:
    The default values in `sample.env` are configured to connect to the production MarvelAI server (app.marvelai.app). You can keep these values if you want to use the production firebase backend (Firestore and Functions), or update them to point to your own firebase project which you can get from firebase console > Project settings > General (scroll to bottom).
+6. Create a [Google reCAPTCHA key](https://www.google.com/recaptcha/admin/create). Replace the `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` and `RECAPTCHA_SECRET` in the `.env` file with the correct values from the Google reCPATCHA admin console.
+7. Install Firebase CLI by running the following in terminal: `npm install -g firebase-tools`
+8. Login to firebase CLI by running the following command: `firebase login`
+9. Install all dependencies by running: `npm run install:all`
 
-6. Install Firebase CLI by running the following in terminal: `npm install -g firebase-tools`
-7. Login to firebase CLI by running the following command: `firebase login`
-8. Install all dependencies by running: `npm run install:all`
 
 ### Development Options
 You have two options to run the development environment:

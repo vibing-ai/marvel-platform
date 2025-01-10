@@ -1,14 +1,18 @@
 import { useContext, useState } from 'react';
 
 import { Grid, Link, useTheme } from '@mui/material';
+import axios from 'axios';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { useRouter } from 'next/router';
 
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { FormContainer } from 'react-hook-form-mui';
 import { useDispatch } from 'react-redux';
 
 import AuthTextField from '@/components/AuthTextField';
 import GradientOutlinedButton from '@/components/GradientOutlinedButton';
+
+import GoogleIcon from '@/assets/svg/googleIcon.svg';
 
 import styles from './styles';
 
@@ -24,6 +28,10 @@ import { auth, firestore } from '@/libs/redux/store';
 import fetchUserData from '@/libs/redux/thunks/user';
 
 import AUTH_REGEX from '@/libs/regex/auth';
+
+import OrBlock from '@/templates/utils/OrBlock';
+
+import GoogleSignInButton from './GoogleSignInButton';
 
 const DEFAULT_FORM_VALUES = {
   email: typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'user@test.com' : '',
@@ -46,12 +54,27 @@ const SignInForm = (props) => {
 
   const theme = useTheme();
 
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [signInLoading, setSignInLoading] = useState(false);
   const [error, setError] = useState(DEFAULT_ERR_STATE);
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const { handleOpenSnackBar } = useContext(AuthContext);
+  const { handleOpenSnackBar, handleGoogleLogin } = useContext(AuthContext);
+
+  // Uses v3 recaptcha to "invisibly" validate human or bot, allows callback FN to be executed if human 
+  const verifyRecaptcha = async (callback) => {
+    if (!executeRecaptcha) return;
+    const token = await executeRecaptcha('login');
+
+    try {
+      const res = await axios.post('/api/verify-recaptcha', { gRecaptchaToken: token });
+      if (res.data?.success) callback();
+      else handleOpenSnackBar('error', 'Failed reCAPTCHA verification');
+    } catch (e) {
+      console.error(e.message);
+    }
+  };
 
   const handleSubmit = async (data) => {
     try {
@@ -150,6 +173,7 @@ const SignInForm = (props) => {
   const renderSubmitButton = () => {
     return (
       <GradientOutlinedButton
+        clickHandler={() => verifyRecaptcha(handleSubmit)}
         bgcolor={theme.palette.Dark_Colors.Dark[1]}
         text="Sign In"
         textColor={theme.palette.Common.White['100p']}
@@ -162,12 +186,14 @@ const SignInForm = (props) => {
   return (
     <FormContainer
       defaultValues={DEFAULT_FORM_VALUES}
-      onSuccess={(data) => handleSubmit(data)}
+      onSuccess={(data) => verifyRecaptcha(handleSubmit(data))}
     >
       <Grid {...sharedStyles.formGridProps}>
         {renderEmailInput()}
         {renderPaswordInput()}
         {renderSubmitButton()}
+        <OrBlock />
+        <GoogleSignInButton isSignIn={true} />
       </Grid>
     </FormContainer>
   );

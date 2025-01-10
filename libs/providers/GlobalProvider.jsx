@@ -1,6 +1,6 @@
 import { createContext, useEffect, useMemo, useState } from 'react';
 
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { Provider, useDispatch } from 'react-redux';
 
 import SnackBar from '@/components/SnackBar';
@@ -10,8 +10,13 @@ import useRedirect from '@/libs/hooks/useRedirect';
 import { setLoading, setUser } from '@/libs/redux/slices/authSlice';
 import { setUserData } from '@/libs/redux/slices/userSlice';
 import store, { auth, firestore, functions } from '@/libs/redux/store';
+import { useRouter } from 'next/router';
+import ROUTES from '@/libs/constants/routes';
+
+import fetchUserData from '@/libs/redux/thunks/user';
 
 const AuthContext = createContext();
+const GoogleProvider = new GoogleAuthProvider();
 
 /**
  * Creates an authentication provider to observe authentication state changes.
@@ -22,6 +27,7 @@ const AuthContext = createContext();
 const AuthProvider = (props) => {
   const { children } = props;
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [severity, setSeverity] = useState('success');
@@ -33,9 +39,35 @@ const AuthProvider = (props) => {
     setOpen(true);
   };
 
+  // Google oauth login action
+  const handleGoogleLogin = async () => {
+    dispatch(setLoading(true));
+    try {
+      const result = await signInWithPopup(auth, GoogleProvider);
+      const { user } = result;
+      const { claims } = await user.getIdTokenResult(true);
+
+      // fetch user data & check onboarding flow
+      dispatch(setUser({ ...user.toJSON(), claims }));
+      const userData = await dispatch(fetchUserData({ firestore, id: user.uid })).unwrap();
+      if (userData?.needsBoarding) {
+        router.replace(ROUTES.ONBOARDING);
+      } else {
+        router.replace(ROUTES.HOME);
+      }
+
+      handleOpenSnackBar('success', 'Successfully logged in with Google');
+    } catch (error) {
+      handleOpenSnackBar('error', error.message);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
   const memoizedValue = useMemo(() => {
     return {
       handleOpenSnackBar,
+      handleGoogleLogin,
     };
   }, []);
 

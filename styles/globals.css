@@ -155,3 +155,8 @@ a {
   color: #9d74ff;
   text-decoration: none;
 }
+
+/* Hides recaptcha badge on every page */
+.grecaptcha-badge { 
+  visibility: hidden !important;
+}

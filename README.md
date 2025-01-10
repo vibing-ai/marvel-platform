@@ -62,15 +62,22 @@ The "Marvel" platform is structured into two main components: Firebase and AI. T
 To set up the project, follow these steps:
 
 ## Local Development
+
+
 1. Clone the repository: `git clone https://github.com/marvelai-org/marvel-platform`
-2. Create your firebase project on google firebase console
-3. Create a firestore database instance
-4. Get firebase config from firebase project settings in firebase console
-5. Create a `.env` file in the root of the project using `sample.env` as a template:
-   The default values in `sample.env` are configured to connect to the production MarvelAI server (app.marvelai.app). You can keep these values if you want to use the production firebase backend (Firestore and Functions), or update them to point to your own firebase project which you can get from firebase console > Project settings > General (scroll to bottom).
+
+2. Create your firebase project on Google Firebase Console
+
+3. Setup Firestore Database **(optional)**: If you don't have a Firestore database instance, you can create one in the Firebase Console. This step is only necessary if you want to use your own Firestore database for development option #1.
+
+4. Get Firebase Config **(optional)**: If you want to use your own Firebase project for development, you can get the Firebase config from the Firebase project settings in the Firebase Console and update the `.env` file accordingly. Otherwise, you can skip this step and use the default config values.
+
+5. Create a `.env` file in the root of the project using `sample.env` as a template: Update the values in `.env` according to your needs.
 
 6. Install Firebase CLI by running the following in terminal: `npm install -g firebase-tools`
+
 7. Login to firebase CLI by running the following command: `firebase login`
+
 8. Install all dependencies by running: `npm run install:all`
 
 ### Development Options

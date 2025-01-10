@@ -21,10 +21,26 @@ const KAIAvatar = require('/home/zero/Documents/marvel-platform/marvel-platform/
 const fs = require('fs');
 const pdf = require('pdf-parse');
 
+
+// we gotta style this stuff
+// STYLE CHECKLIST
+/*
+  LargeNote done (generatedNotes)
+  Generate N/A (large note is what comes outta this)
+  Navbar done
+  FForms done
+  Uyw done 
+  ArrowD done
+  NotesPage done
+  backButton done
+  NoteGen < backgroundstufff done
+*/
+ 
+
 // needed functions
 
-// read the file with FileReader,
-// unzip it somehow
+// read the file with FileReader, done 
+// unzip it somehow done 
 // parse it with DOMParser
 // maybe transform it with XSLT
 // translate the file data into note format
@@ -62,28 +78,16 @@ URLs: YouTube Video, Website, Google Sheets
 // fix the links?  // Use Link from the library in Next.js
 // add the parsing // omw
 // add the data from parsing  // ok
+
 // somehow make a function that puts 
 //  all the requested data 
 //  into a buttnugget 
+
 // and allows for it to 
 // be used as inputable info? // not sure yet
 // ask about the data
 
 
-// we gotta style this stuff
-// STYLE CHECKLIST
-/*
-  LargeNote done (generatedNotes)
-  Generate N/A (large note is what comes outta this)
-  Navbar done
-  FForms done
-  Uyw done 
-  ArrowD done
-  NotesPage done
-  backButton done
-  NoteGen < backgroundstufff done
-*/
- 
 const router = useRouter();
 
 let gen = '';
@@ -133,21 +137,21 @@ const LargeNote = (arr = []) => {
   )
 } 
 
+// need an svg for this one too
 const EditButton = () =>{
-  return (
-    <>
-      <div>
-
-      </div>
-    </>
+  return ( 
+    <a><svg></svg> Edit Prompt</a> 
   )
+}
+
+const dataAdd = () => { 
 }
  
 const Post = (data) =>
 { 
-  let res;
-  // The routes don't exist. 
-  axios.post('/notesHistory', data).then(res = response.json()).then(Generate); 
+  let res; 
+  // the routes are ?
+  axios.post('/chat', data).then(res = response.json()).then(Generate); 
   res = response.data.notes; // notes or responce?
   return res;
 } 
@@ -168,10 +172,8 @@ const Generate = (prompt) => {
 // style
 const AiIcon = () => {
   return (
-    <Grid>
-      <svg>
-        {KAIAvatar}
-      </svg>
+    <Grid {...styles.AiIcon}>
+      <svg href={KAIAvatar}/> 
     </Grid>
   )
 }
@@ -209,50 +211,6 @@ const Back = () => {
   );
 }
 
-// style
-const FForms = () => {
-  return (
-    <>
-      <Container>
-        Notes Generator
-        <form action='submit'> 
-          <h3>Extract concise, structured, summarized notes from various types of inputs!</h3>
-          <label style={'italics = true'}>Topic:
-            <input type="text" defaultValue={'Enter Topic'}/>
-          </label>
-          Page Layout:  
-          <label>  
-            <input defaultValue={'Choose Page Layout'}/> <ArrowDst><ArrowD/></ArrowDst>
-          </label>
-          <label>
-            Text or File Upload: 
-            {(renderUyw != false)?<Uyw/>: null}
-            <input type="text" style={'italics = true'} defaultValue={'Enter Text or Choose Files to Upload'}> 
-              {/* find where to parse and send upload data  */}
-            </input>
-             {/* upload icon thing upload*/} 
-              <a id={'fileup'} onClick={renderUyw = true}/>
-            {/*upload icon */}
-            <></>
-          </label>
-            <Generate/> 
-        </form>
-      </Container> 
-    </>
-  )
-}
-
-// Upload, YouTube Video, Website style this thing too
-const Uyw = () => {
-  return (
-    <ul class="uyw-blockbox">
-      <li><a><svg></svg>Upload</a></li>
-      <li><a><svg></svg>YouTube</a></li> 
-      <li><a><svg></svg>Website</a></li> 
-    </ul> 
-  )
-} 
-
 const ArrowD = () =>{
   // stylize 
   return ( 
@@ -264,23 +222,78 @@ const ArrowD = () =>{
       </ArrowDropDown> 
     )
 }
-
-const NotesPage = () => {
-
+ 
+// style
+const FForms = () => {
   return (
     <>
-    
+      {(gen != '') ? <NotesPage/> : 
+      <Container {...styles.FForms}>
+          Notes Generator
+          <form action='submit'> 
+            <h3>Extract concise, structured, summarized notes from various types of inputs!</h3>
+            <label style={'italics = true'}>Topic:
+              <input type="text" defaultValue={'Enter Topic'}/>
+            </label>
+            Page Layout:  
+            <label>  
+              <input defaultValue={'Choose Page Layout'}/> <ArrowD {...styles.ArrowD}/>
+            </label>
+            <label>
+              Text or File Upload: 
+              {(renderUyw != false)?<Uyw {...styles.Uyw}/>: null}
+              <input type="text" style={'italics = true'} defaultValue={'Enter Text or Choose Files to Upload'}> 
+                {/* find where to parse and send upload data  */}
+              </input>
+              {/* upload icon thing upload*/} 
+                <a id={'fileup'} onClick={renderUyw = true}/>
+            </label> 
+          </form>
+        </Container>
+      }
     </>
   )
 }
 
+// Upload, YouTube Video, Website style this thing too
+const Uyw = () => {
+  return ( 
+    <ul>
+      <li><svg><input type='file'/></svg>Upload</li>
+      <li><svg><input type='url'/></svg>YouTube</li> 
+      <li><svg><input type='url'/></svg>Website</li> 
+    </ul> 
+  )
+} 
+
+// above the notes page is a notes generator title container
+const NotesGenTitle2 = () => { 
+  return (
+    <Container {...styles.NotesTitle}>
+      <h2>Notes Generator</h2>
+    </Container>
+  )
+}
+
+const NotesPage = () => { 
+  return (
+    <> 
+      <NotesGenTitle2/>
+      <Container {...styles.NotesPage}>
+        <Generate {...styles.generatedNotes}/> 
+      </Container>
+    </> 
+  )
+}
+
+// dont touch
 const NoteGen = () => {  
     return (
       <Backdrop>
         <Grid4x4Sharp>
         <Back/><AiIcon/><Navbar/>
         <br/>
-        {gen ==! null ? <NotesPage/> : <FForms/> }
+        { gen ==! null ? <NotesPage/> : <FForms/> }
         </Grid4x4Sharp>
       </Backdrop>
     );

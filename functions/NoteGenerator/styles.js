@@ -25,8 +25,7 @@ const styles = {
         display: 'inline',
         float: 'none', 
         cursor: returnedNotes ? 'pointer' 
-        : 'default !important',
-        p: 800,
+        : 'default !important'
     }),
     backButton: () => ({
         boxSizing: 'borderBox',
@@ -38,7 +37,6 @@ const styles = {
         zIndex :'auto',
         padding: 202 + 'x' + 402
     }),
-
     Uyw: () => ({
         display: 'flex', 
         alignProperty: 'right',
@@ -46,7 +44,6 @@ const styles = {
         alignProperty: 'top',  
         background: 'black'
     }),
-
     ArrowD: () => ({
         display: 'flex', 
         alignProperty: 'right',
@@ -54,19 +51,16 @@ const styles = {
         borderColor: 'purple',
         background: 'black', 
     }),
-
     NavBar: () => ({
         display: 'flex',
         alignProperty: 'top',  
     }),
-
     FForms: () => ({  
         position: 'absolute',
         left: '0px',
         top: '0px',
         zIndex: -1
     }),
-
     NotesPage: () => ({
         boxSizing: 'inherit',
         alignItems: 'center', 
@@ -75,6 +69,7 @@ const styles = {
         top: '0px',
         backgroundColor: 'dark-purple'
     }),
+    // i need more on this
     NavBar: () => ({
         alignProperty: 'top',  
         alignItems: 'center',
@@ -83,5 +78,9 @@ const styles = {
         alignProperty: 'top',
         boxSizing: '15px',
         borderColor: '#7551A0'
+    }),
+    NotesTitle: () => ({
+        flexDirection: 'column',
+        justifyContent: 'center'
     })
 }

@@ -62,6 +62,26 @@ const getToolData = (props) => {
         ...item,
       };
     }
+    case TOOLS_ID.SYLLABUS_GENERATOR: {
+      const title = `Syllabus - ${item.response.course_information.course_title}`;
+      const description =
+        item.response.course_information.description ||
+        `Syllabus generated from ${item.response.course_information.course_title}`;
+      const output = item.response;
+      const backgroundImgURL =
+        'https://firebasestorage.googleapis.com/v0/b/kai-ai-f63c8.appspot.com/o/Quizify.png?alt=media&token=d1255f27-b1a1-444e-b96a-4a3ac559237d';
+      const logo =
+        'https://firebasestorage.googleapis.com/v0/b/kai-ai-f63c8.appspot.com/o/SyllabusLogo.png?alt=media&token=5ea7b96a-d0c9-444a-823f-4fd5721e7e14';
+
+      return {
+        title,
+        description,
+        backgroundImgURL,
+        logo,
+        output,
+        ...item,
+      };
+    }
     default:
       return {
         title: 'Default Title',

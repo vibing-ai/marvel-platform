@@ -6,6 +6,7 @@ import styles from './styles';
 
 import FlashCardsOutput from './toolRenderers/FlashCardsOutput';
 import QuizOutput from './toolRenderers/QuizOutput';
+import SyllabusOutput from './toolRenderers/SyllabusOutput';
 
 import { convertToUnixTimestamp } from '@/libs/utils/FirebaseUtils';
 import { copyToClipboard, exportToCSV } from '@/libs/utils/ToolHistoryUtils';
@@ -14,6 +15,7 @@ import { TOOLS_ID } from '@/tools/libs/constants/tools';
 const DRAWER_RENDERERS = {
   [TOOLS_ID.MULTIPLE_CHOICE_QUIZ_GENERATOR]: QuizOutput,
   [TOOLS_ID.FLASHCARDS_GENERATOR]: FlashCardsOutput,
+  [TOOLS_ID.SYLLABUS_GENERATOR]: SyllabusOutput,
 };
 
 const DEFAULT_DATA = {

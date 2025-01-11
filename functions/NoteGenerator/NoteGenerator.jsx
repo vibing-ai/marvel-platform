@@ -137,14 +137,9 @@ const LargeNote = (arr = []) => {
   )
 } 
 
-// need an svg for this one too
-const EditButton = () =>{
-  return ( 
-    <a><svg></svg> Edit Prompt</a> 
-  )
-}
-
 const dataAdd = () => { 
+
+
 }
  
 const Post = (data) =>
@@ -193,6 +188,24 @@ const Navbar = () => {
   )
 }
 
+// need an svg for this one too
+const EditButton = () => {
+  return ( 
+    <Grid {...styles.editButton}>
+       <Skeleton
+        variant='rectangular'
+        height={40}
+        width={150}
+        sx={{
+          borderRadius: '1px',
+          bgcolor: (theme) => theme.palette.common.cyan['5p'],
+        }}
+      />
+      <a><svg></svg> Edit Prompt</a>
+    </Grid> 
+  )
+}
+
 // style
 const Back = () => { 
   return (
@@ -203,7 +216,7 @@ const Back = () => {
         width={150}
         sx={{
           borderRadius: '1px',
-          bgcolor: (theme) => theme.palette.common.black['5p'],
+          bgcolor: (theme) => theme.palette.common.purple['5p'],
         }}
       />
       <button onSubmit={router.back()}/> 
@@ -278,7 +291,7 @@ const NotesGenTitle2 = () => {
 const NotesPage = () => { 
   return (
     <> 
-      <NotesGenTitle2/>
+      <NotesGenTitle2/> <EditButton/>
       <Container {...styles.NotesPage}>
         <Generate {...styles.generatedNotes}/> 
       </Container>

@@ -14,6 +14,17 @@ const styles = {
         laptop: 3,
         margin: 0,
     },
+    editButton : () =>
+    ({
+        boxSizing: 'borderBox',
+        alignProperty: 'top right',  
+        display: 'flex',
+        float: 'left',
+        lineHeight: 17.3333,
+        position: 'static',
+        zIndex :'auto',
+        padding: 202 + 'x' + 402
+    }),
     generatedNotes: (returnedNotes) => 
     ({ 
         padding: 39.0667 + 'x' + '17px',
@@ -30,7 +41,7 @@ const styles = {
     backButton: () => ({
         boxSizing: 'borderBox',
         alignProperty: 'top',  
-        display: 'block',
+        display: 'flex',
         float: 'left',
         lineHeight: 17.3333,
         position: 'static',

@@ -4,32 +4,14 @@ import GoogleLogo from "@/assets/svg/GoogleLogo";
 import { useTheme } from "@emotion/react";
 import styles from "./styles";
 
-export default function SubmitButtonsGoogleOrEmail({
-  submitText,
-  googleSubmitText,
-  handleGoogleSubmit,
-  signInLoading,
-}) {
+const SubmitButtonsGoogleOrEmail = (props) => {
+  const { submitText, googleSubmitText, handleGoogleSubmit, signInLoading } =
+    props;
   const theme = useTheme();
 
   return (
-    <Grid
-      container
-      sx={{
-        flex: 1,
-        gap: 1,
-        flexDirection: "column",
-        width: "100%",
-        alignItems: "center",
-      }}
-    >
-      <Grid
-        item
-        sx={{
-          flex: 1,
-          width: "100%",
-        }}
-      >
+    <Grid {...styles.submitButtonPropsContainer}>
+      <Grid {...styles.submitButtonPropsItem}>
         <GradientOutlinedButton
           bgcolor={theme.palette.Dark_Colors.Dark[1]}
           text={submitText}
@@ -38,42 +20,14 @@ export default function SubmitButtonsGoogleOrEmail({
           {...styles.submitButtonProps}
         />
       </Grid>
-      <Grid item sx={{ width: "50%" }}>
-        <Box
-          component="fieldset"
-          sx={{
-            flex: 1,
-            textAlign: "center",
-            borderBottom: 0,
-            borderLeft: 0,
-            borderRight: 0,
-            borderTopWidth: 2.75,
-            borderTopRightRadius: 1,
-            borderTopLeftRadius: 1,
-            borderTopColor: "#837d8393",
-          }}
-        >
-          <legend
-            style={{
-              paddingLeft: 6,
-              paddingRight: 6,
-            }}
-          >
-            <Typography
-              sx={{ fontWeight: 700, fontSize: 20, textAlign: "center" }}
-            >
-              Or
-            </Typography>
+      <Grid {...styles.legendTypographyContainer}>
+        <Box {...styles.legendTypographyBox}>
+          <legend {...styles.legendStyle}>
+            <Typography {...styles.typography}>Or</Typography>
           </legend>
         </Box>
       </Grid>
-      <Grid
-        item
-        sx={{
-          flex: 1,
-          width: "100%",
-        }}
-      >
+      <Grid {...styles.submitButtonPropsItem}>
         <GradientOutlinedButton
           icon={<GoogleLogo width="35px" height="50px" />}
           iconPlacement="left"
@@ -88,4 +42,5 @@ export default function SubmitButtonsGoogleOrEmail({
       </Grid>
     </Grid>
   );
-}
+};
+export default SubmitButtonsGoogleOrEmail;

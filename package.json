@@ -9,7 +9,7 @@
     "start": "next start",
     "export": "next export",
     "build": "npm i && next build",
-    "emulators": "firebase emulators:start --project kai-platform-sandbox",
+    "emulators": "firebase emulators:start --project auth-d199e",
     "lint": "eslint --cache --ext .jsx --ext .js .",
     "lint:fix": "eslint --ext .jsx --ext .js ./ --fix",
     "deploy": "npm run build && npm run export && firebase deploy",

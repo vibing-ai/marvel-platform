@@ -30,7 +30,7 @@ const signUp = async (email, password, fullName) => {
 const signUpGoogle = async () => {
   try {
     const createUser = httpsCallable(functions, "signUpUser");
-    const { user } = signInWithPopup(auth, googleAuthProvider);
+    const { user } = await signInWithPopup(auth, googleAuthProvider);
 
     await createUser({
       email: user.email,

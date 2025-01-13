@@ -30,15 +30,15 @@ const signUp = async (email, password, fullName) => {
 const signUpGoogle = async () => {
   try {
     const createUser = httpsCallable(functions, "signUpUser");
-    const { user } = await signInWithPopup(auth, googleAuthProvider);
+    const data = await signInWithPopup(auth, googleAuthProvider);
 
     await createUser({
-      email: user.email,
-      fullName: user.displayName,
-      uid: user.uid,
+      email: data.user.email,
+      fullName: data.user.displayName,
+      uid: data.user.uid,
     });
 
-    return user;
+    return data;
   } catch (error) {
     throw new Error(AUTH_ERROR_MESSAGES[error?.code]);
   }

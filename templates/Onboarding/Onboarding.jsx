@@ -1,21 +1,21 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { useRouter } from 'next/router';
-import { useDispatch, useSelector } from 'react-redux';
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
 
-import Complete from './Complete';
-import FinalSteps from './FinalSteps';
-import ProfileSetupForm from './ProfileSetupForm';
-import Welcome from './Welcome';
+import Complete from "./Complete";
+import FinalSteps from "./FinalSteps";
+import ProfileSetupForm from "./ProfileSetupForm";
+import Welcome from "./Welcome";
 
 import {
   setCompleted,
   setStep,
   setTempData,
-} from '@/libs/redux/slices/onboardingSlice';
-import { firestore } from '@/libs/redux/store';
-import { updateUserData } from '@/libs/redux/thunks/user';
+} from "@/libs/redux/slices/onboardingSlice";
+import { firestore } from "@/libs/redux/store";
+import { updateUserData } from "@/libs/redux/thunks/user";
 
 const onboardingComponents = {
   0: Welcome,
@@ -53,7 +53,7 @@ const OnboardingPage = ({ onboardingData }) => {
       if (file) {
         // Ensure the user is authenticated
         if (!user || !user.id) {
-          throw new Error('User not authenticated');
+          throw new Error("User not authenticated");
         }
 
         // Use a user-specific path for storage

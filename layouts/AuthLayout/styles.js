@@ -1,10 +1,10 @@
 const styles = {
   mainGridProps: {
     container: true,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     mobileSmall: 12,
-    height: '100vh',
+    height: "100vh",
     px: { laptop: 6, desktop: 8, desktopMedium: 18 },
     py: { laptop: 3, desktop: 5, desktopMedium: 12 },
     sx: (theme) => ({
@@ -12,62 +12,62 @@ const styles = {
     }),
   },
   imageProps: {
-    layout: 'fill',
-    objectFit: 'cover',
+    layout: "fill",
+    objectFit: "cover",
     priority: true,
     style: { zIndex: 0 },
   },
   marvelImageProps: {
-    layout: 'fill',
-    objectFit: 'cover',
+    layout: "fill",
+    objectFit: "cover",
     priority: true,
   },
   blobImageProps: {
-    layout: 'fill',
-    objectFit: 'cover',
+    layout: "fill",
+    objectFit: "cover",
     priority: true,
-    alt: 'green_blob',
+    alt: "green_blob",
     style: { zIndex: 0 },
   },
   mainCardProps: {
     raised: true,
     sx: (theme) => ({
-      position: 'relative',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
+      position: "relative",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
       bgcolor: theme.palette.Dark_Colors.Dark[1],
-      backgroundImage: 'none',
-      borderRadius: '20px',
-      width: '100%',
-      minHeight: { laptop: 600, desktop: 580, desktopMedium: 680 },
-      height: '100%',
+      backgroundImage: "none",
+      borderRadius: "20px",
+      width: "100%",
+      minHeight: { laptop: 760, desktop: 780, desktopMedium: 900 },
+      height: "100%",
       zIndex: 1,
     }),
   },
   innerCardGridProps: {
-    position: 'relative',
+    position: "relative",
     container: true,
     item: true,
     mobileSmall: 7,
-    height: '100%',
+    height: "100%",
     sx: {
       input: (theme) => ({
-        '&:-internal-autofill-selected': {
-          backgroundColor: 'rgb(255, 255, 255) !important',
-          backgroundImage: 'none !important',
+        "&:-internal-autofill-selected": {
+          backgroundColor: "rgb(255, 255, 255) !important",
+          backgroundImage: "none !important",
         },
-        '&:-webkit-autofill': {
-          WebkitBoxShadow: 'none',
-          WebkitTextFillColor: theme.palette.Common.Black['100p'],
-          transition: 'background-color 5000s ease-in-out 0s',
+        "&:-webkit-autofill": {
+          WebkitBoxShadow: "none",
+          WebkitTextFillColor: theme.palette.Common.Black["100p"],
+          transition: "background-color 5000s ease-in-out 0s",
         },
       }),
     },
   },
   starProps: {
     sx: (theme) => ({
-      position: 'absolute',
+      position: "absolute",
       left: {
         laptop: theme.spacing(12),
         desktop: theme.spacing(10),
@@ -87,7 +87,7 @@ const styles = {
   },
   star2Props: {
     sx: (theme) => ({
-      position: 'absolute',
+      position: "absolute",
       right: theme.spacing(14),
       top: theme.spacing(25),
       width: {
@@ -99,7 +99,7 @@ const styles = {
   },
   marvelProps: {
     sx: (theme) => ({
-      position: 'absolute',
+      position: "absolute",
       zIndex: 2,
       left: 0,
       width: { laptop: 320, desktop: 360, desktopMedium: 420 },
@@ -109,7 +109,7 @@ const styles = {
   },
   greenBlobProps: {
     sx: {
-      position: 'absolute',
+      position: "absolute",
       zIndex: 2,
       right: { laptop: 28, desktop: 44, desktopMedium: 80 },
       top: 0,

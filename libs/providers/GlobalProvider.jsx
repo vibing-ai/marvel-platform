@@ -1,15 +1,15 @@
-import { createContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useEffect, useMemo, useState } from "react";
 
-import { onAuthStateChanged } from 'firebase/auth';
-import { Provider, useDispatch } from 'react-redux';
+import { onAuthStateChanged } from "firebase/auth";
+import { Provider, useDispatch } from "react-redux";
 
-import SnackBar from '@/components/SnackBar';
+import SnackBar from "@/components/SnackBar";
 
-import useRedirect from '@/libs/hooks/useRedirect';
+import useRedirect from "@/libs/hooks/useRedirect";
 
-import { setLoading, setUser } from '@/libs/redux/slices/authSlice';
-import { setUserData } from '@/libs/redux/slices/userSlice';
-import store, { auth, firestore, functions } from '@/libs/redux/store';
+import { setLoading, setUser } from "@/libs/redux/slices/authSlice";
+import { setUserData } from "@/libs/redux/slices/userSlice";
+import store, { auth, firestore, functions } from "@/libs/redux/store";
 
 const AuthContext = createContext();
 
@@ -24,8 +24,8 @@ const AuthProvider = (props) => {
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
-  const [severity, setSeverity] = useState('success');
-  const [message, setMessage] = useState('Default Message');
+  const [severity, setSeverity] = useState("success");
+  const [message, setMessage] = useState("Default Message");
 
   const handleOpenSnackBar = (newSeverity, newMessage) => {
     setSeverity(newSeverity);
@@ -40,7 +40,7 @@ const AuthProvider = (props) => {
   }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return null;
+    if (typeof window === "undefined") return null;
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {

@@ -1,29 +1,38 @@
-import { useContext, useState } from 'react';
+import { useContext, useState } from "react";
 
-import { Grid, useTheme } from '@mui/material';
-import { FormContainer } from 'react-hook-form-mui';
+import { Grid } from "@mui/material";
+import { FormContainer } from "react-hook-form-mui";
 
-import AuthTextField from '@/components/AuthTextField';
+import AuthTextField from "@/components/AuthTextField";
 
-import GradientOutlinedButton from '@/components/GradientOutlinedButton';
+import sharedStyles from "@/styles/shared/sharedStyles";
 
-import styles from './styles';
-
-import sharedStyles from '@/styles/shared/sharedStyles';
-
-import { AUTH_STEPS, VALIDATION_STATES } from '@/libs/constants/auth';
-import ALERT_COLORS from '@/libs/constants/notification';
-import useWatchFields from '@/libs/hooks/useWatchFields';
-import { AuthContext } from '@/libs/providers/GlobalProvider';
-import AUTH_REGEX from '@/libs/regex/auth';
-import { signUp } from '@/libs/services/user/signUp';
-import { validatePassword } from '@/libs/utils/AuthUtils';
+import {
+  AUTH_ERROR_MESSAGES,
+  AUTH_STEPS,
+  VALIDATION_STATES,
+} from "@/libs/constants/auth";
+import ALERT_COLORS from "@/libs/constants/notification";
+import useWatchFields from "@/libs/hooks/useWatchFields";
+import { AuthContext } from "@/libs/providers/GlobalProvider";
+import AUTH_REGEX from "@/libs/regex/auth";
+import { signUp, signUpGoogle } from "@/libs/services/user/signUp";
+import { validatePassword } from "@/libs/utils/AuthUtils";
+import SubmitButtonsGoogleOrEmail from "@/components/SubmitButtonsGoogleOrEmail/SubmitButtonsGoogleOrEmail";
+import { signOut } from "firebase/auth";
+import { auth, firestore } from "@/libs/firebase/firebaseSetup";
+import { useDispatch } from "react-redux";
+import fetchUserData from "@/libs/redux/thunks/user";
+import { useRouter } from "next/router";
+import ROUTES from "@/libs/constants/routes";
+import ReCaptcha from "@/components/ReCaptcha/ReCaptcha";
+import { CAPTCHA_ERR } from "@/libs/constants/captcha";
 
 const DEFAULT_FORM_VALUES = {
-  email: '',
-  fullName: '',
-  password: '',
-  reEnterPassword: '',
+  email: "",
+  fullName: "",
+  password: "",
+  reEnterPassword: "",
 };
 
 const DEFAULT_ERR_STATE = {
@@ -35,19 +44,19 @@ const DEFAULT_ERR_STATE = {
 
 const WATCH_FIELDS = [
   {
-    fieldName: 'password',
+    fieldName: "password",
     regexPattern: AUTH_REGEX.password.regex,
   },
   {
-    fieldName: 'reEnterPassword',
+    fieldName: "reEnterPassword",
     regexPattern: AUTH_REGEX.password.regex,
   },
   {
-    fieldName: 'email',
+    fieldName: "email",
     regexPattern: AUTH_REGEX.email.regex,
   },
   {
-    fieldName: 'fullName',
+    fieldName: "fullName",
     regexPattern: AUTH_REGEX.fullName.regex,
   },
 ];
@@ -62,12 +71,13 @@ const WATCH_FIELDS = [
  * @return {JSX.Element} Returns Sign-Up Form.
  */
 const SignUpForm = (props) => {
+  const dispatch = useDispatch();
+  const router = useRouter();
   const { step, setStep, setEmail, handleSwitch } = props;
-
-  const theme = useTheme();
 
   const [error, setError] = useState(DEFAULT_ERR_STATE);
   const [loading, setLoading] = useState(false);
+  const [capVal, setCapVal] = useState("");
 
   const { handleOpenSnackBar } = useContext(AuthContext);
 
@@ -81,19 +91,34 @@ const SignUpForm = (props) => {
       return VALIDATION_STATES.SUCCESS;
     }
 
-    if (password.value === '') return VALIDATION_STATES.DEFAULT;
+    if (password.value === "") return VALIDATION_STATES.DEFAULT;
 
     return VALIDATION_STATES.ERROR;
   };
 
   const submitButtonText = () => {
     if (step === AUTH_STEPS.EMAIL) {
-      return 'Continue';
+      return "Continue";
     }
-    return 'Sign Up';
+    return "Sign Up";
+  };
+
+  const capValEmpty = capVal === "";
+  const capValExpired = capVal === "expired";
+  const handleCapVal = (val) => {
+    setCapVal(val);
   };
 
   const handleSubmit = async () => {
+    if (capValEmpty) {
+      handleOpenSnackBar(ALERT_COLORS.ERROR, CAPTCHA_ERR.EMPTY);
+      return;
+    }
+    if (capValExpired) {
+      handleOpenSnackBar(ALERT_COLORS.ERROR, CAPTCHA_ERR.EXPIRED);
+      return;
+    }
+
     const isEmailStep = step === AUTH_STEPS.EMAIL;
 
     setError(DEFAULT_ERR_STATE);
@@ -107,8 +132,8 @@ const SignUpForm = (props) => {
       if (!fullName.valid && !email.valid) {
         setError({
           ...error,
-          fullName: { message: 'Full name is required' },
-          email: { message: 'Email address is required' },
+          fullName: { message: "Full name is required" },
+          email: { message: "Email address is required" },
         });
         return;
       }
@@ -116,7 +141,7 @@ const SignUpForm = (props) => {
       if (!fullName.valid) {
         setError({
           ...error,
-          fullName: { message: 'Full name is required' },
+          fullName: { message: "Full name is required" },
         });
         return;
       }
@@ -124,7 +149,7 @@ const SignUpForm = (props) => {
       if (!email.valid) {
         setError({
           ...error,
-          email: { message: 'Email address is required' },
+          email: { message: "Email address is required" },
         });
         return;
       }
@@ -142,7 +167,7 @@ const SignUpForm = (props) => {
         await signUp(email.value, password.value, fullName.value);
         handleOpenSnackBar(
           ALERT_COLORS.SUCCESS,
-          'Account created successfully'
+          "Account created successfully"
         );
 
         setEmail(email.value);
@@ -152,6 +177,54 @@ const SignUpForm = (props) => {
       } finally {
         setLoading(false);
       }
+    }
+  };
+
+  const handleGoogleSubmit = async () => {
+    if (capValEmpty) {
+      handleOpenSnackBar(ALERT_COLORS.ERROR, CAPTCHA_ERR.EMPTY);
+      return;
+    }
+    if (capValExpired) {
+      handleOpenSnackBar(ALERT_COLORS.ERROR, CAPTCHA_ERR.EXPIRED);
+      return;
+    }
+    setLoading(true);
+    try {
+      const data = await signUpGoogle();
+      console.log(data);
+
+      if (data) {
+        handleOpenSnackBar(ALERT_COLORS.SUCCESS, "Sign up successful");
+      }
+
+      const userData = await dispatch(
+        fetchUserData({ firestore, id: data.user.uid })
+      ).unwrap();
+
+      console.log(userData);
+      if (userData?.needsBoarding) {
+        router.replace(ROUTES.ONBOARDING);
+      } else {
+        router.replace(ROUTES.HOME);
+      }
+      // if (!userData) {
+      //   signOut(auth);
+      //   router.replace(ROUTES.SIGNUP);
+      //   throw new Error(
+      //     AUTH_ERROR_MESSAGES[AUTH_ERR_CODES.EMAIL_ALREADY_IN_USE]
+      //   );
+      // }
+    } catch (error) {
+      console.error(error);
+
+      setLoading(false);
+      signOut(auth);
+      router.replace(ROUTES.SIGNUP);
+      handleOpenSnackBar(
+        ALERT_COLORS.ERROR,
+        "There was an error signing you up. Please try again later."
+      );
     }
   };
 
@@ -235,7 +308,7 @@ const SignUpForm = (props) => {
           error={!!error.reEnterPassword}
           helperText={
             !passwordMatch && !!password.value
-              ? 'Password does not match'
+              ? "Password does not match"
               : error.reEnterPassword?.message
           }
           state={setReEnterPasswordStatus()}
@@ -250,13 +323,11 @@ const SignUpForm = (props) => {
 
   const renderSubmitButton = () => {
     return (
-      <GradientOutlinedButton
-        bgcolor={theme.palette.Dark_Colors.Dark[1]}
-        loading={step === AUTH_STEPS.PASSWORD && loading}
-        textColor={theme.palette.Common.White['100p']}
-        clickHandler={handleSubmit}
-        text={submitButtonText()}
-        {...styles.submitButtonProps}
+      <SubmitButtonsGoogleOrEmail
+        submitText={submitButtonText()}
+        googleSubmitText="Sign Up"
+        handleGoogleSubmit={handleGoogleSubmit}
+        signInLoading={loading}
       />
     );
   };
@@ -268,6 +339,7 @@ const SignUpForm = (props) => {
         {renderFullNameInput()}
         {renderPasswordAndConfirmPasswordInputs()}
         {renderSubmitButton()}
+        <ReCaptcha handleCapVal={handleCapVal} />
       </Grid>
     </FormContainer>
   );

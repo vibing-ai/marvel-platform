@@ -1,97 +1,53 @@
 // get the imports
 
-import { ArrowDropDown, AutoAwesome, Grid4x4, Grid4x4Sharp } from '@mui/icons-material';
-import { Backdrop, Card, Chip, Container, Grid, Skeleton, Typography } from '@mui/material';
+import { ArrowDropDown, Grid4x4Sharp } from '@mui/icons-material';
+import { Backdrop, Container, Grid, Skeleton } from '@mui/material';
 import { useRouter } from 'next/router'; 
 
 import styles from './styles';
 
 import axios from 'axios';
-import { json, request, response } from 'express'; 
-import ROUTES from '@/libs/constants/routes';
+import { response } from 'express'; 
 import { Link } from 'next/link';
-import { post } from 'request';
-import path from 'path';
-import style from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
+import Options from '@/templates/Chat/Options';
+import { useEffect, useState } from 'react'; 
 
+// imports from consts
+const {upload} = require('/home/zero/Documents/marvel-platform/marvel-platform/assets/svg/upload.svg');
+const {website} = require('/home/zero/Documents/marvel-platform/marvel-platform/assets/svg/website.svg');
+const {youtube} = require('/home/zero/Documents/marvel-platform/marvel-platform/assets/svg/youtube.svg');
 const KAIAvatar = require('/home/zero/Documents/marvel-platform/marvel-platform/assets/svg/KAIAvatar.svg');
-
+const {pencil} = require('/home/zero/Documents/marvel-platform/marvel-platform/assets/svg/Pencil.svg');
+const {logout} = require('/home/zero/Documents/marvel-platform/marvel-platform/assets/svg/LogoutIcon.svg');
+const { default: pdf } = require('pdf-parse');
+var docxParser = require('docx-parser'); 
 // consts 
 
 const fs = require('fs');
 const pdf = require('pdf-parse');
+const loggedIn = false; // default logged in status
 
-
-// we gotta style this stuff
-// STYLE CHECKLIST
+// TODO:
 /*
-  LargeNote done (generatedNotes)
-  Generate N/A (large note is what comes outta this)
-  Navbar done
-  FForms done
-  Uyw done 
-  ArrowD done
-  NotesPage done
-  backButton done
-  NoteGen < backgroundstufff done
-*/
- 
+maybe fix the styles
+maybe fix the routes
+  */
 
-// needed functions
+const router = useRouter(); 
 
-// read the file with FileReader, done 
-// unzip it somehow done 
-// parse it with DOMParser
-// maybe transform it with XSLT
-// translate the file data into note format
+let accountName = ''; // default account name
 
-// render component list
+useEffect(() => {
+  fetch('/signon/user/logonStatus').then(res = response.json()).then((res != false) ? (accountName = res, loggedIn == true) : (loggedIn = false)); // default account name
+}, []);
 
-/**
- * file types Uploadable: CSV, PDF, DOCX, 
- * PPT, Plain Text
-URLs: YouTube Video, Website, Google Sheets
-
- * navbar (home, discovery, chat) //
- * backbar //
- * page layout 
- * text or file upload
- * generate button
- * teaching assist
- * logout button
- * account name
- * config options 
- * (file config, generation layout,
- *  notesOutput page)
- */ 
- 
-// I need help with:
-
-//  the routes: 
-// TOOLS, ASSISTS, HISTORY
-
-// making the figma css? or find the tools?
-// where are all the styles?  
- 
-// fix the aesthetics // not quite
-// fix the routing // omw
-// fix the links?  // Use Link from the library in Next.js
-// add the parsing // omw
-// add the data from parsing  // ok
-
-// somehow make a function that puts 
-//  all the requested data 
-//  into a buttnugget 
-
-// and allows for it to 
-// be used as inputable info? // not sure yet
-// ask about the data
-
-
-const router = useRouter();
-
-let gen = '';
 let renderUyw = false;
+
+let layout = 'portrait'; // default layout
+
+let gen = []; // this is the buttnugget
+
+let [values, savedGen] = useState(gen); // this is data pulled from the form
 
 const PdfParserN = (pathFromBrowse) => {
   let dataBuffer = fs.readFileSync(pathFromBrowse);
@@ -115,56 +71,179 @@ const PdfParserN = (pathFromBrowse) => {
   return eduPdf;
 }
 
-// for parsing the files WIP
+// default this delimiter to comma if there is no value
+function CSVToArray( strData, strDelimiter ){
+  // Check to see if the delimiter is defined. If not,
+  // then default to comma.
+  strDelimiter = (strDelimiter || ",");
+
+  // Create a regular expression to parse the CSV values.
+  var objPattern = new RegExp(
+      (
+          // Delimiters.
+          "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+
+          // Quoted fields.
+          "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+
+          // Standard fields.
+          "([^\"\\" + strDelimiter + "\\r\\n]*))"
+      ),
+      "gi"
+      );
+
+
+  // Create an array to hold our data. Give the array
+  // a default empty first row.
+  var arrData = [[]];
+
+  // Create an array to hold our individual pattern
+  // matching groups.
+  var arrMatches = null;
+
+
+  // Keep looping over the regular expression matches
+  // until we can no longer find a match.
+  while (arrMatches = objPattern.exec( strData )){
+
+      // Get the delimiter that was found.
+      var strMatchedDelimiter = arrMatches[ 1 ];
+
+      // Check to see if the given delimiter has a length
+      // (is not the start of string) and if it matches
+      // field delimiter. If id does not, then we know
+      // that this delimiter is a row delimiter.
+      if (
+          strMatchedDelimiter.length &&
+          strMatchedDelimiter !== strDelimiter
+          ){
+
+          // Since we have reached a new row of data,
+          // add an empty row to our data array.
+          arrData.push( [] );
+
+      }
+
+      var strMatchedValue;
+
+      // Now that we have our delimiter out of the way,
+      // let's check to see which kind of value we
+      // captured (quoted or unquoted).
+      if (arrMatches[ 2 ]){
+
+          // We found a quoted value. When we capture
+          // this value, unescape any double quotes.
+          strMatchedValue = arrMatches[ 2 ].replace(
+              new RegExp( "\"\"", "g" ),
+              "\""
+              );
+
+      } else {
+
+          // We found a non-quoted value.
+          strMatchedValue = arrMatches[ 3 ];
+
+      }
+
+
+      // Now that we have our value string, let's add
+      // it to the data array.
+      arrData[ arrData.length - 1 ].push( strMatchedValue );
+  }
+
+  // Return the parsed data.
+  return( arrData );
+}
+
+const DocxParserN = (pathFromBrowse) => {
+  // read the file
+    let dataBuffered;
+    docxParser.parseDocx(pathFromBrowse, function(data){
+      dataBuffered = data;
+    });
+  return dataBuffered;
+}
+
+const PptParserN = (pathFromBrowse) => {
+  let pptData = fs.readFileSync(pathFromBrowse);
+  return pptData;
+}
+
+const Account = () => {
+  return (
+    <Grid {...styles.Account}>
+      <Skeleton 
+      fontSize={20}
+        sx={{
+          borderRadius: '1px',
+          bgcolor: (theme) => theme.palette.common.purple['5p'],
+        }}
+      />
+      {(accountName != null) ? <a>{accountName}'s Account</a> : <a>Not Logged In</a>}
+    </Grid>
+  )
+}
+
+// for parsing the files
 function PrintFile(file) {
   const reader = new FileReader();
   reader.onload = (evt) => {
     console.log(evt.target.result);
   };
-  reader.readAsText(file);
+  let fileData = reader.readAsText(file);
+  return fileData;
 } 
  
-const LargeNote = (arr = []) => {
+const Generate = (arr = []) => {
   return (
-    <>
+    <div {...(layout == "portrait") ? {...styles.Portrait} : {...styles.LandScape}}> 
       {
-        arr.forEach((e) => {
-          e.title,
-          e.bulletPoint
-        })
+          arr.map((note) => {
+            return (
+              <p>
+                {note}
+              </p>
+            )
+          }
+        )
       }
-    </>
+    </div>
   )
 } 
-
-const dataAdd = () => { 
-
-
+ 
+const dataAdd = (dataIn, type) => { 
+  switch (type) {
+    case 'pdf':
+      return gen.push(PdfParserN(dataIn)); 
+    case 'csv':
+      // csv parser
+      return gen.push(CSVToArray(dataIn , ',')); 
+    case 'docx':
+      // docx parser
+      return gen.push(DocxParserN(dataIn)); 
+    case 'ppt':
+      // ppt parser
+      return gen.push(PptParserN(dataIn)); 
+    case 'txt':
+      // txt parser
+      return gen.push(PrintFile(dataIn)); 
+    case 'url':
+      // url parser
+      return gen.push(dataIn); 
+    default:
+      return gen.push(PrintFile(dataIn)); 
+  }  
 }
  
 const Post = (data) =>
 { 
   let res; 
   // the routes are ?
-  axios.post('/chat', data).then(res = response.json()).then(Generate); 
+  axios.post('/chat', data).then(res = response.json()).then(Generate(res)); 
   res = response.data.notes; // notes or responce?
   return res;
 } 
-
-// style
-const Generate = (prompt) => {
-   // call the generation from a route
-  gen = Post(prompt) // this is what is then returned
-  return (
-    <p>
-      {
-        gen
-      }
-    </p>
-  )
-}
-
-// style
+ 
 const AiIcon = () => {
   return (
     <Grid {...styles.AiIcon}>
@@ -172,23 +251,21 @@ const AiIcon = () => {
     </Grid>
   )
 }
-
-// still working on this then style
+ 
 const Navbar = () => {
   return(
     // the style to use the background bar seen in figma
     // goes here 
     <nav>
       <span>
-        <svg><Link href='/submit-tool'/></svg>
+        <svg><Link href='/tools'/></svg>
         <svg><Link href='/assistant-chat'/></svg>
         <svg><Link href='/history'/></svg>
       </span>
     </nav> 
   )
 }
-
-// need an svg for this one too
+ 
 const EditButton = () => {
   return ( 
     <Grid {...styles.editButton}>
@@ -201,12 +278,28 @@ const EditButton = () => {
           bgcolor: (theme) => theme.palette.common.cyan['5p'],
         }}
       />
-      <a><svg></svg> Edit Prompt</a>
+      <a><svg href={pencil}></svg> Edit Prompt</a>
     </Grid> 
   )
 }
 
-// style
+const GenerateButton = () => {
+  return (
+    <Grid {...styles.generateButton}>
+       <Skeleton
+        variant='rectangular'
+        height={40}
+        width={150}
+        sx={{
+          borderRadius: '1px',
+          bgcolor: (theme) => theme.palette.common.purple['5p'],
+        }}
+      />
+      <a><svg href={pencil} onClick={Post(gen)}></svg> Generate Notes</a>
+    </Grid>  
+  )
+}
+ 
 const Back = () => { 
   return (
     <Grid {...styles.backButton}>
@@ -227,40 +320,60 @@ const Back = () => {
 const ArrowD = () =>{
   // stylize 
   return ( 
-      <ArrowDropDown>
-        <ul class="dropdown-menu">
-          <li><a href="#">Portrait</a></li>
-          <li><a href="#">Landscape</a></li> 
-        </ul>
+      <ArrowDropDown> 
+        <Options {...styles.ArrowD}>
+          <select class="dropdown-menu">
+            <option><a href="#" onClick={layout = 'portrait'}>Portrait</a></option>
+            <option><a href="#" onClick={layout = 'landscape'}>Landscape</a></option> 
+          </select>
+        </Options>
       </ArrowDropDown> 
     )
 }
- 
-// style
+
+const LogoutButton = () => {
+  return (
+    <Grid {...styles.logoutButton}>
+      <Skeleton
+        variant='rectangular'
+        height={40}
+        width={150}
+        sx={{
+          borderRadius: '1px',
+          bgcolor: (theme) => theme.palette.common.red['5p'],
+        }}
+      />
+      <a><svg href={logout}></svg> Logout</a>
+    </Grid>
+  )
+}
+  
 const FForms = () => {
   return (
     <>
+    <LogoutButton><button onClick={Link('/logout')}></button></LogoutButton>
+    <Account/>
       {(gen != '') ? <NotesPage/> : 
       <Container {...styles.FForms}>
           Notes Generator
-          <form action='submit'> 
+          <form action='/chat' method={'POST'}> 
             <h3>Extract concise, structured, summarized notes from various types of inputs!</h3>
             <label style={'italics = true'}>Topic:
-              <input type="text" defaultValue={'Enter Topic'}/>
+              <input type="text" defaultValue={'Enter Topic'} value={values[0]} onChange={(e) => savedGen[0] = dataAdd((e.target.value))}/>
             </label>
             Page Layout:  
             <label>  
-              <input defaultValue={'Choose Page Layout'}/> <ArrowD {...styles.ArrowD}/>
+              <input value={values[1]} onChange={(e) => savedGen[1] = dataAdd((e.target.value))} defaultValue={'Choose Page Layout'}/> <ArrowD {...styles.ArrowD}/>
             </label>
             <label>
               Text or File Upload: 
-              {(renderUyw != false)?<Uyw {...styles.Uyw}/>: null}
-              <input type="text" style={'italics = true'} defaultValue={'Enter Text or Choose Files to Upload'}> 
-                {/* find where to parse and send upload data  */}
+              {(renderUyw != false)? null : <Uyw {...styles.Uyw}/>}
+              <input type="text" value={values[2]} onChange={(e) => savedGen[2] = dataAdd((e.target.value))} style={'italics = true'} defaultValue={'Enter Text or Choose Files to Upload'}>
               </input>
-              {/* upload icon thing upload*/} 
                 <a id={'fileup'} onClick={renderUyw = true}/>
             </label> 
+            {(values[0] == null || values[1] == null || values[2] == null) ?
+             <h3>Fill all blanks in please.</h3> : <GenerateButton {...styles.ButtonsStyu}/>}
           </form>
         </Container>
       }
@@ -268,18 +381,20 @@ const FForms = () => {
   )
 }
 
-// Upload, YouTube Video, Website style this thing too
 const Uyw = () => {
-  return ( 
-    <ul>
-      <li><svg><input type='file'/></svg>Upload</li>
-      <li><svg><input type='url'/></svg>YouTube</li> 
-      <li><svg><input type='url'/></svg>Website</li> 
-    </ul> 
-  )
-} 
+  let x = false;
+  let y = false;
+  let z = false; 
 
-// above the notes page is a notes generator title container
+  return ( 
+    <Options {...styles.Uyw}>
+      <option>{(x == true)? <input type='file'/> : <a onClick={x == true}><svg href={upload}></svg> Upload</a>}</option>
+      <option>{(y == true)? <input type='url'/> : <a onClick={y == true}><svg href={website}></svg> Website</a>}</option>
+      <option>{(z == true)? <input type='url'/> : <a onClick={z == true}><svg href={youtube}></svg> Youtube</a>}</option>
+    </Options> 
+  )
+}
+
 const NotesGenTitle2 = () => { 
   return (
     <Container {...styles.NotesTitle}>
@@ -298,8 +413,7 @@ const NotesPage = () => {
     </> 
   )
 }
-
-// dont touch
+ 
 const NoteGen = () => {  
     return (
       <Backdrop>

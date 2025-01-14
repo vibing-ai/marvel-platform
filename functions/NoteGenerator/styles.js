@@ -1,7 +1,4 @@
-import NavBar from '@/layouts/MainAppLayout/NavBar';
-import { getRandomBackgroundColor } from '@/libs/utils/MiscellaneousUtils';
-import { alignProperty } from '@mui/material/styles/cssUtils';
-import zIndex from '@mui/material/styles/zIndex'; 
+const { Landscape, Portrait } = require("@mui/icons-material");
 
 const styles = {
     mainNotesGeneratorLayout: {
@@ -23,7 +20,27 @@ const styles = {
         lineHeight: 17.3333,
         position: 'static',
         zIndex :'auto',
-        padding: 202 + 'x' + 402
+        padding: 202 + 'x' + 402 + 'px'
+    }),
+    generateButton : () =>
+    ({
+        boxSizing: 'borderBox',
+        alignProperty: 'bottom right',  
+        display: 'flex',
+        float: 'left',
+        lineHeight: 17.3333,
+        position: 'static',
+        zIndex :'auto' 
+    }),
+    logoutButton : () =>
+    ({
+        boxSizing: 'borderBox',
+        alignProperty: 'top right',  
+        display: 'flex',
+        float: 'left',
+        lineHeight: 17.3333,
+        position: 'static',
+        zIndex :'auto' 
     }),
     generatedNotes: (returnedNotes) => 
     ({ 
@@ -46,7 +63,7 @@ const styles = {
         lineHeight: 17.3333,
         position: 'static',
         zIndex :'auto',
-        padding: 202 + 'x' + 402
+        padding: 202 + 'x' + 402 + 'px'
     }),
     Uyw: () => ({
         display: 'flex', 
@@ -93,5 +110,23 @@ const styles = {
     NotesTitle: () => ({
         flexDirection: 'column',
         justifyContent: 'center'
-    })
+    }),
+    LandScape: () => ({
+        display: 'flex', 
+        alignProperty: 'right',
+        borderColor: 'purple',
+        alignProperty: 'top',  
+        background: 'black'
+    }),
+    Portrait: () => ({
+        display: 'flex', 
+        alignProperty: 'right',
+        border: '1px', 
+        borderColor: 'purple',
+        background: 'black', 
+    }),
+    Account: () => ({
+        display: 'flex',
+        alignProperty: 'top',  
+    }),
 }

@@ -47,7 +47,6 @@ export const {
   reset,
   setStep,
   setCompleted,
-  tempData,
   setTempData,
   clearTempData,
   setSystemConfig,

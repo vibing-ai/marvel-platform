@@ -28,7 +28,7 @@ Marvel AI is an open-source project by Reality AI, designed to provide smart too
 - [License](#license)
 
 ## Architecture
-The "Marvel" platform is structured into two main components: Firebase and AI. The Firebase side, detailed in this repository, encompasses both the frontend, developed with NextJS and hosted on Firebase Hosting, and the backend, which includes user management and session handling via Firebase Functions like `signUpUser` and `createChatSession`. The `communicator` function acts as a proxy for chat interactions between the Firebase infrastructure and the AI services. Tool requests (like "Quizify" and "YouTube Flashcard Generator") are sent directly from the frontend to the AI endpoints. Firestore DB is utilized for data storage. The AI endpoints are housed in a separate repository, including a chatbot and tools like "Quizify" and "Flashcard Generator." 
+The "Marvel" platform is structured into two main components: Firebase and AI. The Firebase side, detailed in this repository, encompasses both the frontend, developed with NextJS and hosted on Firebase Hosting, and the backend, which includes user management and session handling via Firebase Functions like `signUpUser` and `createChatSession`. The `communicator` function acts as a proxy for chat interactions between the Firebase infrastructure and the AI services. Tool requests (like "Quizify" and "YouTube Flashcard Generator") are sent directly from the frontend to the AI endpoints. Firestore DB is utilized for data storage. The AI endpoints are housed in a separate repository, including a chatbot and tools like "Quizify" and "Flashcard Generator."
 
 
 ### Folder Structure
@@ -62,15 +62,22 @@ The "Marvel" platform is structured into two main components: Firebase and AI. T
 To set up the project, follow these steps:
 
 ## Local Development
+
+
 1. Clone the repository: `git clone https://github.com/marvelai-org/marvel-platform`
-2. Create your firebase project on google firebase console
-3. Create a firestore database instance
-4. Get firebase config from firebase project settings in firebase console
-5. Create a `.env` file in the root of the project using `sample.env` as a template:
-   The default values in `sample.env` are configured to connect to the production MarvelAI server (app.marvelai.app). You can keep these values if you want to use the production firebase backend (Firestore and Functions), or update them to point to your own firebase project which you can get from firebase console > Project settings > General (scroll to bottom).
+
+2. Create your firebase project on Google Firebase Console
+
+3. Setup Firestore Database **(optional)**: If you don't have a Firestore database instance, you can create one in the Firebase Console. This step is only necessary if you want to use your own Firestore database for development option #1.
+
+4. Get Firebase Config **(optional)**: If you want to use your own Firebase project for development, you can get the Firebase config from the Firebase project settings in the Firebase Console and update the `.env` file accordingly. Otherwise, you can skip this step and use the default config values.
+
+5. Create a `.env` file in the root of the project using `sample.env` as a template: Update the values in `.env` according to your needs.
 
 6. Install Firebase CLI by running the following in terminal: `npm install -g firebase-tools`
+
 7. Login to firebase CLI by running the following command: `firebase login`
+
 8. Install all dependencies by running: `npm run install:all`
 
 ### Development Options
@@ -106,6 +113,7 @@ Note: If you experience any issues with hanging emulator processes after stoppin
 ```bash
 npm run kill-emulators
 ```
+Important: With this method, it is not necessary to have your Firebase project set up. The default environment configurations will work fine, allowing you to start developing without needing to configure Firebase locally.
 
 ## Cloud Deployment
 Before deploying, ensure you have the correct Firebase project setup:

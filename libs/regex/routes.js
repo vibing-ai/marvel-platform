@@ -1,7 +1,6 @@
-const homeRegex = /\/(\w+)?(\/workspace)?/;
-const chatRegex = /\/chat/;
-const discoveryRegex = /\/discovery/;
-const onboardingRegex = /^\/onboarding\/.+$/;
-const historyRegex = /\/history/;
-
-export { homeRegex, chatRegex, discoveryRegex, historyRegex, onboardingRegex };
+export const homeRegex = /^\/$/;
+export const chatRegex = /^\/chat/;
+export const discoveryRegex = /\/discovery/;
+export const onboardingRegex = /^\/onboarding\/.+$/;
+export const historyRegex = /^\/history/;
+export const assistantsRegex = /^\/assistants/;

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef, useMemo } from 'react';
 
 import {
   ArrowDownwardOutlined,
@@ -16,7 +16,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -51,13 +50,14 @@ import {
   setTyping,
 } from '@/libs/redux/slices/chatSlice';
 import { updateHistoryEntry } from '@/libs/redux/slices/historySlice';
-import { firestore } from '@/libs/redux/store';
 import fetchHistory from '@/libs/redux/thunks/fetchHistory';
-import createChatSession from '@/libs/services/chatbot/createChatSession';
-import sendMessage from '@/libs/services/chatbot/sendMessage';
+import { sendAssistantMessage } from '../../libs/services/assistant/assistantChat';
+import { useRouter } from 'next/router';
 
 const ChatInterface = () => {
   const messagesContainerRef = useRef();
+  const router = useRouter();
+  const { assistant } = router.query;
 
   const dispatch = useDispatch();
   const {
@@ -76,8 +76,7 @@ const ChatInterface = () => {
     actionType,
   } = useSelector((state) => state.chat);
   const { data: userData } = useSelector((state) => state.user);
-
-  const sessionId = localStorage.getItem('sessionId');
+  const { data: assistants } = useSelector((state) => state.assistants);
 
   const currentSession = chat;
   const chatMessages = currentSession?.messages;
@@ -85,8 +84,27 @@ const ChatInterface = () => {
 
   const { handleOpenSnackBar } = useContext(AuthContext);
 
+  // Get the current assistant data
+  const currentAssistant = useMemo(() => 
+    assistants?.find(a => a.id === assistant),
+    [assistants, assistant]
+  );
+
+  useEffect(() => {
+    if (!assistants?.length) {
+      dispatch(fetchAssistants());
+    }
+  }, [dispatch]);
+
   const startConversation = async (message) => {
-    // Optionally dispatch a temporary message for the user's input
+    if (!currentAssistant) {
+      dispatch(setError('Assistant not found'));
+      setTimeout(() => {
+        dispatch(setError(null));
+      }, 3000);
+      return;
+    }
+
     dispatch(
       setMessages({
         role: MESSAGE_ROLE.HUMAN,
@@ -96,41 +114,49 @@ const ChatInterface = () => {
 
     dispatch(setTyping(true));
 
-    // Define the chat payload
-    const chatPayload = {
-      user: {
-        id: userData?.id,
-        fullName: userData?.fullName,
-        email: userData?.email,
-      },
-      type: 'chat',
-      message,
-    };
+    try {
+      const response = await sendAssistantMessage({
+        assistantGroup: currentAssistant.groupName,
+        assistantName: currentAssistant.name,
+        userInfo: {
+          user_name: userData?.fullName || 'Anonymous',
+          user_preference: userData?.role || 'Student',
+          user_age: userData?.age || 20
+        },
+        messages: [message]
+      }, dispatch);
 
-    // Send a chat session
-    const { status, data } = await createChatSession(chatPayload, dispatch);
+      if (response.data && response.data.length > 0) {
+        const aiMessage = response.data[0];
+        dispatch(
+          setMessages({
+            role: MESSAGE_ROLE.AI,
+            response: aiMessage,
+          })
+        );
+      }
 
-    // Remove typing bubble
-    dispatch(setTyping(false));
-    if (status === 'created') dispatch(setStreaming(true));
-
-    // Set chat session
-    dispatch(setChatSession(data));
-    dispatch(setSessionLoaded(true));
-
-    dispatch(fetchHistory(userData.id));
+      dispatch(setTyping(false));
+      dispatch(setStreaming(true));
+      dispatch(setSessionLoaded(true));
+      
+    } catch (error) {
+      console.error('Error starting conversation:', error);
+      dispatch(setTyping(false));
+      dispatch(setError('Failed to start conversation'));
+      setTimeout(() => {
+        dispatch(setError(null));
+      }, 3000);
+    }
   };
 
   useEffect(() => {
     return () => {
-      localStorage.removeItem('sessionId');
       dispatch(resetChat());
     };
   }, []);
 
   useEffect(() => {
-    let unsubscribe;
-
     if (sessionLoaded || currentSession) {
       messagesContainerRef.current?.scrollTo(
         0,
@@ -139,48 +165,8 @@ const ChatInterface = () => {
           behavior: 'smooth',
         }
       );
-
-      const sessionRef = query(
-        collection(firestore, 'chatSessions'),
-        where('id', '==', sessionId)
-      );
-
-      unsubscribe = onSnapshot(sessionRef, async (snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          if (change.type === 'modified') {
-            const updatedData = change.doc.data();
-            const updatedMessages = updatedData.messages;
-
-            const lastMessage = updatedMessages[updatedMessages.length - 1];
-            // Convert Firestore timestamp to JavaScript Date object.
-            lastMessage.timestamp = lastMessage.timestamp.toDate();
-
-            // Update the history entry with the latest timestamp.
-            dispatch(
-              updateHistoryEntry({
-                id: sessionId,
-                updatedAt: updatedData.updatedAt.toDate().toISOString(),
-              })
-            );
-
-            if (lastMessage?.role === MESSAGE_ROLE.AI) {
-              dispatch(
-                setMessages({
-                  role: MESSAGE_ROLE.AI,
-                  response: lastMessage,
-                })
-              );
-              dispatch(setTyping(false));
-            }
-          }
-        });
-      });
     }
-
-    return () => {
-      if (sessionLoaded || currentSession) unsubscribe();
-    };
-  }, [sessionLoaded]);
+  }, [sessionLoaded, chatMessages]);
 
   const handleOnScroll = () => {
     const scrolled =
@@ -206,6 +192,14 @@ const ChatInterface = () => {
   };
 
   const handleSendMessage = async () => {
+    if (!currentAssistant) {
+      dispatch(setError('Assistant not found'));
+      setTimeout(() => {
+        dispatch(setError(null));
+      }, 3000);
+      return;
+    }
+
     if (!input) {
       dispatch(setError('Please enter a message'));
       setTimeout(() => {
@@ -214,7 +208,6 @@ const ChatInterface = () => {
       return;
     }
 
-    // BUG FIX: First checking whether the user has entered any text before setting streaming true amd then sending the message.
     dispatch(setStreaming(true));
 
     const message = {
@@ -227,12 +220,10 @@ const ChatInterface = () => {
     };
 
     if (!chatMessages) {
-      // Start a new conversation if there are no existing messages
       await startConversation(message);
       return;
     }
 
-    // Add the user's message to the chat
     dispatch(
       setMessages({
         role: MESSAGE_ROLE.HUMAN,
@@ -242,24 +233,55 @@ const ChatInterface = () => {
 
     dispatch(setTyping(true));
 
-    // Ensure the user’s message is displayed before sending the message
-    setTimeout(async () => {
-      await sendMessage(
-        { message, id: sessionId },
-        dispatch,
-        handleOpenSnackBar
-      );
-    }, 0);
+    try {
+      const response = await sendAssistantMessage({
+        assistantGroup: currentAssistant.groupName,
+        assistantName: currentAssistant.name,
+        userInfo: {
+          user_name: userData?.fullName || 'Anonymous',
+          user_preference: userData?.role || 'Student',
+          user_age: userData?.age || 20
+        },
+        messages: [...chatMessages, message]
+      }, dispatch);
+
+      if (response.data && response.data.length > 0) {
+        const aiMessage = response.data[0];
+        dispatch(
+          setMessages({
+            role: MESSAGE_ROLE.AI,
+            response: aiMessage,
+          })
+        );
+      }
+
+      dispatch(setTyping(false));
+      
+    } catch (error) {
+      console.error('Error sending message:', error);
+      dispatch(setTyping(false));
+      dispatch(setError('Failed to send message'));
+      setTimeout(() => {
+        dispatch(setError(null));
+      }, 3000);
+    }
+    
     dispatch(setActionType(null));
   };
 
   const handleQuickReply = async (option) => {
-    dispatch(setInput(option));
-    dispatch(setStreaming(true));
+    if (!currentAssistant) {
+      dispatch(setError('Assistant not found'));
+      setTimeout(() => {
+        dispatch(setError(null));
+      }, 3000);
+      return;
+    }
 
+    dispatch(setInput(option));
     const message = {
       role: MESSAGE_ROLE.HUMAN,
-      type: MESSAGE_TYPES.QUICK_REPLY,
+      type: MESSAGE_TYPES.TEXT,
       payload: {
         text: option,
         action: actionType,
@@ -269,12 +291,44 @@ const ChatInterface = () => {
     dispatch(
       setMessages({
         role: MESSAGE_ROLE.HUMAN,
+        message,
       })
     );
     dispatch(setTyping(true));
 
-    await sendMessage({ message, id: currentSession?.id }, dispatch);
+    try {
+      const response = await sendAssistantMessage({
+        assistantGroup: currentAssistant.groupName,
+        assistantName: currentAssistant.name,
+        userInfo: {
+          user_name: userData?.fullName || 'Anonymous',
+          user_preference: userData?.role || 'Student',
+          user_age: userData?.age || 20
+        },
+        messages: [...chatMessages, message]
+      }, dispatch);
 
+      if (response.data && response.data.length > 0) {
+        const aiMessage = response.data[0];
+        dispatch(
+          setMessages({
+            role: MESSAGE_ROLE.AI,
+            response: aiMessage,
+          })
+        );
+      }
+
+      dispatch(setTyping(false));
+      
+    } catch (error) {
+      console.error('Error sending quick reply:', error);
+      dispatch(setTyping(false));
+      dispatch(setError('Failed to send quick reply'));
+      setTimeout(() => {
+        dispatch(setError(null));
+      }, 3000);
+    }
+    
     dispatch(setActionType(null));
   };
 

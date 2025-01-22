@@ -1,4 +1,5 @@
 import HistoryIcon from '@mui/icons-material/History';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
 import { Grid, MenuItem } from '@mui/material';
 import { useRouter } from 'next/router';
 
@@ -9,7 +10,7 @@ import styles from './styles';
 
 import ROUTES from '@/libs/constants/routes';
 
-import { chatRegex, historyRegex, homeRegex } from '@/libs/regex/routes';
+import { chatRegex, historyRegex, homeRegex, assistantsRegex } from '@/libs/regex/routes';
 
 const PAGES = [
   {
@@ -23,6 +24,12 @@ const PAGES = [
     link: ROUTES.CHAT,
     icon: <ChatBubble />,
     id: 'page_3',
+  },
+  {
+    name: 'Assistants',
+    link: ROUTES.ASSISTANTS,
+    icon: <SmartToyIcon />,
+    id: 'page_5',
   },
   {
     name: 'History',
@@ -43,7 +50,7 @@ const NavMenu = () => {
 
   const setActive = (id) => {
     const isNotHomePage = [
-      chatRegex.test(pathname) || historyRegex.test(pathname),
+      chatRegex.test(pathname) || historyRegex.test(pathname) || assistantsRegex.test(pathname),
     ].includes(true);
 
     if (id === 'page_1') {
@@ -53,6 +60,8 @@ const NavMenu = () => {
     if (id === 'page_2') return chatRegex.test(pathname);
 
     if (id === 'page_4') return historyRegex.test(pathname);
+
+    if (id === 'page_5') return assistantsRegex.test(pathname);
 
     return false;
   };

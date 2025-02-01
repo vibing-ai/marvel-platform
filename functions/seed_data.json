@@ -926,7 +926,17 @@
         "placeholder": "Enter the key objectives for the presentation",
         "rows": 3,
         "tooltip": "List the primary goals or takeaways the presentation should achieve for the audience.",
-        "type": "text"
+        "type": "hybrid",
+        "values": [
+          {
+            "key": "PDF",
+            "label": "PDF"
+          },
+          {
+            "key": "CSV",
+            "label": "CSV"
+          }
+        ]
       },
       {
         "label": "Additional Comments",
@@ -935,7 +945,17 @@
         "placeholder": "Enter any additional comments or instructions",
         "rows": 3,
         "tooltip": "Include any extra details or specific instructions to customize the presentation to your needs.",
-        "type": "text"
+        "type": "hybrid",
+        "values": [
+          {
+            "key": "PDF",
+            "label": "PDF"
+          },
+          {
+            "key": "CSV",
+            "label": "CSV"
+          }
+        ]
       },
       {
         "defaultValue": "en",

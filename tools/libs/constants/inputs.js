@@ -11,6 +11,7 @@ const INPUT_TYPES = {
   SELECT: 'select',
   TEXT_CONTENT: 'text_content',
   FILE_TYPE_SELECTOR: 'file_type_selector',
+  HYBRID: 'hybrid',
 };
 
 export { INPUT_TYPES };

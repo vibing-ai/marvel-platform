@@ -32,6 +32,10 @@ const PrimaryTextFieldInput = forwardRef((props, ref) => {
     borderColor,
     extraInputProps,
     extraInputLabelProps,
+    multiline = true, // Enable multiline by default
+    minRows = 1, // Set minimum rows
+    maxRows = 5, // Allow expansion up to 5 rows
+    disabled, // Disable the element
     ...otherProps
   } = props;
 
@@ -44,7 +48,11 @@ const PrimaryTextFieldInput = forwardRef((props, ref) => {
     InputProps: styles.inputProps(error, extraInputProps),
     FormHelperTextProps: styles.helperTextProps(isDescription, error),
     autoComplete: 'off',
+    disabled : disabled, // Disable the element
     placeholder,
+    multiline,
+    minRows, // Allow it to start with 1 row and expand
+    maxRows, // Prevent excessive expansion
   };
 
   return (

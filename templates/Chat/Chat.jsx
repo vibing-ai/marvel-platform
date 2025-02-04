@@ -409,19 +409,20 @@ const ChatInterface = () => {
           {/* Quick Actions Component */}
           <QuickActions handleSendMessage={handleSendMessage} />
           <Grid {...styles.bottomChatContent.chatInputGridProps(!!error)}>
-            <TextField
+            <TextField 
               value={input}
               onChange={(e) => dispatch(setInput(e.currentTarget.value))}
               onKeyUp={keyDownHandler}
               error={!!error}
               helperText={error}
-              disabled={!!error}
+              disabled={!!error || streaming} //added streaming
               focused={false}
               {...styles.bottomChatContent.chatInputProps(
                 renderQuickAction,
                 renderSendIcon,
                 !!error
               )}
+              {...styles.bottomChatContent.chatInputExpand} // Added new style for textfield
             />
           </Grid>
         </Grid>

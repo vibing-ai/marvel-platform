@@ -193,6 +193,7 @@ const styles = {
       alignItems: 'center',
       pt: { laptop: 2, desktop: 2.5, desktopMedium: 3 },
       px: { laptop: 2, desktop: 2.5, desktopMedium: 3 },
+      overflow: 'auto', // Added overflow
     },
     bottomBarChatProps: {
       container: true,
@@ -207,7 +208,7 @@ const styles = {
       mobileSmall: 12,
       justifyContent: 'center',
       alignItems: 'center',
-      height: '65px',
+      // removed fixed height
       padding: '2px',
       sx: {
         fieldSet: {
@@ -228,8 +229,8 @@ const styles = {
         sx: () => ({
           display: 'flex',
           flexDirection: 'row',
-          alignItems: 'center',
-          padding: '0px',
+          alignItems: 'flex-end', // changed
+          padding: '15px', // padding changed
           gap: '20px',
           bgcolor: '#181A20',
           borderRadius: '50px',
@@ -242,19 +243,48 @@ const styles = {
           whiteSpace: 'pre-wrap',
           lineHeight: '35px',
         }),
-        endAdornment: renderSendIcon(),
-        startAdornment: renderQuicKAction(),
+        endAdornment: (
+          <div style={{ display: 'flex', alignItems: 'center', paddingBottom: '18px' }}> {/* Add paddingBottom to endAdornment */}
+            {renderSendIcon()}
+          </div>
+        ),
+        startAdornment: (
+          <div style={{ display: 'flex', alignItems: 'center', paddingBottom: '18px' }}> {/* Add paddingBottom to startAdornment */}
+            {renderQuicKAction()}
+          </div>
+        ),
       },
       FormHelperTextProps: {
         sx: {
           position: 'absolute',
-          transform: 'translate(150px, 30%)',
+          transform: 'translate(0, 30%)', // Removed horizontal translation
           fontFamily: 'Satoshi Medium',
           fontSize: { mobileSmall: '16px', desktopMedium: '20px' },
           lineHeight: '35px',
         },
       },
     }),
+    chatInputExpand: {   // new style
+      fullWidth: true,
+      multiline: true,
+      minRows: 1, // Start with one line
+      maxRows: 5, // Set maximum visible lines before scrolling
+      sx: {
+        position: 'relative', // To allow absolute positioning of the input
+        '&.MuiInputBase-root': {
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column-reverse', // Key for upward expansion
+        },
+        '&.MuiInputBase-input': {
+          position: 'absolute',
+          bottom: 0, // Keep the input anchored to the bottom
+          left: 0,
+          width: '100%',
+          resize: 'none',
+        },
+      },
+    },
     sendIconProps: {
       style: {
         fill: (theme) => theme.palette.Dark_Colors.Dark[3],

@@ -20,6 +20,8 @@ import ALERT_COLORS from '@/libs/constants/notification';
 import { AuthContext } from '@/libs/providers/GlobalProvider';
 import { firestore } from '@/libs/redux/store';
 
+import { setStreaming } from '@/libs/redux/slices/chatSlice'; // Import the `setStreaming` action creator
+
 import { fetchToolHistory, actions as toolActions } from '@/tools/data';
 import { INPUT_TYPES } from '@/tools/libs/constants/inputs';
 import submitPrompt from '@/tools/libs/services/submitPrompt';
@@ -31,6 +33,7 @@ const ToolRequestForm = (props) => {
   const { id, inputs } = props;
   const theme = useTheme();
   const dispatch = useDispatch();
+  const { streaming } = useSelector((state) => state.chat); // Extract the `streaming` state from the Redux store
   const { handleOpenSnackBar } = useContext(AuthContext);
   const { communicatorLoading } = useSelector((state) => state.tools);
   const { data: userData } = useSelector((state) => state.user);
@@ -111,7 +114,7 @@ const ToolRequestForm = (props) => {
           }
         }
       });
-
+      dispatch(setStreaming(true)); // Dispatch the `setStreaming` action to enable streaming
       await Promise.all(fileUploadPromises);
 
       // Remove any existing file inputs from updateData to avoid duplicates
@@ -139,11 +142,13 @@ const ToolRequestForm = (props) => {
       dispatch(setFormOpen(false));
       dispatch(setCommunicatorLoading(false));
       dispatch(fetchToolHistory({ firestore }));
+      dispatch(setStreaming(false)); // Dispatch the `setStreaming` action to disable streaming
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Error during form submission:', error);
 
       dispatch(setCommunicatorLoading(false));
+      dispatch(setStreaming(false)); // Disable streaming
       handleOpenSnackBar(
         ALERT_COLORS.ERROR,
         error?.message || 'Couldn\u0027t send prompt'
@@ -153,6 +158,7 @@ const ToolRequestForm = (props) => {
 
   const renderTextInput = (inputProps) => {
     const { name: inputName, placeholder, tooltip, label } = inputProps;
+  
     const renderLabel = () => (
       <Grid {...styles.textFieldLabelGridProps}>
         <Typography {...styles.labelProps(errors?.[inputName])}>
@@ -165,7 +171,7 @@ const ToolRequestForm = (props) => {
         )}
       </Grid>
     );
-
+  
     return (
       <Grid key={inputName} {...styles.inputGridProps}>
         <PrimaryTextFieldInput
@@ -176,6 +182,10 @@ const ToolRequestForm = (props) => {
           control={control}
           placeholder={placeholder}
           helperText={errors?.[inputName]?.message}
+          multiline={true}
+          minRows={1} // Start with a single row
+          maxRows={5} // Expand dynamically up to 10 rows
+          disabled = {streaming} // Disable the element if streaming is active
           validation={{
             required: 'Field is required',
           }}
@@ -183,7 +193,7 @@ const ToolRequestForm = (props) => {
         />
       </Grid>
     );
-  };
+  };  
 
   const renderNumberInput = (inputProps) => {
     const { name: inputName, placeholder, tooltip, label } = inputProps;

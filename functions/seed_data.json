@@ -678,7 +678,9 @@
         "label": "Topic",
         "name": "topic",
         "placeholder": "Enter Topic",
-        "type": "text"
+        "type": "text",
+        "multiline": true,
+        "rows": 5
       },
       {
         "defaultValue": "5",

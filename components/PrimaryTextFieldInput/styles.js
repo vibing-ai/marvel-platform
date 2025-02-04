@@ -14,7 +14,7 @@ const styles = {
       background: '#23252A',
       borderRadius: '15px',
       color: '#AC92FF',
-      height: '50px',
+      height: 'auto', // changed to dynamically change input field
       ...extraInputProps,
       transition: theme.transitions.create('all'),
       px: 1.5,

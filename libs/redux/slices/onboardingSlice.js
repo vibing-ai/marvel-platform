@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   step: 1,
@@ -13,7 +13,7 @@ const initialState = {
 };
 
 const onboardingSlice = createSlice({
-  name: 'onboarding',
+  name: "onboarding",
   initialState,
   reducers: {
     reset: () => initialState,

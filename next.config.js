@@ -1,3 +1,4 @@
+const MillionLint = require('@million/lint');
 const dotenv = require('dotenv');
 const withTM = require('next-transpile-modules')(['react-syntax-highlighter']);
 
@@ -11,7 +12,9 @@ const nextConfig = {
   trailingSlash: true,
 };
 
-module.exports = withTM({
+module.exports = MillionLint.next({
+  enabled: true
+})(withTM({
   ...nextConfig,
   images: {
     unoptimized: true,
@@ -34,4 +37,4 @@ module.exports = withTM({
 
     return config;
   },
-});
+}));

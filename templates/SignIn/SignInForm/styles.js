@@ -1,16 +1,16 @@
 const styles = {
   passwordGridProps: {
-    position: 'relative',
+    position: "relative",
     container: true,
     rowGap: 1,
-    mb: 1,
+    mb: 0,
   },
   passwordInputGridProps: {
     item: true,
     mobileSmall: 12,
   },
   forgotPasswordGridProps: {
-    position: 'absolute',
+    position: "absolute",
     right: 0,
     bottom: (theme) => ({
       laptop: `-${theme.spacing(3)}`,
@@ -20,36 +20,54 @@ const styles = {
     container: true,
     item: true,
     mobileSmall: 12,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
   forgotPasswordProps: {
-    component: 'button',
-    type: 'button',
-    fontFamily: 'Satoshi Bold',
-    fontSize: { laptop: '12px', desktopMedium: '14px' },
+    component: "button",
+    type: "button",
+    fontFamily: "Satoshi Bold",
+    fontSize: { laptop: "12px", desktopMedium: "14px" },
     sx: {
       mr: 1,
-      textDecoration: 'underline',
-      textUnderlineOffset: '3px',
+      textDecoration: "underline",
+      textUnderlineOffset: "3px",
       color: (theme) => theme.palette.Greyscale[50],
-      '&:hover': {
-        cursor: 'pointer',
+      "&:hover": {
+        cursor: "pointer",
       },
     },
   },
   submitButtonProps: {
-    type: 'submit',
-    color: 'purple4',
+    type: "submit",
+    color: "purple4",
     inverted: true,
     extraProps: {
-      padding: '2px',
-      height: { laptop: '54px', desktopMedium: '60px' },
-      width: '60%',
+      padding: "2px",
+      height: { laptop: "54px", desktopMedium: "60px" },
+      width: "50%",
+      margin: "auto",
     },
     extraButtonProps: {
-      fontFamily: 'Satoshi Bold',
-      fontSize: '16px',
+      fontFamily: "Satoshi Bold",
+      fontSize: "16px",
+      px: 4,
+    },
+  },
+
+  submitButtonPropsGoogle: {
+    type: "button",
+    color: "purple4",
+    inverted: true,
+    extraProps: {
+      padding: "2px",
+      height: { laptop: "54px", desktopMedium: "60px" },
+      width: "50%",
+      margin: "auto",
+    },
+    extraButtonProps: {
+      fontFamily: "Satoshi Bold",
+      fontSize: "16px",
       px: 4,
     },
   },

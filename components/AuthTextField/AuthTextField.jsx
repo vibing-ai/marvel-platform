@@ -1,10 +1,10 @@
-import { forwardRef, useState } from 'react';
+import { forwardRef, useRef, useState } from "react";
 
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { IconButton, InputAdornment } from '@mui/material';
-import { TextFieldElement } from 'react-hook-form-mui';
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { IconButton, InputAdornment } from "@mui/material";
+import { TextFieldElement } from "react-hook-form-mui";
 
-import styles from './styles';
+import styles from "./styles";
 
 /**
  * Renders a custom input text field component with configurable props.
@@ -23,6 +23,7 @@ const AuthTextField = forwardRef((props, ref) => {
     error,
     control,
     state,
+    defaultValue,
     ...otherProps
   } = props;
 
@@ -32,8 +33,8 @@ const AuthTextField = forwardRef((props, ref) => {
   const handleMouseDownPassword = (event) => event.preventDefault();
 
   const setFieldType = () => {
-    if (!isPasswordField) return 'text';
-    return showPassword ? 'text' : 'password';
+    if (!isPasswordField) return "text";
+    return showPassword ? "text" : "password";
   };
 
   const renderPrimaryIcon = () => {
@@ -72,7 +73,7 @@ const AuthTextField = forwardRef((props, ref) => {
     InputLabelProps: styles.inputLabelProps(error, state),
     fullWidth: true,
     label: helperText || label,
-    autoComplete: 'off',
+    autoComplete: "off",
     placeholder: placeholderText,
     FormHelperTextProps: { error },
   };
@@ -80,6 +81,7 @@ const AuthTextField = forwardRef((props, ref) => {
   return (
     <TextFieldElement
       inputRef={ref}
+      defaultValue={defaultValue}
       {...TextFieldElementConfig}
       {...otherProps}
     />

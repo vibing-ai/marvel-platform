@@ -44,6 +44,7 @@ const styles = {
       order: '1',
       alignSelf: 'stretch',
       flexGrow: '0',
+      marginLeft: '20px',
     },
   },
   chatHistoryCategorizedContainer: {

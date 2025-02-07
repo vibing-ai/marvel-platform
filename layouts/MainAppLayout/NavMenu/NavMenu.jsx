@@ -11,7 +11,7 @@ import ROUTES from '@/libs/constants/routes';
 
 import { chatRegex, historyRegex, homeRegex } from '@/libs/regex/routes';
 
-const PAGES = [
+export const PAGES = [
   {
     name: 'Home',
     link: ROUTES.HOME,
@@ -69,6 +69,7 @@ const NavMenu = () => {
           onClick={() => handleRoute(page.link)}
           {...styles.menuItemProps(setActive(page.id))}
         >
+          {/* Home, Chat and History */}
           <Grid {...styles.innerMenuGridProps}>
             <Grid {...styles.menuIconGridProps}>{page.icon}</Grid>
             <Grid {...styles.menuTitleGridProps}>{page.name}</Grid>

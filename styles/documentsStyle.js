@@ -15,6 +15,11 @@ const documentsStyle = {
       borderRadius: '20px',
       width: '100%',
       padding: '48px',
+      [theme.breakpoints.down('laptop')]: {
+        paddingLeft: '20px',
+        paddingRight: '20px',
+        paddingBottom: '30px',
+      },
     }),
   },
   textConfig: {

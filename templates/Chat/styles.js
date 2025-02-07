@@ -5,6 +5,9 @@ const styles = {
     width: '100%',
     direction: 'row',
     alignItems: 'flex-end',
+    paddingLeft: '20px',
+    paddingBottom: '20px',
+    paddingRight: '20px',
     sx: {
       flexWrap: 'nowrap',
       position: 'relative',
@@ -17,7 +20,13 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'flex-start',
     rowGap: 5,
-    maxWidth: 1200,
+    maxWidth: 1600,
+    sx: (theme) => ({
+      [theme.breakpoints.down('laptop')]: {
+        maxWidth: '800',
+        fontSize: '14px',
+      },
+    }),
   },
   moreChat: {
     moreChatProps: {
@@ -164,9 +173,12 @@ const styles = {
       height: '100%',
       justifyContent: 'flex-start',
       alignContent: 'flex-start',
-      sx: {
+      sx: (theme) => ({
         overflowY: 'auto',
-      },
+        [theme.breakpoints.up('largeDesktop')]: {
+          justifyContent: 'center',
+        },
+      }),
     },
     imageProps: {
       width: '100px',
@@ -335,7 +347,7 @@ const styles = {
   },
   avatarIconInputProps: {
     sx: {
-      position: 'relative',
+      // position: 'relative',
       marginRight: 2,
       height: 48,
       width: 48,
@@ -344,7 +356,7 @@ const styles = {
   },
   newMessageButtonProps: {
     sx: (theme) => ({
-      position: 'absolute',
+      // position: 'absolute',
       bottom: {
         laptop: theme.spacing(15),
         desktop: theme.spacing(17),

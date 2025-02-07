@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
 
-import { Grid, useMediaQuery } from '@mui/material';
+import { Grid } from '@mui/material';
 import Head from 'next/head';
 
 import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 
-import AppDisabled from '@/components/AppDisabled';
 import Loader from '@/components/Loader';
 
 import ImageURLs from '@/assets/urls';
@@ -31,10 +30,6 @@ const MainAppLayout = (props) => {
 
   const auth = useSelector((state) => state.auth);
   const user = useSelector((state) => state.user);
-
-  const isTabletScreen = useMediaQuery((theme) =>
-    theme.breakpoints.down('laptop')
-  );
 
   const isLoading = auth.loading || user.loading || !user.data || !auth.data;
 
@@ -71,8 +66,7 @@ const MainAppLayout = (props) => {
   return (
     <Grid {...styles.mainGridProps}>
       {renderHead()}
-      {isTabletScreen && <AppDisabled head={renderHead()} />}
-      {!isTabletScreen && renderApp()}
+      {renderApp()}
     </Grid>
   );
 };

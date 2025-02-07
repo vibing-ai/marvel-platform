@@ -14,7 +14,12 @@ const styles = {
       wordWrap: 'break-word',
       fontFamily: 'Satoshi Medium',
       fontWeight: '300',
-      fontSize: { laptop: '16px', desktop: '18px', desktopMedium: '20px' },
+      fontSize: {
+        mobileSmall: '14px',
+        laptop: '14px',
+        desktop: '18px',
+        desktopMedium: '20px',
+      },
       lineHeight: { desktop: '24px', desktopMedium: '28px' },
       letterSpacing: '0.02em',
       color: (theme) => theme.palette.Common.White['100p'],

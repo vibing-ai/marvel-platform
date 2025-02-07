@@ -11,7 +11,7 @@ const styles = {
     px: { laptop: 1, desktop: 1.5, desktopMedium: 2 },
   },
   menuItemProps: (isActive) => ({
-    sx: {
+    sx: (theme) => ({
       py: 0,
       maxWidth: '165px',
       maxHeight: '40px',
@@ -20,6 +20,9 @@ const styles = {
       borderRadius: '8px',
       background: '#24272F',
       m: 1,
+      [theme.breakpoints.down('laptop')]: {
+        display: 'none',
+      },
       border: isActive ? '1px solid #9D74FF' : '1px solid transparent',
       color: (theme) =>
         isActive ? `${theme.palette.Background.purple}95` : '#9E94A5',
@@ -35,7 +38,7 @@ const styles = {
           stroke: '#9E94A5',
         },
       },
-    },
+    }),
   }),
   innerMenuGridProps: {
     container: true,
@@ -50,6 +53,12 @@ const styles = {
     paddingRight: '12px',
     paddingBottom: '8px',
     paddingLeft: '12px',
+    sx: (theme) => ({
+      inset: '0 auto auto auto',
+      [theme.breakpoints.down('laptop')]: {
+        display: 'none',
+      },
+    }),
   },
   menuIconGridProps: {
     container: true,

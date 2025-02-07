@@ -10,7 +10,7 @@ const styles = {
     },
   },
   defaultPrompt: {
-    sx: {
+    sx: (theme) => ({
       color: '#9E94A5',
       display: 'flex',
       flexDirection: 'column',
@@ -28,12 +28,15 @@ const styles = {
       transition: 'all 0.5s ease',
       transformOrigin: 'center center',
       wordWrap: 'break-word',
+      [theme.breakpoints.down('laptop')]: {
+        padding: '8px 16px',
+      },
       '&:hover': {
         color: '#9E86FF',
         borderColor: '#9E86FF',
         transform: 'scale(1.05)',
       },
-    },
+    }),
   },
   defaultPromptStarLogo: {
     sx: {
@@ -58,6 +61,11 @@ const styles = {
     order: '0',
     alignSelf: 'stretch',
     flexGrow: '0',
+    sx: (theme) => ({
+      [theme.breakpoints.down('laptop')]: {
+        fontSize: '14px',
+      },
+    }),
   },
 };
 

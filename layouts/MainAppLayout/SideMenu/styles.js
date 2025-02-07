@@ -11,6 +11,11 @@ const styles = {
     bgcolor: 'rgba(24, 26, 32, 0.37)',
     borderRadius: '30px',
     paddingLeft: '8px',
+    sx: (theme) => ({
+      [theme.breakpoints.up('largeDesktop')]: {
+        width: '1600px',
+      },
+    }),
   },
   logoGridProps: {
     container: true,

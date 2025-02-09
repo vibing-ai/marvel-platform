@@ -8,6 +8,9 @@ const styles = {
     sx: {
       flexWrap: 'nowrap',
       position: 'relative',
+      paddingBottom: '90px',
+      display: 'flex',
+      gap: '20px',
     },
   },
   mainGridProps: {
@@ -17,7 +20,8 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'flex-start',
     rowGap: 5,
-    maxWidth: 1200,
+    maxWidth: 'calc(100% - 252px)',
+    flex: 1,
   },
   moreChat: {
     moreChatProps: {
@@ -202,57 +206,106 @@ const styles = {
       alignItems: 'center',
     },
     chatInputGridProps: (error) => ({
-      position: 'relative',
+      position: 'fixed',
       container: true,
       mobileSmall: 12,
       justifyContent: 'center',
       alignItems: 'center',
-      height: '65px',
+      minHeight: '60px',
       padding: '2px',
+      bottom: '20px',
+      left: '20px',
+      width: 'calc(100% - 292px)',
       sx: {
         fieldSet: {
           display: 'none',
         },
         background: (theme) =>
-          error ? theme.palette.error.main : 'transparent',
-        borderRadius: '50px',
+          error ? theme.palette.error.main : '#181A20',
+        borderRadius: '30px',
+        boxShadow: '0px -4px 12px rgba(0, 0, 0, 0.1)',
+        zIndex: 10,
       },
     }),
     chatInputProps: (renderQuicKAction, renderSendIcon, error) => ({
       type: 'text',
       placeholder: !error && 'Send a message',
       autoComplete: 'off',
-      sx: { width: '100%', height: '100%' },
+      multiline: true,
+      minRows: 1,
+      maxRows: 10,
+      sx: {
+        width: '100%',
+        position: 'relative',
+        '& .MuiInputBase-root': {
+          maxHeight: '250px',
+          overflow: 'auto',
+          width: '100%',
+          padding: '10px 16px',
+          paddingLeft: renderQuicKAction ? '140px' : '16px',
+          paddingRight: '60px',
+          display: 'flex',
+          alignItems: 'center',
+          maxWidth: '100%',
+          borderRadius: '30px',
+        },
+        '& .MuiInputBase-input': {
+          padding: '0',
+          margin: '0',
+          minHeight: '24px',
+          maxHeight: '250px',
+          overflow: 'auto',
+          lineHeight: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          width: '100%',
+          '&::-webkit-scrollbar': {
+            width: '8px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+            borderRadius: '4px',
+          },
+        },
+      },
       InputProps: {
         notched: false,
         sx: () => ({
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
-          padding: '0px',
+          padding: '8px',
           gap: '20px',
           bgcolor: '#181A20',
-          borderRadius: '50px',
+          borderRadius: '30px',
           color: '#9E94A5',
           pl: { laptop: '6px', desktop: '10px' },
           pr: { laptop: '8px', desktop: '10px' },
-          height: '100%',
+          minHeight: '50px',
           fontFamily: 'Satoshi Medium',
           fontSize: { laptop: '16px', desktop: '18px', desktopMedium: '20px' },
           whiteSpace: 'pre-wrap',
-          lineHeight: '35px',
+          '& .MuiInputBase-input': {
+            padding: '4px 0',
+            lineHeight: '24px',
+            maxHeight: '250px',
+            overflow: 'auto !important',
+            '&::-webkit-scrollbar': {
+              width: '8px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '4px',
+            },
+          },
+          '& .MuiInputAdornment-root': {
+            height: 'auto',
+            alignSelf: 'center',
+            marginTop: '0 !important',
+          },
         }),
         endAdornment: renderSendIcon(),
         startAdornment: renderQuicKAction(),
-      },
-      FormHelperTextProps: {
-        sx: {
-          position: 'absolute',
-          transform: 'translate(150px, 30%)',
-          fontFamily: 'Satoshi Medium',
-          fontSize: { mobileSmall: '16px', desktopMedium: '20px' },
-          lineHeight: '35px',
-        },
       },
     }),
     sendIconProps: {
@@ -265,9 +318,14 @@ const styles = {
       edge: 'end',
       'aria-label': 'toggle password visibility',
       sx: {
+        position: 'absolute',
+        bottom: '8px',
+        right: '8px',
         width: { mobileSmall: 36, desktopMedium: 42 },
         height: { mobileSmall: 36, desktopMedium: 42 },
         mr: '2px',
+        zIndex: 2,
+        backgroundColor: 'transparent',
         path: {
           fill: (theme) =>
             disabled
@@ -375,7 +433,10 @@ const styles = {
 
   quickActionButton: {
     sx: {
-      padding: '12px 20px',
+      position: 'absolute',
+      bottom: '8px',
+      left: '8px',
+      padding: '8px 16px',
       cursor: 'pointer',
       background: '#AC92FF',
       borderRadius: '40px',
@@ -383,6 +444,8 @@ const styles = {
       flexDirection: 'row',
       alignItems: 'center',
       gap: '6px',
+      zIndex: 2,
+      minHeight: '36px',
       flex: 'none',
       order: '0',
       flexGrow: '0',
@@ -395,6 +458,11 @@ const styles = {
     sx: {
       border: '2px solid white',
       borderRadius: '50%',
+      width: '20px',
+      height: '20px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   },
 };

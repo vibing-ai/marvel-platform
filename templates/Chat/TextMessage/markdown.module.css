@@ -1,0 +1,37 @@
+
+/* stlyes for the markdown content */
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi/Satoshi-Regular.otf') format('opentype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi/Satoshi-Bold.otf') format('opentype');
+  font-weight: 600;
+}
+
+.markdownBody {
+  font-family: 'Satoshi', -apple-system, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #1F1F1F;
+}
+
+.p {
+  font-family: 'Satoshi', -apple-system, system-ui, sans-serif;
+  font-size: 2.735rem;
+  line-height: 2.5rem;
+  letter-spacing: -.02em;
+  margin: 0;
+  color: white;
+  padding-bottom: .5rem;
+}
+
+
+.strong {
+  font-weight: 600;
+  color: white;
+}
+

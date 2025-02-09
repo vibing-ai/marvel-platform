@@ -1,15 +1,26 @@
-import { Box, Fade, Grid, Typography } from '@mui/material';
-import Image from 'next/image';
-import emoji from 'remark-emoji';
-import remarkGfm from 'remark-gfm';
+import { Box, Fade, Grid, Typography } from "@mui/material";
+import Image from "next/image";
+import emoji from "remark-emoji";
+import remarkGfm from "remark-gfm";
 
-import MemoizedReactMarkdown from '@/components/MemoizedMarkdown';
+import MemoizedReactMarkdown from "@/components/MemoizedMarkdown";
 
-import ImageURLs from '@/assets/urls';
+import ImageURLs from "@/assets/urls";
 
-import CodeComponent from '../CodeComponent';
+import CodeComponent from "../CodeComponent";
 
-import styles from './styles';
+import markdownStyles from "./markdown.module.css";
+
+import styles from "./styles";
+
+// class names of markdown content rendered
+const MarkdownComponents = {
+  code: CodeComponent,
+  p: ({ children }) => <p className={markdownStyles.p}>{children}</p>,
+  strong: ({ children }) => (
+    <strong className={markdownStyles.strong}>{children}</strong>
+  ),
+};
 
 const TextMessage = (props) => {
   const { isMyMessage, message } = props;
@@ -31,7 +42,7 @@ const TextMessage = (props) => {
           <Typography {...styles.messageProps()}>
             <MemoizedReactMarkdown
               remarkPlugins={[remarkGfm, emoji]}
-              components={{ code: CodeComponent }}
+              components={MarkdownComponents}
             >
               {message}
             </MemoizedReactMarkdown>

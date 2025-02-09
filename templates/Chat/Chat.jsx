@@ -1,11 +1,12 @@
-import { useContext, useEffect, useRef } from 'react';
+/* eslint-disable prettier/prettier */
+import { useContext, useEffect, useRef } from "react";
 
 import {
   ArrowDownwardOutlined,
   InfoOutlined,
   Settings,
-} from '@mui/icons-material';
-import AddIcon from '@mui/icons-material/Add';
+} from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
 
 import {
   Button,
@@ -15,25 +16,25 @@ import {
   InputAdornment,
   TextField,
   Typography,
-} from '@mui/material';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+} from "@mui/material";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 
-import NavigationIcon from '@/assets/svg/Navigation.svg';
+import NavigationIcon from "@/assets/svg/Navigation.svg";
 
-import ChatHistoryWindow from './ChatHistoryWindow';
-import ChatSpinner from './ChatSpinner';
-import DefaultPrompt from './DefaultPrompt';
-import Message from './Message';
-import QuickActions from './QuickActions';
-import styles from './styles';
+import ChatHistoryWindow from "./ChatHistoryWindow";
+import ChatSpinner from "./ChatSpinner";
+import DefaultPrompt from "./DefaultPrompt";
+import Message from "./Message";
+import QuickActions from "./QuickActions";
+import styles from "./styles";
 
-import TextMessage from './TextMessage';
+import TextMessage from "./TextMessage";
 
-import { MESSAGE_ROLE, MESSAGE_TYPES } from '@/libs/constants/bots';
+import { MESSAGE_ROLE, MESSAGE_TYPES } from "@/libs/constants/bots";
 
-import { AuthContext } from '@/libs/providers/GlobalProvider';
+import { AuthContext } from "@/libs/providers/GlobalProvider";
 import {
   openInfoChat,
   resetChat,
@@ -49,12 +50,12 @@ import {
   setStreaming,
   setStreamingDone,
   setTyping,
-} from '@/libs/redux/slices/chatSlice';
-import { updateHistoryEntry } from '@/libs/redux/slices/historySlice';
-import { firestore } from '@/libs/redux/store';
-import fetchHistory from '@/libs/redux/thunks/fetchHistory';
-import createChatSession from '@/libs/services/chatbot/createChatSession';
-import sendMessage from '@/libs/services/chatbot/sendMessage';
+} from "@/libs/redux/slices/chatSlice";
+import { updateHistoryEntry } from "@/libs/redux/slices/historySlice";
+import { firestore } from "@/libs/redux/store";
+import fetchHistory from "@/libs/redux/thunks/fetchHistory";
+import createChatSession from "@/libs/services/chatbot/createChatSession";
+import sendMessage from "@/libs/services/chatbot/sendMessage";
 
 const ChatInterface = () => {
   const messagesContainerRef = useRef();
@@ -77,7 +78,7 @@ const ChatInterface = () => {
   } = useSelector((state) => state.chat);
   const { data: userData } = useSelector((state) => state.user);
 
-  const sessionId = localStorage.getItem('sessionId');
+  const sessionId = localStorage.getItem("sessionId");
 
   const currentSession = chat;
   const chatMessages = currentSession?.messages;
@@ -103,7 +104,7 @@ const ChatInterface = () => {
         fullName: userData?.fullName,
         email: userData?.email,
       },
-      type: 'chat',
+      type: "chat",
       message,
     };
 
@@ -112,7 +113,7 @@ const ChatInterface = () => {
 
     // Remove typing bubble
     dispatch(setTyping(false));
-    if (status === 'created') dispatch(setStreaming(true));
+    if (status === "created") dispatch(setStreaming(true));
 
     // Set chat session
     dispatch(setChatSession(data));
@@ -123,7 +124,7 @@ const ChatInterface = () => {
 
   useEffect(() => {
     return () => {
-      localStorage.removeItem('sessionId');
+      localStorage.removeItem("sessionId");
       dispatch(resetChat());
     };
   }, []);
@@ -136,18 +137,18 @@ const ChatInterface = () => {
         0,
         messagesContainerRef.current?.scrollHeight,
         {
-          behavior: 'smooth',
+          behavior: "smooth",
         }
       );
 
       const sessionRef = query(
-        collection(firestore, 'chatSessions'),
-        where('id', '==', sessionId)
+        collection(firestore, "chatSessions"),
+        where("id", "==", sessionId)
       );
 
       unsubscribe = onSnapshot(sessionRef, async (snapshot) => {
         snapshot.docChanges().forEach((change) => {
-          if (change.type === 'modified') {
+          if (change.type === "modified") {
             const updatedData = change.doc.data();
             const updatedMessages = updatedData.messages;
 
@@ -198,7 +199,7 @@ const ChatInterface = () => {
       0,
       messagesContainerRef.current?.scrollHeight,
       {
-        behavior: 'smooth',
+        behavior: "smooth",
       }
     );
 
@@ -207,7 +208,7 @@ const ChatInterface = () => {
 
   const handleSendMessage = async () => {
     if (!input) {
-      dispatch(setError('Please enter a message'));
+      dispatch(setError("Please enter a message"));
       setTimeout(() => {
         dispatch(setError(null));
       }, 3000);
@@ -330,7 +331,7 @@ const ChatInterface = () => {
   const renderCenterChatContent = () => {
     return (
       <Grid
-        onClick={() => dispatch(setMore({ role: 'shutdown' }))}
+        onClick={() => dispatch(setMore({ role: "shutdown" }))}
         {...styles.centerChat.centerChatGridProps}
       >
         <Grid

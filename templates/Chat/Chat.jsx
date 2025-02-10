@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 import {
   ArrowDownwardOutlined,
@@ -84,6 +84,9 @@ const ChatInterface = () => {
   const showNewMessageIndicator = !fullyScrolled && streamingDone;
 
   const { handleOpenSnackBar } = useContext(AuthContext);
+
+  const [isAIProcessing, setIsAIProcessing] = useState(false); // Newly Added
+  
 
   const startConversation = async (message) => {
     // Optionally dispatch a temporary message for the user's input
@@ -171,6 +174,7 @@ const ChatInterface = () => {
                 })
               );
               dispatch(setTyping(false));
+              setIsAIProcessing(false);   //Newly Added
             }
           }
         });
@@ -214,6 +218,9 @@ const ChatInterface = () => {
       return;
     }
 
+    // Lock input when AI starts processing
+    setIsAIProcessing(true);   //Newly Added
+
     // BUG FIX: First checking whether the user has entered any text before setting streaming true amd then sending the message.
     dispatch(setStreaming(true));
 
@@ -254,6 +261,9 @@ const ChatInterface = () => {
   };
 
   const handleQuickReply = async (option) => {
+    // Lock input when AI starts processing
+    setIsAIProcessing(true);   //Newly Added
+
     dispatch(setInput(option));
     dispatch(setStreaming(true));
 
@@ -280,7 +290,7 @@ const ChatInterface = () => {
 
   /* Push Enter */
   const keyDownHandler = async (e) => {
-    if (typing || !input || streaming) return;
+    if (typing || !input || streaming || isAIProcessing) return;    //Newly Added
     if (e.keyCode === 13) handleSendMessage();
   };
 
@@ -290,7 +300,7 @@ const ChatInterface = () => {
         <IconButton
           onClick={handleSendMessage}
           {...styles.bottomChatContent.iconButtonProps(
-            typing || error || !input || streaming
+            typing || error || !input || streaming || isAIProcessing   //Newly Added
           )}
         >
           <NavigationIcon />
@@ -415,7 +425,7 @@ const ChatInterface = () => {
               onKeyUp={keyDownHandler}
               error={!!error}
               helperText={error}
-              disabled={!!error}
+              disabled={!!error || isAIProcessing}
               focused={false}
               {...styles.bottomChatContent.chatInputProps(
                 renderQuickAction,

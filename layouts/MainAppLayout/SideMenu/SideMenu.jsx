@@ -4,6 +4,8 @@ import { Button, Grid, Typography } from '@mui/material';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/router';
 
+import NotificationsButton from '@/components/NotificationsButton';
+
 import KAIAvatar from '@/assets/svg/KAIAvatar.svg';
 
 import UserAvatar from '../../../components/UserAvatar';
@@ -46,6 +48,10 @@ const SideMenu = ({ user }) => {
     return <UserAvatar fullName={user?.fullName} />;
   };
 
+  const renderNotificationsButton = () => {
+    return <NotificationsButton />;
+  };
+
   const renderLogout = () => {
     return (
       <Grid {...styles.logoutGridProps}>
@@ -63,6 +69,7 @@ const SideMenu = ({ user }) => {
       {renderLogo()}
       <NavMenu />
       {renderProfileImage()}
+      {renderNotificationsButton()}
       {renderLogout()}
     </Grid>
   );

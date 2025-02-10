@@ -36,7 +36,7 @@ const styles = {
     paddingRight: '24px',
     paddingBottom: '8px',
     paddingLeft: '24px',
-    zIndex: 10,
+    zIndex: 20,
     backgroundColor: 'transparent',
     sx: (theme) => ({
       inset: '0 auto auto auto',

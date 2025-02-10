@@ -17,7 +17,8 @@ const seedDatabase = async () => {
     }
 
     // Create initial configuration
-    await db.collection('global')
+    await db
+      .collection('global')
       .doc('config')
       .set({ dbSeeded: true, updatedAt: Timestamp.fromMillis(Date.now()) });
 
@@ -30,7 +31,7 @@ const seedDatabase = async () => {
 
       // Verify the user's email
       await auth.updateUser(userCredential.uid, {
-        emailVerified: true
+        emailVerified: true,
       });
 
       // Create user document in Firestore
@@ -45,15 +46,66 @@ const seedDatabase = async () => {
         socialMedia: {
           facebook: null,
           linkedin: null,
-          xHandle: null
+          xHandle: null,
         },
         createdAt: Timestamp.fromMillis(Date.now()),
-        updatedAt: Timestamp.fromMillis(Date.now())
+        updatedAt: Timestamp.fromMillis(Date.now()),
       };
 
       await db.collection('users').doc(userCredential.uid).set(userData);
       console.log(`Initial user created with ID: ${userCredential.uid}`);
-      
+
+      // Seed intial welcome notifications and other test notifications
+      try {
+        const nid = crypto.randomUUID();
+        const pid = crypto.randomUUID();
+        const notification = {
+          id: nid,
+          type: 'Announcement',
+          title: 'Welcome to Marvel AI',
+          description: 'Placeholder text',
+          date: Timestamp.fromMillis(Date.now()),
+          actionLink: 'No_Action',
+        };
+        const personalNotification = {
+          id: pid,
+          user: userCredential.uid,
+          nid: nid,
+          type: 'Announcement',
+          title: 'Welcome to Marvel AI',
+          description: 'Placeholder text',
+          date: Timestamp.fromMillis(Date.now()),
+          actionLink: 'No_Action',
+          isRead: false,
+        };
+        await db.collection('notifications').doc(nid).set(notification);
+        await db
+          .collection('users')
+          .doc(userCredential.uid)
+          .collection('notifications')
+          .doc(pid)
+          .set(personalNotification);
+
+        const pid2 = crypto.randomUUID();
+        const personalNotification2 = {
+          id: pid2,
+          user: userCredential.uid,
+          type: 'Update',
+          title: 'Something Happened',
+          description: 'Placeholder text 2',
+          date: Timestamp.fromMillis(Date.now()),
+          actionLink: 'No_Action',
+          isRead: false,
+        };
+        await db
+          .collection('users')
+          .doc(userCredential.uid)
+          .collection('notifications')
+          .doc(pid2)
+          .set(personalNotification2);
+      } catch (notifErr) {
+        console.error('Error creating initial notification:', notifErr);
+      }
     } catch (userError) {
       console.error('Error creating initial user:', userError);
     }
@@ -63,7 +115,7 @@ const seedDatabase = async () => {
       await db.collection('tools').doc(doc.id.toString()).set(doc);
       console.log(`Document with ID ${doc.id} added to the Tools collection`);
     });
-    
+
     // Show final success message with a non-blocking delay
     setTimeout(() => {
       console.log('\n=== Marvel AI Setup Complete ===');
@@ -73,8 +125,10 @@ const seedDatabase = async () => {
       console.log('Password: Test@123');
       console.log('===============================\n');
     }, 1000);
-    
-    console.log('Marvel AI installed successfully to firebase and is ready to go!');
+
+    console.log(
+      'Marvel AI installed successfully to firebase and is ready to go!'
+    );
   } catch (error) {
     console.error('Error seeding database:', error);
   }

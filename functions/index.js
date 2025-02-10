@@ -5,6 +5,7 @@ admin.initializeApp();
 
 const userController = require('./controllers/userController');
 const marvelAIController = require('./controllers/marvelAIController');
+const notifTriggerController = require('./notificationController/index');
 const { seedDatabase } = require('./cloud_db_seed');
 
 seedDatabase();
@@ -21,6 +22,10 @@ module.exports = {
   /* Marvel AI */
   chat: marvelAIController.chat,
   createChatSession: marvelAIController.createChatSession,
+
+  /* Notifications */
+  ...notifTriggerController,
+
   /* Migration Scripts - For running  */
   ...migrationScripts,
 };

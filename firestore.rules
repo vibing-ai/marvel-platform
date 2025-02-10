@@ -10,6 +10,14 @@ service cloud.firestore {
       allow write: if request.auth != null && request.auth.uid == uid;
     }
 
+    match /users/{uid}/notifications {
+      // Allow read access only if the user is authenticated and is reading from their own document
+      allow read: if request.auth != null && request.auth.uid == uid;
+
+      // Allow write access only if the user is authenticated and is writing to their own document
+      allow write: if request.auth != null && request.auth.uid == uid;
+    }
+
     match /chatSessions/{id} {
       allow read: if true;
       // Allow write access if the user is authenticated and the document's userId matches the authenticated user's ID

@@ -19,6 +19,9 @@
       "port": 8080,
       "rules": "firestore.rules"
     },
+    "pubsub": {
+      "port": 8085
+    },
     "database": {
       "port": 9000
     },

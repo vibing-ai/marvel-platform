@@ -140,3 +140,4 @@ dist
 **/node_modules/
 **/build/
 **/docs
+**/.genkit

@@ -6,6 +6,7 @@ admin.initializeApp();
 const userController = require('./controllers/userController');
 const marvelAIController = require('./controllers/marvelAIController');
 const { seedDatabase } = require('./cloud_db_seed');
+const agentController = require('./controllers/AgentController');
 
 seedDatabase();
 
@@ -15,12 +16,16 @@ seedDatabase();
 const migrationScripts = {};
 
 module.exports = {
-  /* Authenticaition */
+  // /* Authenticaition */
   signUpUser: userController.signUpUser,
 
-  /* Marvel AI */
+  // /* Marvel AI */
   chat: marvelAIController.chat,
   createChatSession: marvelAIController.createChatSession,
+
+  /* Agent */
+  basicChatMessage: agentController.basicChatMessage,
+  
   /* Migration Scripts - For running  */
   ...migrationScripts,
 };

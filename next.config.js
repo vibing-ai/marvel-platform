@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 const withTM = require('next-transpile-modules')(['react-syntax-highlighter']);
+const withBundleAnalyzer = require('@next/bundle-analyzer')({ enabled: process.env.ANALYZE === 'true' });
 
 // Load environment variables from a specific file in the parent directory
 dotenv.config({ path: '../.env' });
@@ -9,6 +10,16 @@ const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
   trailingSlash: true,
+  experimental: {
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
+    },
+  },
 };
 
 module.exports = withTM({

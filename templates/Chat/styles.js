@@ -8,10 +8,13 @@ const styles = {
     paddingLeft: '20px',
     paddingBottom: '20px',
     paddingRight: '20px',
-    sx: {
+    sx: (theme) => ({
       flexWrap: 'nowrap',
       position: 'relative',
-    },
+      [theme.breakpoints.down('tablet')]: {
+        flexDirection: 'column',
+      },
+    }),
   },
   mainGridProps: {
     container: true,
@@ -25,6 +28,9 @@ const styles = {
       [theme.breakpoints.down('laptop')]: {
         maxWidth: '800',
         fontSize: '14px',
+      },
+      [theme.breakpoints.down('tablet')]: {
+        marginBottom: '20px',
       },
     }),
   },
@@ -386,7 +392,7 @@ const styles = {
   },
 
   quickActionButton: {
-    sx: {
+    sx: (theme) => ({
       padding: '12px 20px',
       cursor: 'pointer',
       background: '#AC92FF',
@@ -398,16 +404,31 @@ const styles = {
       flex: 'none',
       order: '0',
       flexGrow: '0',
+      [theme.breakpoints.down('tablet')]: {
+        fontSize: '10px',
+      },
       '&:hover': {
         backgroundColor: 'rgb(88,20,244)',
       },
-    },
+    }),
   },
   quickActionButtonAddIcon: {
-    sx: {
+    sx: (theme) => ({
       border: '2px solid white',
       borderRadius: '50%',
-    },
+      [theme.breakpoints.down('tablet')]: {
+        // width: '20px',
+        // height: '20px',
+        // paddingLeft: '15px',
+      },
+    }),
+  },
+  quickActionButtonText: {
+    sx: (theme) => ({
+      [theme.breakpoints.down('tablet')]: {
+        display: 'none',
+      },
+    }),
   },
 };
 

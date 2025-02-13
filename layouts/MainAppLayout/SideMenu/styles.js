@@ -122,6 +122,11 @@ const styles = {
     display: 'flex',
     width: 'auto',
     height: '19px',
+    sx: (theme) => ({
+      [theme.breakpoints.down('tablet')]: {
+        display: 'none',
+      },
+    }),
   },
   titleProps: {
     fontFamily: 'Ethnocentric Regular',

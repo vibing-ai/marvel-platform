@@ -413,15 +413,10 @@ const styles = {
     }),
   },
   quickActionButtonAddIcon: {
-    sx: (theme) => ({
+    sx: {
       border: '2px solid white',
       borderRadius: '50%',
-      [theme.breakpoints.down('tablet')]: {
-        // width: '20px',
-        // height: '20px',
-        // paddingLeft: '15px',
-      },
-    }),
+    },
   },
   quickActionButtonText: {
     sx: (theme) => ({

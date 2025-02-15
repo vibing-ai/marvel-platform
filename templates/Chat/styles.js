@@ -239,7 +239,6 @@ const styles = {
         position: 'relative',
         '& .MuiInputBase-root': {
           maxHeight: '250px',
-          overflow: 'auto',
           width: '100%',
           padding: '10px 16px',
           paddingLeft: renderQuicKAction ? '140px' : '16px',
@@ -249,23 +248,29 @@ const styles = {
           maxWidth: '100%',
           borderRadius: '30px',
         },
-        '& .MuiInputBase-input': {
+        '& .MuiInputBase-inputMultiline': { //added scrollbar when text exceed max height
           padding: '0',
           margin: '0',
           minHeight: '24px',
           maxHeight: '250px',
-          overflow: 'auto',
           lineHeight: '24px',
           display: 'flex',
           alignItems: 'center',
           width: '100%',
+          overflowY: 'auto !important',
+          scrollbarWidth: 'thin',
+          scrollbarColor: '#454545 #181A20',
           '&::-webkit-scrollbar': {
-            width: '8px',
+            width: '6px',
+            backgroundColor: '#181A20',
           },
           '&::-webkit-scrollbar-thumb': {
-            backgroundColor: 'rgba(255, 255, 255, 0.2)',
-            borderRadius: '4px',
-          },
+            backgroundColor: '#454545',
+            borderRadius: '3px',
+            '&:hover': {
+              backgroundColor: '#555555'
+            }
+          }
         },
       },
       InputProps: {
@@ -285,24 +290,6 @@ const styles = {
           fontFamily: 'Satoshi Medium',
           fontSize: { laptop: '16px', desktop: '18px', desktopMedium: '20px' },
           whiteSpace: 'pre-wrap',
-          '& .MuiInputBase-input': {
-            padding: '4px 0',
-            lineHeight: '24px',
-            maxHeight: '250px',
-            overflow: 'auto !important',
-            '&::-webkit-scrollbar': {
-              width: '8px',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              backgroundColor: 'rgba(255, 255, 255, 0.2)',
-              borderRadius: '4px',
-            },
-          },
-          '& .MuiInputAdornment-root': {
-            height: 'auto',
-            alignSelf: 'center',
-            marginTop: '0 !important',
-          },
         }),
         endAdornment: renderSendIcon(),
         startAdornment: renderQuicKAction(),

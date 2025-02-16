@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { Box, Card, Grid, useMediaQuery } from '@mui/material';
 import Head from 'next/head';
-import Image from "next/image";
+import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 
 import AppDisabled from '@/components/AppDisabled';
@@ -49,33 +49,29 @@ const AuthLayout = (props) => {
         src={ImageURLs.AuthBgImage}
         alt="auth_background_logo"
         {...styles.imageProps}
-        style={{
-          maxWidth: "100%"
-        }} />
+      />
     );
   };
 
   const renderArtifacts = () => {
-    return (<>
-      <Box {...styles.marvelProps}>
-        <Image
-          {...styles.marvelImageProps}
-          src={ImageURLs.MarvelAuthImg}
-          alt="Marvel Image"
-          style={{
-            maxWidth: "100%"
-          }} />
-      </Box>
-      <Box {...styles.greenBlobProps}>
-        <Image
-          {...styles.blobImageProps}
-          src={ImageURLs.PurpleBlobSvg}
-          alt="green_blob"
-          style={{
-            maxWidth: "100%"
-          }} />
-      </Box>
-    </>);
+    return (
+      <>
+        <Box {...styles.marvelProps}>
+          <Image
+            {...styles.marvelImageProps}
+            src={ImageURLs.MarvelAuthImg}
+            alt="Marvel Image"
+          />
+        </Box>
+        <Box {...styles.greenBlobProps}>
+          <Image
+            {...styles.blobImageProps}
+            src={ImageURLs.PurpleBlobSvg}
+            alt="green_blob"
+          />
+        </Box>
+      </>
+    );
   };
 
   const renderHead = () => {

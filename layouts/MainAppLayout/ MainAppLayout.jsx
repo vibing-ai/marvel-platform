@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { Grid, useMediaQuery } from '@mui/material';
 import Head from 'next/head';
 
-import Image from "next/image";
+import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 
 import AppDisabled from '@/components/AppDisabled';
@@ -54,15 +54,9 @@ const MainAppLayout = (props) => {
 
   const renderApp = () => {
     return (
-      (<Grid {...styles.mainGrid}>
+      <Grid {...styles.mainGrid}>
         <Grid {...styles.bgGridProps}>
-          <Image
-            src={ImageURLs.GridBg}
-            alt="grid_bg"
-            {...styles.bgProps}
-            style={{
-              maxWidth: "100%"
-            }} />
+          <Image src={ImageURLs.GridBg} alt="grid_bg" {...styles.bgProps} />
         </Grid>
         <Grid {...styles.navBarContainer}>
           <SideMenu user={user.data} />
@@ -70,7 +64,7 @@ const MainAppLayout = (props) => {
         <Grid {...styles.contentGridProps(extraContentProps, isToolPage)}>
           <Grid {...styles.childrenWrapProps}>{children}</Grid>
         </Grid>
-      </Grid>)
+      </Grid>
     );
   };
 

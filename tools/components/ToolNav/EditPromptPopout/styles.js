@@ -1,15 +1,11 @@
 const styles = {
   popoutStyles: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translateX(-50%)',
     width: '400px',
     height: 'auto',
     background: '#0F0E14',
-    border: '2px solid #9D74FF',
+    border: '1px solid #9D74FF',
     borderRadius: '20px',
-    zIndex: 1000,
+    padding: '20px',
   },
   promptButton: {
     width: 118,

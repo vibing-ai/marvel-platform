@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Popover } from '@mui/material';
 
-import AccordionInputGroupItem from '@/components/AccordionInputGroupItem';
 import GradientOutlinedButton from '@/components/GradientOutlinedButton';
 
 import CarrotDown from '@/assets/svg/CarrotDown.svg';
@@ -17,8 +18,8 @@ const { setPopoutOpen } = toolActions;
 /**
  * EditPromptPopout Component
  *
- * This component renders a button to toggle the prompt popout, 
- * which contains a tool request form inside an accordion.
+ * This component renders a button to toggle the prompt popout,
+ * which contains a tool request form inside a popover.
  *
  * @component
  * @param {Object} props - The component props.
@@ -29,6 +30,17 @@ const { setPopoutOpen } = toolActions;
 const EditPromptPopout = (props) => {
   const { toolDoc, popoutOpen } = props;
   const dispatch = useDispatch();
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    dispatch(setPopoutOpen(!popoutOpen));
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    dispatch(setPopoutOpen(false));
+  };
 
   /**
    * Renders the button to toggle the popout.
@@ -44,7 +56,7 @@ const EditPromptPopout = (props) => {
         iconPlacement="right"
         active={!!popoutOpen}
         icon={popoutOpen ? <CarrotUp /> : <CarrotDown />}
-        onClick={() => dispatch(setPopoutOpen(!popoutOpen))}
+        onClick={handleClick}
         extraButtonProps={{
           sx: {
             ...styles.promptButton,
@@ -55,27 +67,27 @@ const EditPromptPopout = (props) => {
     );
   };
 
-  /**
-   * Renders the accordion-style popout containing the tool request form.
-   *
-   * @returns {JSX.Element} The accordion component.
-   */
-  const renderPopout = () => {
-    return (
-      <AccordionInputGroupItem
-        open={popoutOpen}
-        toggleOpen={() => dispatch(setPopoutOpen(!popoutOpen))}
-        extraAccordionDetailsProps={styles.popoutStyles}
-      >
-        <ToolRequestForm isPopout={true} inputs={toolDoc?.inputs} id={toolDoc?.id} />
-      </AccordionInputGroupItem>
-    );
-  };
-
   return (
     <>
       {renderPromptButton()}
-      {popoutOpen && renderPopout()}
+      <Popover
+        open={popoutOpen}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        PaperProps={{
+          sx: styles.popoutStyles
+        }}
+      >
+        <ToolRequestForm isPopout={true} inputs={toolDoc?.inputs} id={toolDoc?.id} />
+      </Popover>
     </>
   );
 };

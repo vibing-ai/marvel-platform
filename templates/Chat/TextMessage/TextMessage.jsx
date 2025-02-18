@@ -20,6 +20,25 @@ const MarkdownComponents = {
   strong: ({ children }) => (
     <strong className={markdownStyles.strong}>{children}</strong>
   ),
+  h1: ({ children }) => <h1 className={markdownStyles.h1}>{children}</h1>,
+  h2: ({ children }) => <h2 className={markdownStyles.h2}>{children}</h2>,
+  h3: ({ children }) => <h3 className={markdownStyles.h3}>{children}</h3>,
+  h4: ({ children }) => <h4 className={markdownStyles.h4}>{children}</h4>,
+  h5: ({ children }) => <h5 className={markdownStyles.h5}>{children}</h5>,
+  h6: ({ children }) => <h6 className={markdownStyles.h6}>{children}</h6>,
+  ul: ({ children }) => <ul className={markdownStyles.ul}>{children}</ul>,
+  ol: ({ children }) => <ol className={markdownStyles.ol}>{children}</ol>,
+  table: ({ children }) => (
+    <table className={markdownStyles.table}>{children}</table>
+  ),
+  th: ({ children }) => <th className={markdownStyles.th}>{children}</th>,
+  td: ({ children }) => <td className={markdownStyles.td}>{children}</td>,
+  blockquote: ({ children }) => (
+    <blockquote className={markdownStyles.blockquote}>{children}</blockquote>
+  ),
+  alert: ({ children }) => (
+    <div className={markdownStyles.markdownAlert}>{children}</div>
+  ),
 };
 
 const TextMessage = (props) => {

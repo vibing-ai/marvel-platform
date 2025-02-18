@@ -27,7 +27,7 @@ dayjs.extend(advancedFormat);
  *
  * @return {JSX.Element} - The rendered date picker input field component.
  */
-const PrimaryDatePickerInput = forwardRef((props) => {
+const PrimaryDatePickerInput = forwardRef((props, ref) => {
   const {
     id,
     error,
@@ -55,6 +55,7 @@ const PrimaryDatePickerInput = forwardRef((props) => {
   return (
     <DatePickerElement
       name={id}
+      ref={ref}
       label={renderLabel()}
       placeholder={placeholder}
       error={!!error}

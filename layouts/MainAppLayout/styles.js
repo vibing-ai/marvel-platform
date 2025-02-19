@@ -11,6 +11,7 @@ const styles = {
       background: theme.palette.Background.darkGradientBackground,
     }),
   },
+
   mainGrid: {
     position: 'relative',
     container: true,
@@ -20,10 +21,16 @@ const styles = {
     alignItems: 'center',
     color: 'white',
     overflow: 'hidden',
-    sx: {
+    sx: (theme) => ({
+      '@media (max-width: 800px)': {
+        padding: '13px',
+      },
       background:
         'radial-gradient(circle at center -100px, #4A426A 0%, #201E2B 50%, #000000 100%)',
-    },
+      [theme.breakpoints.down('laptop')]: {
+        padding: '20px',
+      },
+    }),
   },
   navBarContainer: {
     position: 'fixed',
@@ -38,12 +45,12 @@ const styles = {
     paddingLeft: '24px',
     zIndex: 10,
     backgroundColor: 'transparent',
-    sx: (theme) => ({
-      inset: '0 auto auto auto',
-      [theme.breakpoints.down('laptop')]: {
-        display: 'none',
+    sx: {
+      '@media (max-width: 800px)': {
+        paddingLeft: '10px',
+        paddingRight: '10px',
       },
-    }),
+    },
   },
   contentGridProps: (extraContentProps) => ({
     container: true,

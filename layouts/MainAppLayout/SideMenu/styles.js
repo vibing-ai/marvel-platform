@@ -11,6 +11,14 @@ const styles = {
     bgcolor: 'rgba(24, 26, 32, 0.37)',
     borderRadius: '30px',
     paddingLeft: '8px',
+    sx: (theme) => ({
+      '@media (max-width: 800px)': {
+        paddingLeft: '2px',
+      },
+      [theme.breakpoints.up('largeDesktop')]: {
+        width: '1600px',
+      },
+    }),
   },
   logoGridProps: {
     container: true,
@@ -117,6 +125,11 @@ const styles = {
     display: 'flex',
     width: 'auto',
     height: '19px',
+    sx: (theme) => ({
+      [theme.breakpoints.down('tablet')]: {
+        display: 'none',
+      },
+    }),
   },
   titleProps: {
     fontFamily: 'Ethnocentric Regular',

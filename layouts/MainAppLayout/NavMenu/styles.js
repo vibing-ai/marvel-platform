@@ -20,6 +20,9 @@ const styles = {
       borderRadius: '8px',
       background: '#24272F',
       m: 1,
+      '@media (max-width: 800px)': {
+        width: '20px',
+      },
       border: isActive ? '1px solid #9D74FF' : '1px solid transparent',
       color: (theme) =>
         isActive ? `${theme.palette.Background.purple}95` : '#9E94A5',
@@ -50,6 +53,9 @@ const styles = {
     paddingRight: '12px',
     paddingBottom: '8px',
     paddingLeft: '12px',
+    sx: {
+      inset: '0 auto auto auto',
+    },
   },
   menuIconGridProps: {
     container: true,
@@ -60,6 +66,15 @@ const styles = {
     mobileSmall: 'auto',
     width: '100%',
     sx: {
+      '@media (max-width: 1080px)': {
+        transform: 'translateX(-24px)',
+      },
+      '@media (min-width: 800px)': {
+        transform: 'translateX(0)',
+      },
+      '@media (max-width: 800px)': {
+        transform: 'translateX(-24px)',
+      },
       svg: {
         transform: { mobileSmall: 'scale(0.8)', desktop: 'scale(1)' },
       },
@@ -75,6 +90,11 @@ const styles = {
     maxHeight: '24px',
     height: 'auto',
     fontSize: { mobileSmall: '16px', desktop: '16px' },
+    sx: {
+      '@media (max-width: 1080px)': {
+        display: 'none',
+      },
+    },
   },
 };
 

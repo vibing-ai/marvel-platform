@@ -10,6 +10,7 @@ const styles = {
       maxWidth: '232px',
       height: '100%',
       borderRadius: '10px',
+      marginLeft: '20px',
     },
   },
   chatHistoryHeader: (showHistory) => ({

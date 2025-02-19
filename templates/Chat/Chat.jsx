@@ -13,6 +13,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  styled,
   TextField,
   Typography,
 } from '@mui/material';
@@ -394,7 +395,7 @@ const ChatInterface = () => {
           {/* Render the AddIcon component. */}
           <AddIcon {...styles.quickActionButtonAddIcon} />
           {/* Render the Typography component to display the text. */}
-          <Typography>Actions</Typography>
+          <Typography {...styles.quickActionButtonText}>Actions</Typography>
         </Grid>
       </InputAdornment>
     );

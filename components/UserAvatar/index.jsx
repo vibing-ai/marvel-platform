@@ -1,10 +1,12 @@
 import React from 'react';
 
-import { Grid, Typography } from '@mui/material';
+import { Grid, Typography, useMediaQuery } from '@mui/material';
 
 import styles from './styles';
 
 const UserAvatar = ({ fullName }) => {
+  const isMobileScreen = useMediaQuery('(max-width: 800px)');
+
   const getUserInitials = (name) => {
     if (!name) return '';
     const initials = name
@@ -24,7 +26,9 @@ const UserAvatar = ({ fullName }) => {
         </div>
       </Grid>
       <Grid {...styles.nameContainer}>
-        <Typography {...styles.name}>{fullName}</Typography>
+        {!isMobileScreen && (
+          <Typography {...styles.name}>{fullName}</Typography>
+        )}
       </Grid>
     </Grid>
   );

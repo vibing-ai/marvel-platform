@@ -28,6 +28,11 @@ const styles = {
     color: '#9E94A5',
     textAlign: 'left',
     lineHeight: '16px',
+    sx: (theme) => ({
+      [theme.breakpoints.down('tablet')]: {
+        display: 'none',
+      },
+    }),
   },
   nameContainer: {
     position: 'relative',

@@ -1,6 +1,6 @@
 const styles = {
   mainGrid: {
-    sx: {
+    sx: (theme) => ({
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -11,7 +11,14 @@ const styles = {
       background: 'rgba(24, 26, 32, 0.37)',
       backdropFilter: 'blur(47px)',
       borderRadius: '10px',
-    },
+      [theme.breakpoints.up('largeDesktop')]: {
+        width: '100%',
+        maxWidth: 'auto',
+      },
+      '@media (max-width: 800px)': {
+        background: 'red',
+      },
+    }),
     md: {
       padding: '8px 24px',
       borderRadius: '10px',

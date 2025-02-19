@@ -12,6 +12,7 @@ const sharedStyles = {
     width: { laptop: '1450px' },
     maxWidth: { laptop: '1450px' },
     minWidth: {
+      largeDesktop: '1536px',
       desktop: '1200px',
       laptop: '944px',
       tablet: '688px',

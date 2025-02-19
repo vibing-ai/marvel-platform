@@ -1,0 +1,198 @@
+
+
+/* styles for the markdown content */
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi/Satoshi-Regular.otf') format('opentype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi/Satoshi-Bold.otf') format('opentype');
+  font-weight: 600;
+}
+
+.markdownBody {
+  font-family: 'Satoshi', -apple-system, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #1F1F1F;
+}
+
+/* Headings (H1–H6) */
+.h1 {
+  font-size: 45px;
+  margin-top: 80px;
+  margin-bottom: 40px;
+  line-height: 1.2;
+  font-family: 'Satoshi', sans-serif;
+}
+
+.h2 {
+  font-size: 40px;
+  margin-top: 60px;
+  margin-bottom: 30px;
+  line-height: 1.3;
+  font-family: 'Satoshi', sans-serif;
+}
+
+.h3 {
+  font-size: 35px;
+  margin-top: 50px;
+  margin-bottom: 25px;
+  line-height: 1.4;
+  font-family: 'Satoshi', sans-serif;
+}
+
+.h4 {
+  font-size: 30px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+  font-family: 'Satoshi', sans-serif;
+}
+
+.h5 {
+  font-size: 25px;
+  margin-top: 30px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+  font-family: 'Satoshi', sans-serif;
+}
+
+.h6 {
+  font-size: 20px;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  line-height: 1.6;
+  font-family: 'Satoshi', sans-serif;
+}
+
+/* Paragraphs & Line Spacing */
+.p {
+  font-family: 'Satoshi', -apple-system, system-ui, sans-serif;
+  font-size: 2.rem;
+  line-height: 2.rem;
+  letter-spacing: -.02em;
+  margin: 0;
+  color: white;
+  padding-bottom: .5rem;
+}
+
+/* Lists & Tables */
+.ul,
+.ol {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 2em;
+}
+
+.table {
+  width: 100%;
+  max-width: 850px; /* Matches Multiple Choice Quiz width */
+  margin: 20px auto 32px;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(30, 30, 50, 0.9);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.table th{
+  background: linear-gradient(90deg, #9a7cff, #6b5ed7);
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 18px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 2px solid #5a4bcc;
+}
+
+/* Adjust First Column (Labels) */
+.table td:first-child {
+  background: #6b5ed7;
+  color: white;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.5px;
+  padding: 16px;
+  width: 30%; /* Increased width for readability */
+  min-width: 180px;
+  border-right: 2px solid #5a4bcc;
+}
+
+/* Cell Styling */
+.table th,
+.table td {
+  padding: 14px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 500;
+  color: #e0e0e0;
+  border: 1px solid white; 
+}
+.table td {
+  padding: 12px;
+  border: 1px solid white;
+}
+
+/* Alternating Row Colors */
+.table tr:nth-child(even) td {
+  background: rgba(40, 40, 70, 0.9);
+}
+
+/* Center Table Text */
+.table th,
+.table td {
+  text-align: center;
+}
+
+/* Caption Styling */
+.table caption {
+  font-size: 20px;
+  font-weight: bold;
+  color: #9d74ff;
+  padding: 12px;
+  text-align: center;
+}
+
+/* Code Blocks */
+.codeBlock pre {
+  background-color: var(--bgColor-muted);
+  padding: 16px;
+  border-radius: 10px;
+  overflow: auto;
+}
+
+.codeBlock code {
+  background-color: var(--bgColor-neutral-muted);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Blockquotes & Alerts */
+.blockquote {
+  border-left: 4px solid var(--borderColor-accent);
+  padding: 16px;
+  margin: 32px 0;
+  background-color: var(--bgColor-muted);
+}
+
+.markdownAlert {
+  padding: 16px;
+  border-left: 4px solid var(--borderColor-accent);
+  background-color: var(--bgColor-muted);
+  margin: 32px 0;
+  border-radius: 10px;
+}
+
+.strong {
+  font-weight: 600;
+  color: white;
+}
+
+

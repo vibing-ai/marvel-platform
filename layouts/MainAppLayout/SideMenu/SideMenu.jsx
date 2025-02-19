@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 import KAIAvatar from '@/assets/svg/KAIAvatar.svg';
 
 import UserAvatar from '../../../components/UserAvatar';
-import HamburgerMenu from '../HamburgerMenu';
 import NavMenu from '../NavMenu';
 
 import styles from './styles';
@@ -65,7 +64,6 @@ const SideMenu = ({ user }) => {
       <NavMenu />
       {renderProfileImage()}
       {renderLogout()}
-      <HamburgerMenu />
     </Grid>
   );
 };

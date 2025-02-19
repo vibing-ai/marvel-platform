@@ -15,6 +15,9 @@ const styles = {
         width: '100%',
         maxWidth: 'auto',
       },
+      '@media (max-width: 800px)': {
+        background: 'red',
+      },
     }),
     md: {
       padding: '8px 24px',

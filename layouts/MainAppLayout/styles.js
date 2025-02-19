@@ -22,6 +22,9 @@ const styles = {
     color: 'white',
     overflow: 'hidden',
     sx: (theme) => ({
+      '@media (max-width: 800px)': {
+        padding: '13px',
+      },
       background:
         'radial-gradient(circle at center -100px, #4A426A 0%, #201E2B 50%, #000000 100%)',
       [theme.breakpoints.down('laptop')]: {
@@ -42,6 +45,12 @@ const styles = {
     paddingLeft: '24px',
     zIndex: 10,
     backgroundColor: 'transparent',
+    sx: {
+      '@media (max-width: 800px)': {
+        paddingLeft: '10px',
+        paddingRight: '10px',
+      },
+    },
   },
   contentGridProps: (extraContentProps) => ({
     container: true,

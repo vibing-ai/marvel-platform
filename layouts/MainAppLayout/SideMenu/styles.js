@@ -12,6 +12,9 @@ const styles = {
     borderRadius: '30px',
     paddingLeft: '8px',
     sx: (theme) => ({
+      '@media (max-width: 800px)': {
+        paddingLeft: '2px',
+      },
       [theme.breakpoints.up('largeDesktop')]: {
         width: '1600px',
       },

@@ -5,7 +5,7 @@ const styles = {
     mobileSmall: 12,
     alignItems: 'center',
     justifyContent: isMyMessage ? 'flex-end' : 'flex-start',
-    mt: 3,
+    mt: 2,
   }),
   messageProps: () => ({
     sx: {

@@ -5,11 +5,21 @@ const styles = {
     sx: {
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'flex-end',
+      justifyContent: 'flex-start',
       minWidth: '232px',
       maxWidth: '232px',
-      height: '100%',
-      borderRadius: '10px',
+      height: '60px',
+      borderRadius: '50px',
+      position: 'fixed',
+      bottom: '20px',
+      right: '20px',
+      background: '#181A20',
+      zIndex: 10,
+      transition,
+      '&.expanded': {
+        height: '400px',
+        borderRadius: '10px',
+      },
     },
   },
   chatHistoryHeader: (showHistory) => ({
@@ -21,10 +31,11 @@ const styles = {
       padding: '19px 24px',
       gap: '12px',
       width: '100%',
-      height: '65px',
+      minHeight: '60px',
       background: showHistory ? '#0B0C0F' : '#181A20',
-      borderRadius: showHistory ? '10px 10px 0px 0px' : '10px',
+      borderRadius: showHistory ? '10px 10px 0px 0px' : '50px',
       transition,
+      cursor: 'pointer',
     },
   }),
   chatHistoryHeaderTitleContainer: {
@@ -65,13 +76,21 @@ const styles = {
   }),
   chatHistoriesContainer: (showHistory) => ({
     sx: {
-      display: 'block',
+      display: showHistory ? 'block' : 'none',
       width: '100%',
-      height: showHistory ? '100%' : '0px',
+      height: 'calc(100% - 60px)',
       overflowY: 'auto',
       transition,
       background: 'rgba(24, 26, 32, 0.37)',
       backdropFilter: 'blur(47px)',
+      borderRadius: '0 0 10px 10px',
+      '&::-webkit-scrollbar': {
+        width: '8px',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        borderRadius: '4px',
+      },
     },
   }),
 };

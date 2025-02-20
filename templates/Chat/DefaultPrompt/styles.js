@@ -1,12 +1,17 @@
 const styles = {
   defaultPromptsGridContainer: {
     sx: {
-      margin: '0px 0px 10px',
+      margin: '0',
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'flex-start',
       padding: '0px',
       gap: '16px',
+      position: 'fixed',
+      bottom: '100px',
+      left: '20px',
+      zIndex: 20,
+      maxWidth: 'calc(100% - 292px)', // Account for chat history width
     },
   },
   defaultPrompt: {

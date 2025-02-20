@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 import {
   ArrowDownwardOutlined,
@@ -25,6 +25,7 @@ import NavigationIcon from '@/assets/svg/Navigation.svg';
 import ChatHistoryWindow from './ChatHistoryWindow';
 import ChatSpinner from './ChatSpinner';
 import DefaultPrompt from './DefaultPrompt';
+import LoadingDots from './LoadingDots/LoadingDots';
 import Message from './Message';
 import QuickActions from './QuickActions';
 import styles from './styles';
@@ -58,7 +59,6 @@ import sendMessage from '@/libs/services/chatbot/sendMessage';
 
 const ChatInterface = () => {
   const messagesContainerRef = useRef();
-
   const dispatch = useDispatch();
   const {
     more,
@@ -84,6 +84,23 @@ const ChatInterface = () => {
   const showNewMessageIndicator = !fullyScrolled && streamingDone;
 
   const { handleOpenSnackBar } = useContext(AuthContext);
+
+  const [dots, setDots] = useState('');
+
+  useEffect(() => {
+    let interval;
+    if (streaming) {
+      interval = setInterval(() => {
+        setDots((prev) => {
+          if (prev === '...') return '';
+          return prev + '.';
+        });
+      }, 500);
+    } else {
+      setDots('');
+    }
+    return () => clearInterval(interval);
+  }, [streaming]);
 
   const startConversation = async (message) => {
     // Optionally dispatch a temporary message for the user's input
@@ -415,13 +432,32 @@ const ChatInterface = () => {
               onKeyUp={keyDownHandler}
               error={!!error}
               helperText={error}
-              disabled={!!error}
+              disabled={streaming || !!error}
               focused={false}
-              {...styles.bottomChatContent.chatInputProps(
-                renderQuickAction,
-                renderSendIcon,
-                !!error
-              )}
+              {...{
+                ...styles.bottomChatContent.chatInputProps(
+                  renderQuickAction,
+                  renderSendIcon,
+                  !!error
+                ),
+                placeholder: !error && (streaming ? `Generating output${dots}` : "Send a message"),
+                sx: {
+                  ...styles.bottomChatContent.chatInputProps(
+                    renderQuickAction,
+                    renderSendIcon,
+                    !!error
+                  ).sx,
+                  '& .MuiInputBase-root': {
+                    ...styles.bottomChatContent.chatInputProps(
+                      renderQuickAction,
+                      renderSendIcon,
+                      !!error
+                    ).sx['& .MuiInputBase-root'],
+                    bgcolor: streaming ? '#1E2028' : '#181A20',
+                    transition: 'background-color 0.3s ease'
+                  }
+                }
+              }}
             />
           </Grid>
         </Grid>

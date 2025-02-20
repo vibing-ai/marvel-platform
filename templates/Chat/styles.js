@@ -150,7 +150,7 @@ const styles = {
       height: 'calc(100vh - 64px)',
       sx: {
         overflowY: 'hidden',
-        paddingBottom: '120px',
+        paddingBottom: '140px',
       },
     },
     messagesGridProps: {

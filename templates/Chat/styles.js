@@ -147,16 +147,11 @@ const styles = {
       justifyContent: 'center',
       zIndex: 0,
       px: { laptop: 2, desktop: 2.5, desktopMedium: 3 },
+      height: 'calc(100vh - 64px)',
       sx: {
-        overflowY: 'auto',
+        overflowY: 'hidden',
+        paddingBottom: '120px',
       },
-    },
-    noMessagesGridProps: {
-      container: true,
-      desktopLarge: 12,
-      justifyContent: 'center',
-      height: '100%',
-      alignContent: 'flex-start',
     },
     messagesGridProps: {
       container: true,
@@ -170,6 +165,20 @@ const styles = {
       alignContent: 'flex-start',
       sx: {
         overflowY: 'auto',
+        marginBottom: '80px',
+        paddingBottom: '20px',
+        position: 'relative',
+        '&::-webkit-scrollbar': {
+          width: '6px',
+          backgroundColor: '#181A20',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: '#454545',
+          borderRadius: '3px',
+          '&:hover': {
+            backgroundColor: '#555555'
+          }
+        }
       },
     },
     imageProps: {
@@ -233,7 +242,7 @@ const styles = {
       autoComplete: 'off',
       multiline: true,
       minRows: 1,
-      maxRows: 10,
+      maxRows: 5,
       sx: {
         width: '100%',
         position: 'relative',

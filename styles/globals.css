@@ -1,3 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.slate-quiz-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 16px;
+}
+/* 
+.slate-p{
+  margin-bottom: 1rem; 
+  text-align: left; 
+  font-family: 'Satoshi Regular',` sans-serif; 
+  font-size: 16px; 
+  line-height: 1.6; 
+  color: #FFFFFF; 
+  display: block; 
+   padding: 12px 16px;
+   position: relative;
+}
+
+.slate-h3{
+  padding: 12px 16px;
+  margin-bottom: 0.8rem;
+  font-family: 'Satoshi Bold', sans-serif;
+  font-size: 20px;
+  line-height: 1.5;
+  color: #FFFFFF;
+  text-align: left;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  position: relative;
+} */
+
+.slate-answers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.slate-editor {
+  padding: 16px;
+
+  background-color: transparent; 
+
+  color: #FFFFFF; 
+  border-radius: 0px 0px 12px 12px;
+
+  border-left: 1px solid #9D74FF;
+  border-right: 1px solid #9D74FF; 
+  border-bottom: 1px solid #9D74FF;
+}
+
+.slate-toolbar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+
+  background: #24272F;
+  border-top: 1px solid #9D74FF;
+  border-left: 1px solid #9D74FF;
+  border-right: 1px solid #9D74FF;
+  border-radius: 12px 12px 0px 0px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.slate-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.slate-btn-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slate-btn {
+  position: relative;
+  background: transparent;
+  border: none;
+
+  color: #9E7EFF; 
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slate-btn:hover {
+  background: #0C0B17;
+  color: #9E7EFF; 
+}
+
+.slate-btn.is-active {
+  background: #4A2C4A; 
+  color: #9E94A5; 
+ 
+}
+
+.slate-btn-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #B084B0; 
+  opacity: 0.75;
+  border-radius: 0 0 8px 8px;
+}
+
+.slate-dropdown {
+  color: #FFFFFF;
+  background-color: #0C0B17;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 4px 8px;
+  transition: all 0.3s ease;
+}
+
+.slate-dropdown:hover {
+  background-color: #3E3A4B;
+}
+
+.slate-separator {
+  height: 17.5px;
+  background-color: #DECDFF; 
+  width: 1px;
+  margin: 0 8px;
+  opacity: .6;
+}
+/* 
+.slate-h1 {
+  font-family: "Satoshi Bold", sans-serif;
+  font-size: 20px; 
+  line-height: 27px; 
+  font-weight: 700;
+  letter-spacing: -0.02em; 
+  text-align: left;
+  color: #ffffff;
+  margin-top: 20px; 
+  white-space: pre-wrap;
+}
+.slate-p {
+  font-family: "Satoshi Regular", sans-serif;
+  font-size: 20px; 
+  line-height: 27px; 
+  font-weight: 400;
+  letter-spacing: -0.02em; 
+  text-align: left;
+  color: #ffffff;
+  white-space: pre-wrap; 
+} */
 /*
 Roboto-Mono font imported here
 */
@@ -154,4 +319,124 @@ body {
 a {
   color: #9d74ff;
   text-decoration: none;
+}
+@layer base {
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+  [data-registry="plate"].dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --brand: 213.3 93.9% 67.8%;
+    --highlight: 48 96% 53%;
+  }
+  [data-registry="plate"] {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+    --brand: 217.2 91.2% 59.8%;
+    --highlight: 47.9 95.8% 53.1%;
+  }
+}
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

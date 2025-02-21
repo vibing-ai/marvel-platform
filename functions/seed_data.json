@@ -482,6 +482,31 @@
             "label": "IMAGES (PNG / JPG / JPEG)"
           }
         ]
+      },
+      {
+        "defaultValue": "en",
+        "label": "Language",
+        "name": "lang",
+        "placeholder": "Select the language",
+        "type": "select",
+        "values": [
+          {
+            "key": "en",
+            "label": "English"
+          },
+          {
+            "key": "fr",
+            "label": "French"
+          },
+          {
+            "key": "es",
+            "label": "Spanish"
+          },
+          {
+            "key": "de",
+            "label": "German"
+          }
+        ]
       }
     ],
     "logo": "https://firebasestorage.googleapis.com/v0/b/kai-ai-f63c8.appspot.com/o/YoutubeLogo.png?alt=media&token=2809083f-f816-41b6-8f86-80582b3da188",

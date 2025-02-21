@@ -39,6 +39,7 @@ const AccordionInputGroupItem = (props) => {
   } = props;
 
   const theme = useTheme();
+  if (response) return null;
 
   const renderEditButton = () => {
     return (
@@ -78,8 +79,14 @@ const AccordionInputGroupItem = (props) => {
   };
 
   return (
-    <Accordion expanded={open} {...styles.accordianProps}>
-      {renderSummary()}
+   <Accordion 
+      expanded={open}
+      {...(!title && !response && !description
+        ? styles.accordianPopoutProps
+        : styles.accordianProps
+      )}
+    >
+      {!title && !response && !description ? null : renderSummary()}
       <Fade in>
         <AccordionDetails
           {...styles.accordionDetailsProps(extraAccordionDetailsProps)}

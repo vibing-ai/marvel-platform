@@ -7,6 +7,12 @@ const styles = {
       background: '#0F0E14',
     },
   },
+  accordianPopoutProps: {
+    sx: {
+      width: '50%',
+      background: '#0F0E14',
+    },
+  },
   accordionDetailsProps: (extraAccordionDetailsProps) => ({
     sx: {
       ...extraAccordionDetailsProps,

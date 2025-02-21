@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 
 import { Grid, useMediaQuery } from '@mui/material';
 import Head from 'next/head';
-
 import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -13,6 +12,8 @@ import ImageURLs from '@/assets/urls';
 
 import SideMenu from './SideMenu';
 import styles from './styles';
+
+import ToolNav from '@/tools/components/ToolNav/ToolNav';
 
 import { setLoading } from '@/libs/redux/slices/authSlice';
 
@@ -31,12 +32,14 @@ const MainAppLayout = (props) => {
 
   const auth = useSelector((state) => state.auth);
   const user = useSelector((state) => state.user);
+  const { response } = useSelector((state) => state.tools);
 
   const isTabletScreen = useMediaQuery((theme) =>
     theme.breakpoints.down('laptop')
   );
 
   const isLoading = auth.loading || user.loading || !user.data || !auth.data;
+  const showToolNav = isToolPage && response;
 
   useEffect(() => {
     dispatch(setLoading(false));
@@ -58,9 +61,11 @@ const MainAppLayout = (props) => {
         <Grid {...styles.bgGridProps}>
           <Image src={ImageURLs.GridBg} alt="grid_bg" {...styles.bgProps} />
         </Grid>
-        <Grid {...styles.navBarContainer}>
-          <SideMenu user={user.data} />
-        </Grid>
+        {!showToolNav && (
+          <Grid {...styles.navBarContainer}>
+            <SideMenu user={user.data} />
+          </Grid>
+        )}
         <Grid {...styles.contentGridProps(extraContentProps, isToolPage)}>
           <Grid {...styles.childrenWrapProps}>{children}</Grid>
         </Grid>

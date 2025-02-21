@@ -17,7 +17,8 @@ const seedDatabase = async () => {
     }
 
     // Create initial configuration
-    await db.collection('global')
+    await db
+      .collection('global')
       .doc('config')
       .set({ dbSeeded: true, updatedAt: Timestamp.fromMillis(Date.now()) });
 
@@ -30,7 +31,7 @@ const seedDatabase = async () => {
 
       // Verify the user's email
       await auth.updateUser(userCredential.uid, {
-        emailVerified: true
+        emailVerified: true,
       });
 
       // Create user document in Firestore
@@ -45,15 +46,14 @@ const seedDatabase = async () => {
         socialMedia: {
           facebook: null,
           linkedin: null,
-          xHandle: null
+          xHandle: null,
         },
         createdAt: Timestamp.fromMillis(Date.now()),
-        updatedAt: Timestamp.fromMillis(Date.now())
+        updatedAt: Timestamp.fromMillis(Date.now()),
       };
 
       await db.collection('users').doc(userCredential.uid).set(userData);
       console.log(`Initial user created with ID: ${userCredential.uid}`);
-      
     } catch (userError) {
       console.error('Error creating initial user:', userError);
     }
@@ -63,7 +63,7 @@ const seedDatabase = async () => {
       await db.collection('tools').doc(doc.id.toString()).set(doc);
       console.log(`Document with ID ${doc.id} added to the Tools collection`);
     });
-    
+
     // Show final success message with a non-blocking delay
     setTimeout(() => {
       console.log('\n=== Marvel AI Setup Complete ===');
@@ -73,8 +73,10 @@ const seedDatabase = async () => {
       console.log('Password: Test@123');
       console.log('===============================\n');
     }, 1000);
-    
-    console.log('Marvel AI installed successfully to firebase and is ready to go!');
+
+    console.log(
+      'Marvel AI installed successfully to firebase and is ready to go!'
+    );
   } catch (error) {
     console.error('Error seeding database:', error);
   }

@@ -1,31 +1,18 @@
-import { Fade, Grid, Typography } from '@mui/material';
+import { Fade, Grid } from '@mui/material';
 
-// import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+
+import DocumentEditor from '../../components/DocumentEditor/DocumentEditor';
 
 import styles from './styles';
 
 const WorksheetGeneratorResponse = () => {
-  // const { response } = useSelector((state) => state.tools);
-
-  const hasTitle = false;
-
-  const renderTitle = () => {
-    return (
-      <Grid {...styles.titleGridProps}>
-        <Typography {...styles.titleProps}>No Title</Typography>
-      </Grid>
-    );
-  };
-
-  const renderQuestions = () => {
-    return <Grid {...styles.questionsGridProps}>Hello World !</Grid>;
-  };
+  const { content: markdownContent } = useSelector((state) => state.tools.editorState.currentState);
 
   return (
     <Fade in>
       <Grid {...styles.mainGridProps}>
-        {hasTitle && renderTitle()}
-        {renderQuestions()}
+        <DocumentEditor markdownContent={markdownContent} />
       </Grid>
     </Fade>
   );

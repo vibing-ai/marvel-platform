@@ -5,7 +5,7 @@ import { Grid } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 
-import GradientOutlinedButton from '@/components/GradientOutlinedButton';
+import ToolNav from './components/ToolNav/ToolNav';
 
 import TOOL_OUTPUTS from './outputs';
 import styles from './styles';
@@ -15,6 +15,8 @@ import ROUTES from '@/libs/constants/routes';
 import theme from '@/libs/theme/theme';
 import { actions as ToolActions } from '@/tools/data';
 import ToolForm from '@/tools/views/ToolFormView';
+
+import navStyles from '@/layouts/MainAppLayout/styles';
 
 const { resetCommunicator } = ToolActions;
 
@@ -37,7 +39,7 @@ const ToolPage = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const { response, formOpen } = useSelector((state) => state.tools);
+  const { response, formOpen, popoutOpen } = useSelector((state) => state.tools);
 
   const { id } = toolDoc;
 
@@ -49,31 +51,21 @@ const ToolPage = (props) => {
 
   const handleRoute = () => router.push(ROUTES.HOME);
 
-  const renderBackButton = () => {
-    return (
-      <Grid {...styles.backButtonGridProps}>
-        <GradientOutlinedButton
-          bgcolor="#24272F"
-          icon={<ArrowBack />}
-          textColor="#AC92FF"
-          iconPlacement="left"
-          onHoverTextColor={theme.palette.Background.white2}
-          clickHandler={handleRoute}
-          text="Back"
-          {...styles.outlinedButtonProps}
-        />
-      </Grid>
-    );
-  };
-
   const ToolOutputComponent = TOOL_OUTPUTS[id];
 
   return (
-    <Grid {...styles.mainGridProps}>
-      {renderBackButton()}
-      <ToolForm toolDoc={toolDoc} formOpen={formOpen} response={response} />
-      {!formOpen && response && <ToolOutputComponent />}
-    </Grid>
+    <>
+      {response && (
+        <Grid {...navStyles.navBarContainer}>
+          <ToolNav toolDoc={toolDoc} popoutOpen={popoutOpen} />
+        </Grid>
+      )}
+      <Grid {...styles.mainGridProps}>
+        <ToolForm toolDoc={toolDoc} formOpen={formOpen} response={response} />
+        {!formOpen && response && <ToolOutputComponent />}
+      </Grid>
+    </>
   );
 };
+
 export default ToolPage;

@@ -28,7 +28,7 @@ const { setPopoutOpen } = toolActions;
  * @returns {JSX.Element} The rendered component.
  */
 const EditPromptPopout = (props) => {
-  const { toolDoc, popoutOpen } = props;
+  const { toolDoc, popoutOpen, setTopic } = props;
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -51,7 +51,7 @@ const EditPromptPopout = (props) => {
     return (
       <GradientOutlinedButton
         text="Prompt"
-        bgcolor={popoutOpen ? '#DECDFF !important' : 'black !important'}
+        bgcolor={popoutOpen ? ' #DECDFF !important' : 'black !important'}
         textColor="white !important"
         iconPlacement="right"
         active={!!popoutOpen}
@@ -86,7 +86,7 @@ const EditPromptPopout = (props) => {
           sx: styles.popoutStyles
         }}
       >
-        <ToolRequestForm isPopout={true} inputs={toolDoc?.inputs} id={toolDoc?.id} />
+        <ToolRequestForm isPopout={true} inputs={toolDoc?.inputs} id={toolDoc?.id} setTopic={setTopic} />
       </Popover>
     </>
   );

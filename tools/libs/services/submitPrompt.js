@@ -69,6 +69,7 @@ const submitPrompt = async (payload) => {
     return {
       response: response.data?.data,
       sessionId,
+      topic,
     };
   } catch (err) {
     const { response } = err;

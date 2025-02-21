@@ -9,7 +9,7 @@ const styles = {
   },
   promptButton: {
     width: 118,
-    height: 40,
+    height: 400,
     padding: '8px 12px',
     borderRadius: '20px',
     borderWidth: '1px',

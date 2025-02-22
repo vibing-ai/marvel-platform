@@ -29,8 +29,8 @@ const TextMessage = (props) => {
           {!isMyMessage && (
             <Box>
               <Image
-                width="38.74px"
-                height="38.74px"
+                width={39}
+                height={39}
                 src={ImageURLs.MarvelCircleAvatar}
                 alt="Marvel AI"
               />

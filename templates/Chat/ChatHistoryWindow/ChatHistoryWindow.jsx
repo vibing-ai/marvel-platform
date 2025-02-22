@@ -15,34 +15,28 @@ import styles from './styles';
  * The sidebar is toggled by clicking on the toggle button.
  */
 const ChatHistoryWindow = () => {
-  // State variable to track whether the chat history is shown or hidden. Initially set to false.
   const [showHistory, setShowHistory] = useState(false);
 
-  /**
-   * Toggles the visibility of the chat history.
-   *
-   * @return {void} No return value.
-   */
   const toggleHistory = () => setShowHistory((prev) => !prev);
 
   return (
-    <Grid {...styles.chatHistoryWindow}>
-      <Grid {...styles.chatHistoryHeader(showHistory)}>
+    <Grid {...styles.chatHistoryWindow} className={showHistory ? 'expanded' : ''}>
+      <Grid 
+        {...styles.chatHistoryHeader(showHistory)}
+        onClick={toggleHistory}
+      >
         <Grid {...styles.chatHistoryHeaderTitleContainer}>
           <Grid>{showHistory ? <ChatIconFill /> : <ChatIcon />}</Grid>
           <Typography {...styles.chatHistoryHeaderTitleText}>
             Chat History
           </Typography>
         </Grid>
-        <Grid
-          {...styles.chatHistoryHeaderButton(showHistory)}
-          onClick={() => toggleHistory()}
-        >
+        <Grid {...styles.chatHistoryHeaderButton(showHistory)}>
           <ChatHistoryButtonIcon />
         </Grid>
       </Grid>
       <Grid {...styles.chatHistoriesContainer(showHistory)}>
-        {showHistory ? <ChatHistory /> : null}
+        {showHistory && <ChatHistory />}
       </Grid>
     </Grid>
   );

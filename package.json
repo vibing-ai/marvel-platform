@@ -29,7 +29,7 @@
     "firebase": "^9.22.0",
     "firebase-admin": "^11.8.0",
     "moment": "^2.29.4",
-    "next": "12.3.0",
+    "next": "13.5.1",
     "next-transpile-modules": "^10.0.1",
     "nextjs-google-analytics": "^2.3.3",
     "react": "18.2.0",

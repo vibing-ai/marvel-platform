@@ -1,9 +1,9 @@
 import { Grid, Typography } from '@mui/material';
-import { TOOLS_ID } from '@/tools/libs/constants/tools';
 
 import styles from './styles';
 
 import ToolCard, { ToolCardSkeleton } from '@/tools/components/ToolCard';
+import { TOOLS_ID } from '@/tools/libs/constants/tools';
 
 const DEFAULT_TOOLS = new Array(8)
   .fill()
@@ -34,7 +34,7 @@ const ToolsListingContainer = (props) => {
     const sortedTools = [...(data || [])].sort((a, b) => {
       const aInToolsId = Object.values(TOOLS_ID).includes(a.id);
       const bInToolsId = Object.values(TOOLS_ID).includes(b.id);
-      
+
       if (aInToolsId && !bInToolsId) return -1;
       if (!aInToolsId && bInToolsId) return 1;
       return 0;

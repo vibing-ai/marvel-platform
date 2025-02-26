@@ -11,6 +11,7 @@ const INPUT_TYPES = {
   SELECT: 'select',
   TEXT_CONTENT: 'text_content',
   FILE_TYPE_SELECTOR: 'file_type_selector',
+  TEXT_AREA: 'text_area',
 };
 
 export { INPUT_TYPES };

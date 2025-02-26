@@ -779,16 +779,29 @@
     "id": "presentation-generator",
     "inputs": [
       {
+        "label": "Content",
+        "name": "content",
+        "placeholder": "Enter the presentation content",
+        "tooltip": "Provide a clear and focused content to guide and design of your presentation.",
+        "type": "text_area"
+      },
+      {
+        "label": "Number of Slides",
+        "max": 15,
+        "min": 1,
+        "name": "n_slides",
+        "placeholder": "Enter the total number of slides (e.g., 10)",
+        "tooltip": "Specify the number of slides to include in the presentation for a balanced and concise delivery.",
+        "type": "number"
+      },
+      {
         "defaultValue": "5th grade",
-        "label": "Grade Level",
-        "name": "grade_level",
-        "placeholder": "Enter the grade level (e.g., 10th Grade)",
+        "label": "Instructional Level",
+        "name": "instructional_level",
+        "placeholder": "Enter the institutional level (e.g., 10th Grade)",
+        "tooltip": "Select the appropriate instructional level to ensure the presentation is tailored to the audience's understanding.",
         "type": "select",
         "values": [
-          {
-            "key": "Pre-K",
-            "label": "Pre-K"
-          },
           {
             "key": "Kindergarten",
             "label": "Kindergarten"
@@ -826,20 +839,20 @@
             "label": "8th grade"
           },
           {
-            "key": "9th grade",
-            "label": "9th grade"
+            "key": "Freshman",
+            "label": "Freshman"
           },
           {
-            "key": "10th grade",
-            "label": "10th grade"
+            "key": "Sophomore",
+            "label": "Sophomore"
           },
           {
-            "key": "11th grade",
-            "label": "11th grade"
+            "key": "Junior",
+            "label": "Junior"
           },
           {
-            "key": "12th grade",
-            "label": "12th grade"
+            "key": "Senior",
+            "label": "Senior"
           },
           {
             "key": "University",
@@ -848,117 +861,6 @@
           {
             "key": "Professional Staff",
             "label": "Professional Staff"
-          },
-          {
-            "key": "Year 1",
-            "label": "Year 1"
-          },
-          {
-            "key": "Year 2",
-            "label": "Year 2"
-          },
-          {
-            "key": "Year 3",
-            "label": "Year 3"
-          },
-          {
-            "key": "Year 4",
-            "label": "Year 4"
-          },
-          {
-            "key": "Year 5",
-            "label": "Year 5"
-          },
-          {
-            "key": "Year 6",
-            "label": "Year 6"
-          },
-          {
-            "key": "Year 7",
-            "label": "Year 7"
-          },
-          {
-            "key": "Year 8",
-            "label": "Year 8"
-          },
-          {
-            "key": "Year 9",
-            "label": "Year 9"
-          },
-          {
-            "key": "Year 10",
-            "label": "Year 10"
-          },
-          {
-            "key": "Year 11",
-            "label": "Year 11"
-          },
-          {
-            "key": "Year 12",
-            "label": "Year 12"
-          },
-          {
-            "key": "Year 13",
-            "label": "Year 13"
-          }
-        ]
-      },
-      {
-        "label": "Number of Slides",
-        "max": 15,
-        "min": 1,
-        "name": "n_slides",
-        "placeholder": "Enter the total number of slides (e.g., 10)",
-        "tooltip": "Specify the number of slides to include in the presentation for a balanced and concise delivery.",
-        "type": "number"
-      },
-      {
-        "label": "Topic",
-        "name": "topic",
-        "placeholder": "Enter the presentation topic",
-        "tooltip": "Provide a clear and focused topic to guide the content and design of your presentation.",
-        "type": "text"
-      },
-      {
-        "label": "Objectives",
-        "multiline": true,
-        "name": "objectives",
-        "placeholder": "Enter the key objectives for the presentation",
-        "rows": 3,
-        "tooltip": "List the primary goals or takeaways the presentation should achieve for the audience.",
-        "type": "text"
-      },
-      {
-        "label": "Additional Comments",
-        "multiline": true,
-        "name": "additional_comments",
-        "placeholder": "Enter any additional comments or instructions",
-        "rows": 3,
-        "tooltip": "Include any extra details or specific instructions to customize the presentation to your needs.",
-        "type": "text"
-      },
-      {
-        "defaultValue": "en",
-        "label": "Language",
-        "name": "lang",
-        "placeholder": "Select the language",
-        "type": "select",
-        "values": [
-          {
-            "key": "en",
-            "label": "English"
-          },
-          {
-            "key": "fr",
-            "label": "French"
-          },
-          {
-            "key": "es",
-            "label": "Spanish"
-          },
-          {
-            "key": "de",
-            "label": "German"
           }
         ]
       }

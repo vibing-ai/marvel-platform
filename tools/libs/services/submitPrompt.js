@@ -32,14 +32,46 @@ const saveResponseToFirestore = async (sessionData) => {
  */
 const submitPrompt = async (payload) => {
   try {
-    const url = `${process.env.NEXT_PUBLIC_MARVEL_ENDPOINT}submit-tool`;
+    const response = {};
 
-    const response = await axios.post(url, payload, {
-      headers: {
-        'Content-Type': 'application/json',
-        'API-Key': 'dev',
-      },
-    });
+    // Return for tool_id = presentation-generator
+    if (payload.tool_data.tool_id === 'presentation-generator') {
+      response.data = {
+        data: {
+          slides: [
+            {
+              title: 'Can we really trust AI?',
+              content: 'That is the question',
+              type: 'title',
+            },
+            {
+              title: 'Something to think about',
+              content: 'It is a question of trust',
+              type: 'body',
+            },
+            {
+              title: 'Another slide',
+              content: 'Another content',
+              type: 'body',
+            },
+            {
+              title: 'that is the question',
+              content: 'It is a question of trust',
+              type: 'body',
+            },
+          ],
+        },
+      };
+    } else {
+      const url = `${process.env.NEXT_PUBLIC_MARVEL_ENDPOINT}submit-tool`;
+
+      response = await axios.post(url, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+          'API-Key': 'dev',
+        },
+      });
+    }
 
     // Safely extract the topic from inputs
     const topicInput = payload.tool_data.inputs.find(

@@ -87,6 +87,17 @@ const styles = {
     justifyContent: 'flex-end', // Align the button to the bottom right
     mt: 4, // Add margin top for spacing
   },
+  slideControlsContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 2
+  },
+  removeButton: {
+    minWidth: 'auto',
+    padding: '4px 8px',
+    color: 'primary.main'
+  }
 };
 
 export default styles;

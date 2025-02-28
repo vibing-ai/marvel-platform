@@ -51,7 +51,12 @@ const PresentationSlides = ({ slides, onBackToOutliner }) => {
       {/* Main container with forceful style overrides */}
       <Box
         sx={{
-          margin: 0,
+          backgroundColor: 'transparent !important',
+          border: 'none !important',
+          '& *': {
+            border: 'none !important',
+          },
+          width: '1440px',
         }}
       >
         <Grid
@@ -64,8 +69,9 @@ const PresentationSlides = ({ slides, onBackToOutliner }) => {
             paddingRight: '10px',
             margin: '0 auto',
             display: 'flex',
-            background: 'transparent !important',
-            border: 'none !important',
+            border: 'none',
+            marginTop: '-70px',
+            marginBottom: '-62px',
           }}
         >
           {/* Header with back button */}
@@ -74,8 +80,8 @@ const PresentationSlides = ({ slides, onBackToOutliner }) => {
             xs={12}
             {...styles.slideControlsContainer}
             sx={{
-              backgroundColor: 'transparent !important',
-              border: 'none !important',
+              backgroundColor: 'transparent',
+              border: 'none',
               ...(styles.slideControlsContainer?.sx || {}),
             }}
           >
@@ -84,7 +90,7 @@ const PresentationSlides = ({ slides, onBackToOutliner }) => {
               onClick={onBackToOutliner}
               sx={{
                 color: styles.slideTitleProps?.color || '#AC92FF',
-                backgroundColor: 'transparent !important',
+                backgroundColor: 'transparent',
               }}
             >
               Back to Outliner
@@ -100,8 +106,8 @@ const PresentationSlides = ({ slides, onBackToOutliner }) => {
               minHeight: '80vh',
               width: '100%',
               display: 'flex',
-              backgroundColor: 'transparent !important',
-              border: 'none !important',
+              backgroundColor: 'transparent',
+              border: 'none',
             }}
           >
             {/* Sidebar with all slide details */}
@@ -114,7 +120,7 @@ const PresentationSlides = ({ slides, onBackToOutliner }) => {
                 padding: 2,
                 overflowY: 'auto',
                 maxHeight: '80vh',
-                border: 'none !important',
+                border: 'none',
               }}
             >
               <List>
@@ -127,7 +133,7 @@ const PresentationSlides = ({ slides, onBackToOutliner }) => {
                       backgroundColor:
                         currentSlideIndex === index ? '#2A1B4A' : 'transparent',
                       borderRadius: '6px',
-                      border: 'none !important',
+                      border: 'none',
                     }}
                   >
                     <ListItemButton
@@ -135,7 +141,7 @@ const PresentationSlides = ({ slides, onBackToOutliner }) => {
                       sx={{
                         borderRadius: '6px',
                         '&:hover': { backgroundColor: '#2A1B4A' },
-                        border: 'none !important',
+                        border: 'none',
                       }}
                     >
                       <ListItemText
@@ -180,8 +186,11 @@ const PresentationSlides = ({ slides, onBackToOutliner }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 padding: 4,
-                backgroundColor: 'transparent !important',
-                border: 'none !important',
+                backgroundColor: 'transparent',
+                border: 'none',
+                width: '63%',
+                height: 'auto',
+                paddingTop: '22px',
               }}
             >
               <Typography variant="body1" sx={{ mb: 2 }}>
@@ -201,7 +210,7 @@ const PresentationSlides = ({ slides, onBackToOutliner }) => {
                   textAlign: 'center',
                   mb: 4,
                   width: '100%',
-                  border: 'none !important',
+                  border: 'none',
                 }}
               >
                 <Typography
@@ -233,8 +242,8 @@ const PresentationSlides = ({ slides, onBackToOutliner }) => {
                 justifyContent="center"
                 spacing={2}
                 sx={{
-                  backgroundColor: 'transparent !important',
-                  border: 'none !important',
+                  backgroundColor: 'transparent',
+                  border: 'none',
                 }}
               >
                 <Grid item>
@@ -246,7 +255,7 @@ const PresentationSlides = ({ slides, onBackToOutliner }) => {
                       backgroundColor: '#1C1233',
                       '&:hover': { backgroundColor: '#2A1B4A' },
                       '&.Mui-disabled': { color: 'text.disabled' },
-                      border: 'none !important',
+                      border: 'none',
                     }}
                   >
                     <ArrowBackIcon />
@@ -261,7 +270,7 @@ const PresentationSlides = ({ slides, onBackToOutliner }) => {
                       backgroundColor: '#1C1233',
                       '&:hover': { backgroundColor: '#2A1B4A' },
                       '&.Mui-disabled': { color: 'text.disabled' },
-                      border: 'none !important',
+                      border: 'none',
                     }}
                   >
                     <ArrowForwardIcon />

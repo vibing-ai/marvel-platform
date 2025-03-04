@@ -38,10 +38,7 @@ const submitPrompt = async (payload) => {
     const url = `${process.env.NEXT_PUBLIC_MARVEL_ENDPOINT}submit-tool`;
 
     // console.log(payload.tool_data.tool_id === 'presentation-generator')
-    if (payload.tool_data.tool_id === 'presentation-generator')
-    {
-      return presentation_outline;
-    }
+    
 
     const response = await axios.post(url, payload, {
       headers: {
@@ -66,6 +63,11 @@ const submitPrompt = async (payload) => {
 
     // non-blocking: Save the response to Firestore
     saveResponseToFirestore(sessionData);
+
+    if (payload.tool_data.tool_id === 'presentation-generator')
+      {
+        return presentation_outline;
+      }
 
     return response.data?.data;
   } catch (err) {

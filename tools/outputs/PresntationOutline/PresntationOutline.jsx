@@ -12,7 +12,7 @@ const PresentationOutline = () => {
 
         <div style={{ width: 800, height: 792.70, padding: 28, background: '#0C0B17', borderRadius: 20, border: '2px #9D74FF solid', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 36, display: 'inline-flex' }}>
             <div style={{ flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', gap: 7, display: 'flex' }}>
-                <div style={{ alignSelf: 'stretch', textAlign: 'center', color: 'white', fontSize: 28, fontFamily: 'Satoshi', fontWeight: '700', wordWrap: 'break-word' }}>Presentation Generator</div>
+                <div style={{ alignSelf: 'stretch', textAlign: 'center', color: 'white', fontSize: 28, fontFamily: 'Satoshi', fontWeight: '700', wordWrap: 'break-word' }}>Presentation Outline</div>
                 <div style={{ alignSelf: 'stretch', textAlign: 'center', color: '#B3B2B2', fontSize: 16, fontFamily: 'Satoshi', fontWeight: '500', wordWrap: 'break-word' }}>Create a presentation for specific content.</div>
             </div>
             <div style={{ alignSelf: 'stretch', height: 633.70, flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', gap: 24, display: 'flex' }}>

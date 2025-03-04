@@ -779,129 +779,11 @@
     "id": "presentation-generator",
     "inputs": [
       {
-        "defaultValue": "5th grade",
-        "label": "Grade Level",
-        "name": "grade_level",
-        "placeholder": "Enter the grade level (e.g., 10th Grade)",
-        "type": "select",
-        "values": [
-          {
-            "key": "Pre-K",
-            "label": "Pre-K"
-          },
-          {
-            "key": "Kindergarten",
-            "label": "Kindergarten"
-          },
-          {
-            "key": "1st grade",
-            "label": "1st grade"
-          },
-          {
-            "key": "2nd grade",
-            "label": "2nd grade"
-          },
-          {
-            "key": "3rd grade",
-            "label": "3rd grade"
-          },
-          {
-            "key": "4th grade",
-            "label": "4th grade"
-          },
-          {
-            "key": "5th grade",
-            "label": "5th grade"
-          },
-          {
-            "key": "6th grade",
-            "label": "6th grade"
-          },
-          {
-            "key": "7th grade",
-            "label": "7th grade"
-          },
-          {
-            "key": "8th grade",
-            "label": "8th grade"
-          },
-          {
-            "key": "9th grade",
-            "label": "9th grade"
-          },
-          {
-            "key": "10th grade",
-            "label": "10th grade"
-          },
-          {
-            "key": "11th grade",
-            "label": "11th grade"
-          },
-          {
-            "key": "12th grade",
-            "label": "12th grade"
-          },
-          {
-            "key": "University",
-            "label": "University"
-          },
-          {
-            "key": "Professional Staff",
-            "label": "Professional Staff"
-          },
-          {
-            "key": "Year 1",
-            "label": "Year 1"
-          },
-          {
-            "key": "Year 2",
-            "label": "Year 2"
-          },
-          {
-            "key": "Year 3",
-            "label": "Year 3"
-          },
-          {
-            "key": "Year 4",
-            "label": "Year 4"
-          },
-          {
-            "key": "Year 5",
-            "label": "Year 5"
-          },
-          {
-            "key": "Year 6",
-            "label": "Year 6"
-          },
-          {
-            "key": "Year 7",
-            "label": "Year 7"
-          },
-          {
-            "key": "Year 8",
-            "label": "Year 8"
-          },
-          {
-            "key": "Year 9",
-            "label": "Year 9"
-          },
-          {
-            "key": "Year 10",
-            "label": "Year 10"
-          },
-          {
-            "key": "Year 11",
-            "label": "Year 11"
-          },
-          {
-            "key": "Year 12",
-            "label": "Year 12"
-          },
-          {
-            "key": "Year 13",
-            "label": "Year 13"
-          }
-        ]
+        "label": "Content",
+        "name": "content",
+        "placeholder": "Provide a subject, topic, text, description, and/or upload files. \nExamples:\n'World War I' \n'Grammar assessment on commas.' \nAn excerpt from a textbook. \nUploaded images of famous monuments.",
+        "tooltip": "Provide a clear and focused topic to guide the content and design of your presentation.",
+        "type": "text"
       },
       {
         "label": "Number of Slides",
@@ -913,55 +795,29 @@
         "type": "number"
       },
       {
-        "label": "Topic",
-        "name": "topic",
-        "placeholder": "Enter the presentation topic",
-        "tooltip": "Provide a clear and focused topic to guide the content and design of your presentation.",
-        "type": "text"
-      },
-      {
-        "label": "Objectives",
-        "multiline": true,
-        "name": "objectives",
-        "placeholder": "Enter the key objectives for the presentation",
-        "rows": 3,
-        "tooltip": "List the primary goals or takeaways the presentation should achieve for the audience.",
-        "type": "text"
-      },
-      {
-        "label": "Additional Comments",
-        "multiline": true,
-        "name": "additional_comments",
-        "placeholder": "Enter any additional comments or instructions",
-        "rows": 3,
-        "tooltip": "Include any extra details or specific instructions to customize the presentation to your needs.",
-        "type": "text"
-      },
-      {
-        "defaultValue": "en",
-        "label": "Language",
-        "name": "lang",
-        "placeholder": "Select the language",
+        "defaultValue": "Elementary",
+        "label": "Instruction Level",
+        "name": "instruction_level",
+        "placeholder": "Enter the instruction level (e.g., Elementary)",
         "type": "select",
         "values": [
           {
-            "key": "en",
-            "label": "English"
+            "key": "Elementary",
+            "label": "Elementary"
           },
           {
-            "key": "fr",
-            "label": "French"
+            "key": "High School",
+            "label": "High School"
           },
           {
-            "key": "es",
-            "label": "Spanish"
-          },
-          {
-            "key": "de",
-            "label": "German"
-          }
+            "key": "University",
+            "label": "University"
+          }  
         ]
       }
+      
+      
+       
     ],
     "logo": "https://firebasestorage.googleapis.com/v0/b/kai-ai-f63c8.appspot.com/o/YoutubeLogo.png?alt=media&token=2809083f-f816-41b6-8f86-80582b3da188",
     "name": "Presentation Generator"
@@ -1731,3 +1587,4 @@
     "name": "Writing Feedback Generator"
   }
 }
+

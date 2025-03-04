@@ -31,8 +31,17 @@ const saveResponseToFirestore = async (sessionData) => {
  * @return {Promise<object>} The response from the backend
  */
 const submitPrompt = async (payload) => {
+
+  const presentation_outline  = ["Introduction to World War II", "Causes of the War", "Major Battles", "The Aftermath", "Legacy and Lessons","The Aftermath","Introduction to World War II", "Causes of the War", "Major Battles"]
+
   try {
     const url = `${process.env.NEXT_PUBLIC_MARVEL_ENDPOINT}submit-tool`;
+
+    // console.log(payload.tool_data.tool_id === 'presentation-generator')
+    if (payload.tool_data.tool_id === 'presentation-generator')
+    {
+      return presentation_outline;
+    }
 
     const response = await axios.post(url, payload, {
       headers: {
@@ -70,5 +79,12 @@ const submitPrompt = async (payload) => {
     );
   }
 };
+
+
+// const submitPrompt = async (payload) => {
+
+//   return presentation_outline;
+
+// }
 
 export default submitPrompt;

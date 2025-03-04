@@ -1,14 +1,10 @@
 import { forwardRef, useEffect, useState } from 'react';
-
 import { useDispatch } from 'react-redux';
-
 import ImageMessage from '../ImageMessage';
 import Options from '../Options';
 import TextMessage from '../TextMessage';
 import VideoMessage from '../VideoMessage';
-
 import { MESSAGE_ROLE, MESSAGE_TYPES } from '@/libs/constants/bots';
-
 import { setStreaming, setStreamingDone } from '@/libs/redux/slices/chatSlice';
 
 const { OPTIONS, VIDEO, TEXT, IMAGE, GIF, QUICK_REPLY } = MESSAGE_TYPES;
@@ -29,6 +25,7 @@ const Message = forwardRef((props, ref) => {
     onQuickReply,
     fullyScrolled,
     streaming,
+    onRendered, // Added onRendered prop
   } = props;
 
   const dispatch = useDispatch();
@@ -51,7 +48,13 @@ const Message = forwardRef((props, ref) => {
     messageMounted || !isLastMessage || !isStreamable || !streaming;
 
   useEffect(() => {
-    if (stopStreaming) return;
+    if (stopStreaming) {
+      // If it's an AI message that's already complete, notify parent component
+      if (!isMyMessage && typeof onRendered === 'function') {
+        onRendered();
+      }
+      return;
+    }
 
     const characters = payload?.text.split('');
 
@@ -65,6 +68,11 @@ const Message = forwardRef((props, ref) => {
       dispatch(setStreamingDone(true));
       setMessageMounted(true);
       dispatch(setStreaming(false));
+      
+      // Call onRendered callback when streaming is complete for AI messages
+      if (!isMyMessage && typeof onRendered === 'function') {
+        onRendered();
+      }
     }, 20 * characters.length);
   }, []);
 

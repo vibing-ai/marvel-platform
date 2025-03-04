@@ -1,0 +1,506 @@
+/* Editor Variables */
+.editorContainer {
+  --base-size-4: 0.25rem;
+  --base-size-8: 0.5rem;
+  --base-size-16: 1rem;
+  --base-text-weight-normal: 400;
+  --base-text-weight-medium: 500;
+  --base-text-weight-semibold: 600;
+  --fontStack-monospace: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
+    Liberation Mono, monospace;
+  --focus-outlineColor: rgba(105, 73, 255, 1);
+  --fgColor-default: rgba(255, 255, 255, 0.87);
+  --fgColor-muted: rgba(255, 255, 255, 0.6);
+  --fgColor-accent: rgba(105, 73, 255, 1);
+  --fgColor-success: rgb(18, 209, 142, 1);
+  --fgColor-attention: rgba(255, 193, 7, 1);
+  --fgColor-danger: rgba(244, 67, 54, 1);
+  --bgColor-default: rgba(38, 50, 56, 1);
+  --bgColor-muted: rgba(55, 71, 79, 1);
+  --bgColor-neutral-muted: rgba(69, 90, 100, 0.3);
+  --bgColor-attention-muted: rgba(255, 193, 7, 0.1);
+  --borderColor-default: rgba(84, 110, 122, 1);
+  --borderColor-muted: rgba(69, 90, 100, 1);
+  --borderColor-neutral-muted: rgba(84, 110, 122, 0.5);
+  --borderColor-accent-emphasis: rgba(105, 73, 255, 1);
+  --color-prettylights-syntax-comment: #8b949e;
+  --color-prettylights-syntax-constant: #79c0ff;
+  --color-prettylights-syntax-entity: #d2a8ff;
+  --color-prettylights-syntax-storage-modifier-import: #c9d1d9;
+  --color-prettylights-syntax-entity-tag: #7ee787;
+  --color-prettylights-syntax-keyword: #ff7b72;
+  --color-prettylights-syntax-string: #a5d6ff;
+  --color-prettylights-syntax-variable: #ffa657;
+  --color-prettylights-syntax-string-regexp: #7ee787;
+  --color-prettylights-syntax-markup-list: #f2cc60;
+  --color-prettylights-syntax-markup-heading: #1f6feb;
+  --color-prettylights-syntax-markup-italic: #c9d1d9;
+  --color-prettylights-syntax-markup-bold: #c9d1d9;
+}
+
+/* Light mode variables - only applied when light mode is active */
+@media (prefers-color-scheme: light) {
+  .editorContainer {
+    --fgColor-default: rgba(38, 50, 56, 1);
+    --fgColor-muted: rgba(69, 90, 100, 1);
+    --fgColor-accent: rgba(105, 73, 255, 1);
+    --fgColor-success: rgb(18, 209, 142, 1);
+    --fgColor-attention: rgba(255, 193, 7, 1);
+    --fgColor-danger: rgba(244, 67, 54, 1);
+    --bgColor-default: rgba(255, 255, 255, 1);
+    --bgColor-muted: rgba(236, 239, 241, 1);
+    --bgColor-neutral-muted: rgba(207, 216, 220, 0.3);
+    --bgColor-attention-muted: rgba(255, 193, 7, 0.1);
+    --borderColor-default: rgba(176, 190, 197, 1);
+    --borderColor-muted: rgba(207, 216, 220, 1);
+    --borderColor-neutral-muted: rgba(176, 190, 197, 0.5);
+    --color-prettylights-syntax-comment: #6e7781;
+    --color-prettylights-syntax-constant: #0550ae;
+    --color-prettylights-syntax-entity: #8250df;
+    --color-prettylights-syntax-storage-modifier-import: #24292f;
+    --color-prettylights-syntax-entity-tag: #116329;
+    --color-prettylights-syntax-keyword: #cf222e;
+    --color-prettylights-syntax-string: #0a3069;
+    --color-prettylights-syntax-variable: #953800;
+    --color-prettylights-syntax-string-regexp: #116329;
+    --color-prettylights-syntax-markup-list: #3b2300;
+    --color-prettylights-syntax-markup-heading: #0550ae;
+    --color-prettylights-syntax-markup-italic: #24292f;
+    --color-prettylights-syntax-markup-bold: #24292f;
+  }
+}
+
+/* Editor Container */
+.editorContainer {
+  position: relative;
+  border-radius: 2px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  color: var(--fgColor-default);
+  line-height: 1.5;
+  font-size: 16px;
+  word-wrap: break-word;
+  font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  padding: 16px;
+  background-color: var(--bgColor-default);
+  border: 1px solid var(--borderColor-muted);
+  box-shadow: 4px 4px 0px rgb(38, 42, 53, 0.65);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Editor Input */
+.editorContainer :global(.editor-input) {
+  min-height: 500px;
+  height: 100%;
+  resize: none;
+  font-size: 15px;
+  position: relative;
+  tab-size: 1;
+  outline: 0;
+  padding: 15px 10px;
+  caret-color: #444;
+}
+
+.editorInput {
+  min-height: 500px;
+  height: 100%;
+  resize: none;
+  font-size: 15px;
+  position: relative;
+  tab-size: 1;
+  outline: 0;
+  padding: 15px 10px;
+  caret-color: #444;
+}
+
+/* Editor Placeholder */
+.editorContainer :global(.editor-placeholder) {
+  color: var(--fgColor-muted);
+  overflow: hidden;
+  position: absolute;
+  text-overflow: ellipsis;
+  top: 24px;
+  left: 16px;
+  font-size: 16px;
+  user-select: none;
+  display: inline-block;
+  pointer-events: none;
+}
+
+/* Text Formatting */
+.editorContainer :global(p) {
+  margin: 0;
+  margin-bottom: 16px;
+  padding: 0;
+}
+
+.editorContainer :global(h1) {
+  font-size: 2em;
+  margin-top: 0.67em;
+  margin-bottom: 0.67em;
+  font-weight: var(--base-text-weight-semibold);
+  border-bottom: 1px solid var(--borderColor-muted);
+  padding-bottom: 0.3em;
+  font-family: 'Satoshi Black', sans-serif;
+}
+
+.editorContainer :global(h2) {
+  font-size: 1.5em;
+  margin-top: 0.83em;
+  margin-bottom: 0.83em;
+  font-weight: var(--base-text-weight-semibold);
+  border-bottom: 1px solid var(--borderColor-muted);
+  padding-bottom: 0.3em;
+  font-family: 'Satoshi Bold', sans-serif;
+}
+
+.editorContainer :global(h3) {
+  font-size: 1.17em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  font-weight: var(--base-text-weight-semibold);
+  font-family: 'Satoshi Bold', sans-serif;
+}
+
+.editorContainer :global(h4) {
+  font-size: 1em;
+  margin-top: 1.33em;
+  margin-bottom: 1.33em;
+  font-weight: var(--base-text-weight-semibold);
+  font-family: 'Satoshi Medium', sans-serif;
+}
+
+.editorContainer :global(h5) {
+  font-size: 0.83em;
+  margin-top: 1.67em;
+  margin-bottom: 1.67em;
+  font-weight: var(--base-text-weight-semibold);
+  font-family: 'Satoshi Medium', sans-serif;
+}
+
+.editorContainer :global(h6) {
+  font-size: 0.67em;
+  margin-top: 2.33em;
+  margin-bottom: 2.33em;
+  font-weight: var(--base-text-weight-semibold);
+  font-family: 'Satoshi Medium', sans-serif;
+}
+
+.editorContainer :global(strong) {
+  font-weight: var(--base-text-weight-semibold);
+  font-family: 'Satoshi Bold', sans-serif;
+}
+
+.editorContainer :global(em) {
+  font-style: italic;
+}
+
+.editorContainer :global(.editor-text-strikethrough) {
+  text-decoration: line-through;
+}
+
+.editorContainer :global(.editor-text-bold.editor-text-italic) {
+  font-weight: var(--base-text-weight-semibold);
+  font-style: italic;
+}
+
+.editorContainer :global(a) {
+  color: var(--fgColor-accent);
+  text-decoration: none;
+}
+
+.editorContainer :global(a:hover) {
+  text-decoration: underline;
+}
+
+.editorContainer :global(ul),
+.editorContainer :global(ol) {
+  margin: 0;
+  margin-bottom: 16px;
+  padding: 0;
+  padding-left: 2em;
+}
+
+.editorContainer :global(li) {
+  margin: 0.25em 0;
+}
+
+.editorContainer :global(hr) {
+  height: 0.25em;
+  padding: 0;
+  margin: 24px 0;
+  background-color: var(--borderColor-default);
+  border: 0;
+}
+
+.editorContainer :global(blockquote) {
+  margin: 0;
+  margin-bottom: 16px;
+  padding: 0 1em;
+  color: var(--fgColor-muted);
+  border-left: 0.25em solid var(--borderColor-accent-emphasis);
+}
+
+/* List styling fixes */
+.editorContainer :global(.editor-nested-listitem) {
+  list-style-type: none;
+}
+
+.editorContainer :global(.editor-nested-listitem .editor-ul) {
+  padding-left: 1.5em;
+  margin: 0;
+}
+
+.editorContainer :global(.editor-nested-listitem .editor-ol) {
+  padding-left: 1.5em;
+  margin: 0;
+}
+
+/* Ensure proper indentation for nested lists */
+.editorContainer :global(.editor-ul), 
+.editorContainer :global(.editor-ol) {
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+
+/* Style for list items */
+.editorContainer :global(.editor-listitem) {
+  margin: 0.25em 0;
+}
+
+/* Underline formatting */
+.editorContainer :global(.editor-text-underline) {
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+}
+
+/* Combined underline states */
+.editorContainer :global(.editor-text-underline.editor-text-bold) {
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+}
+
+.editorContainer :global(.editor-text-underline.editor-text-italic) {
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+}
+
+.editorContainer :global(.editor-text-underline.editor-text-bold.editor-text-italic) {
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+}
+
+/* Code Block Styles */
+.editorContainer :global(.editor-code) {
+  background-color: var(--bgColor-muted);
+  font-family: var(--fontStack-monospace);
+  display: block;
+  padding: 16px;
+  line-height: 1.45;
+  font-size: 14px;
+  margin: 0;
+  margin-bottom: 16px;
+  tab-size: 2;
+  overflow-x: auto;
+  position: relative;
+  border-radius: 6px;
+  border: 1px solid var(--borderColor-muted);
+}
+
+.editorContainer :global(.editor-codeBlock) {
+  background-color: var(--bgColor-muted);
+  font-family: var(--fontStack-monospace);
+  display: block;
+  padding: 16px;
+  line-height: 1.45;
+  font-size: 14px;
+  margin: 0;
+  margin-bottom: 16px;
+  tab-size: 2;
+  overflow-x: auto;
+  position: relative;
+  border-radius: 6px;
+  border: 1px solid var(--borderColor-muted);
+}
+
+/* Code language label */
+.editorContainer :global(.code-language-label) {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background-color: rgba(55, 71, 79, 0.8);
+  color: rgba(255, 255, 255, 0.87);
+  cursor: pointer;
+  z-index: 5;
+  font-family: var(--fontStack-monospace);
+  transition: background-color 0.2s ease;
+  text-transform: lowercase;
+}
+
+.editorContainer :global(.code-language-label:hover) {
+  background-color: rgba(55, 71, 79, 1);
+}
+
+/* Code copy button */
+.editorContainer :global(.code-copy-button) {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background-color: rgba(55, 71, 79, 0.8);
+  color: rgba(255, 255, 255, 0.87);
+  cursor: pointer;
+  z-index: 5;
+  transition: background-color 0.2s ease;
+}
+
+.editorContainer :global(.code-copy-button:hover) {
+  background-color: rgba(55, 71, 79, 1);
+}
+
+.editorContainer :global(.code-copy-button svg) {
+  width: 16px;
+  height: 16px;
+}
+
+/* Inline Code */
+.editorContainer :global(code:not(.editor-code)) {
+  font-family: var(--fontStack-monospace);
+  padding: 0.2em 0.4em;
+  margin: 0;
+  font-size: 85%;
+  background-color: var(--bgColor-neutral-muted);
+  border-radius: 6px;
+}
+
+/* Token styles for syntax highlighting */
+.editorContainer :global(.editor-tokenComment) {
+  color: var(--color-prettylights-syntax-comment);
+}
+
+.editorContainer :global(.editor-tokenPunctuation) {
+  color: var(--fgColor-muted);
+}
+
+.editorContainer :global(.editor-tokenProperty) {
+  color: var(--color-prettylights-syntax-entity);
+}
+
+.editorContainer :global(.editor-tokenSelector) {
+  color: var(--color-prettylights-syntax-entity-tag);
+}
+
+.editorContainer :global(.editor-tokenOperator) {
+  color: var(--color-prettylights-syntax-keyword);
+}
+
+.editorContainer :global(.editor-tokenAttr) {
+  color: var(--color-prettylights-syntax-constant);
+}
+
+.editorContainer :global(.editor-tokenVariable) {
+  color: var(--color-prettylights-syntax-variable);
+}
+
+.editorContainer :global(.editor-tokenFunction) {
+  color: var(--color-prettylights-syntax-entity);
+}
+
+.editorContainer :global(.editor-tokenKeyword) {
+  color: var(--color-prettylights-syntax-keyword);
+}
+
+.editorContainer :global(.editor-tokenString) {
+  color: var(--color-prettylights-syntax-string);
+}
+
+/* Tables */
+.editorContainer :global(table) {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  margin-top: 0;
+  margin-bottom: 16px;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.editorContainer :global(table tr) {
+  background-color: var(--bgColor-default);
+  border-top: 1px solid var(--borderColor-muted);
+}
+
+.editorContainer :global(table tr:nth-child(2n)) {
+  background-color: var(--bgColor-neutral-muted);
+}
+
+.editorContainer :global(table th),
+.editorContainer :global(table td) {
+  padding: 6px 13px;
+  border: 1px solid var(--borderColor-muted);
+}
+
+.editorContainer :global(table th) {
+  font-weight: var(--base-text-weight-semibold);
+}
+
+/* Images */
+.editorContainer :global(img) {
+  max-width: 100%;
+  box-sizing: content-box;
+  background-color: var(--bgColor-default);
+  border-radius: 6px;
+}
+
+/* Toolbar Styles */
+.editorContainer :global(.editor-toolbar) {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background-color: var(--bgColor-muted);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  padding: 4px;
+}
+
+.editorContainer :global(.MuiStack-root) {
+  background-color: var(--bgColor-default);
+  color: var(--fgColor-default);
+  border-color: var(--borderColor-muted);
+  z-index: 10;
+  margin-bottom: 8px;
+  border-radius: 6px 6px 0 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.editorContainer :global(.MuiIconButton-root) {
+  color: var(--fgColor-default);
+}
+
+.editorContainer :global(.MuiIconButton-root.Mui-disabled) {
+  color: var(--fgColor-muted);
+}
+
+.editorContainer :global(.MuiIconButton-root[color="primary"]) {
+  color: var(--fgColor-accent);
+}
+
+.editorContainer :global(.MuiDivider-root) {
+  background-color: var(--borderColor-muted);
+}
+
+.editorContainer :global(.MuiStack-root[ref="toolbarRef"]) {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}

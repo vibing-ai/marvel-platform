@@ -29,7 +29,6 @@ import { IndentListPlugin } from '@udecode/plate-indent-list/react';
 import { LinkPlugin } from '@udecode/plate-link/react';
 import { ListPlugin } from '@udecode/plate-list/react';
 import { MarkdownPlugin } from '@udecode/plate-markdown';
-import Prism from 'prismjs';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { CodeBlockElement } from '../plate-ui/code-block-element';
@@ -38,9 +37,9 @@ import { CodeSyntaxLeaf } from '../plate-ui/code-syntax-leaf';
 import { Editor, EditorContainer } from '../plate-ui/editor';
 import { LinkElement } from '../plate-ui/link-element';
 import { EditorToolbar } from '../plate-ui/toolbar';
+import { TableElement } from '../plate-ui/table-element';
 
 import styles from './PlateEditor.module.css';
-import 'prismjs/themes/prism.css';
 
 import { actions as toolActions } from '@/tools/data';
 import { syncHistoryEntry } from '@/tools/data/thunks/editHistory';
@@ -99,20 +98,11 @@ export function PlateEditor(props) {
         handleClick: false, // Let our custom handler work
       },
     }),
-    TablePlugin.configure({
-      options: {},
-    }),
+    TablePlugin,
     CodePlugin,
-    CodeBlockPlugin.configure({ options: { prism: Prism } }),
-    CodeLinePlugin.configure({}),
-    CodeSyntaxPlugin.configure({
-      syntax: {
-        languages: {
-          js: 'javascript',
-        },
-        defaultLanguage: 'javascript',
-      },
-    }),
+    CodeBlockPlugin,
+    CodeLinePlugin,
+    CodeSyntaxPlugin,
     StrikethroughPlugin,
     MarkdownPlugin,
     HeadingPlugin,
@@ -164,9 +154,7 @@ export function PlateEditor(props) {
         p: withProps(PlateElement, {
           as: 'p',
         }),
-        table: withProps(PlateElement, {
-          as: 'table',
-        }),
+        table: TableElement,
         tr: withProps(PlateElement, {
           as: 'tr',
         }),

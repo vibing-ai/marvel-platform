@@ -1,13 +1,46 @@
 
+
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import submitPrompt from '@/tools/libs/services/submitPrompt';
+import { useRouter } from 'next/router';
+
 
 
 const PresentationOutline = () => {
     const { response } = useSelector((state) => state.tools);
-
+    const { data: userData } = useSelector((state) => state.user);
     // console.log(response);
+    const [selectedOutline,setSelectedOutline] = useState(null);
+    const router = useRouter();
 
+    const handleGeneratePresentation = async () => {
+        const payload = {
+            tool_data: { tool_id: 'presentation', inputs: [{name:'content', value:'world war II'},{ name: 'outline', value: selectedOutline }] },
+          type: 'tool',
+          user: {
+            id: userData?.id,
+            fullName: userData?.fullName,
+            email: userData?.email,
+          },
+            
+        };
+        try {
+            const response = await submitPrompt(payload);
+            if (response) {
+                router.push({
+                    pathname: '/PresentationResponse',
+                    query: { data: JSON.stringify(response) },
+                });
+            }
+        } catch (error) {
+            console.error('Error generating presentation:', error);
+        }
+    }
 
+    // const handleGeneratePresentation = async () => {
+    //     console.log(selectedOutline);
+    // }
     return (
 
         <div style={{ width: 800, height: 792.70, padding: 28, background: '#0C0B17', borderRadius: 20, border: '2px #9D74FF solid', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 36, display: 'inline-flex' }}>
@@ -34,22 +67,41 @@ const PresentationOutline = () => {
                 </div>
                 <div style={{ paddingTop: 12, paddingBottom: 12, paddingLeft: 12, paddingRight: 24, background: '#121212', borderRadius: 12, overflow: 'hidden', justifyContent: 'flex-start', alignItems: 'center', display: 'inline-flex' }}>
                     <div style={{ width: 708, alignSelf: 'stretch', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', gap: 12, display: 'inline-flex' }}>
-                        {response.map((outline, id) => (
+                        {/* {response.map((outline, id) => (
                             <div key={id} style={{ alignSelf: 'stretch', padding: 8, background: '#1C1C1C', boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)', borderRadius: 10, justifyContent: 'flex-start', alignItems: 'center', gap: 8, display: 'inline-flex' }}>
                                 <div style={{ color: 'white', fontSize: 16, fontFamily: 'Satoshi', fontWeight: '900', wordWrap: 'break-word' }}>{id + 1}.</div>
                                 <div style={{ color: 'white', fontSize: 16, fontFamily: 'Satoshi', fontWeight: '400', wordWrap: 'break-word' }}>{outline}</div>
 
                             </div>
 
+                        ))} */}
+                        {response.map((outline, id) => (
+                            <div key={id} onClick={() => setSelectedOutline(outline)} style={{ alignSelf: 'stretch', padding: 8, background: selectedOutline === outline ? '#3C3C3C' : '#1C1C1C', boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)', borderRadius: 10, justifyContent: 'flex-start', alignItems: 'center', gap: 8, display: 'inline-flex', cursor: 'pointer' }}>
+                                <div style={{ color: 'white', fontSize: 16, fontFamily: 'Satoshi', fontWeight: '900', wordWrap: 'break-word' }}>{id + 1}.</div>
+                                <div style={{ color: 'white', fontSize: 16, fontFamily: 'Satoshi', fontWeight: '400', wordWrap: 'break-word' }}>{outline}</div>
+                            </div>
                         ))}
 
                     </div>
                 </div>
                 <div style={{ alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center', gap: 31, display: 'inline-flex' }}>
 
-                    <div style={{ width: 224, paddingLeft: 32, paddingRight: 32, paddingTop: 12, paddingBottom: 12, background: '#8552FF', borderRadius: 26.89, justifyContent: 'center', alignItems: 'center', gap: 10, display: 'flex' }}>
-                        <div style={{ textAlign: 'center', color: 'white', fontSize: 16, fontFamily: 'Satoshi', fontWeight: '700', wordWrap: 'break-word' }}>Generate Presentation</div>
-                    </div>
+                    {/* <div style={{ width: 224, paddingLeft: 32, paddingRight: 32, paddingTop: 12, paddingBottom: 12, background: '#8552FF', borderRadius: 26.89, justifyContent: 'center', alignItems: 'center', gap: 10, display: 'flex' }}>
+                        <div style={{ textAlign: 'center', color: 'white', fontSize: 16, fontFamily: 'Satoshi', fontWeight: '700', wordWrap: 'break-word' }}>
+                            Genearate Presentation
+                            </div>
+                    </div> */}
+                    {/* <button onClick={handleGeneratePresentation} style={{ width: 224, paddingLeft: 32, paddingRight: 32, paddingTop: 12, paddingBottom: 12, background: '#8552FF', borderRadius: 26.89, justifyContent: 'center', alignItems: 'center', gap: 10, display: 'flex', border: 'none', cursor: 'pointer' }}>
+                        <div style={{ textAlign: 'center', color: 'white', fontSize: 16, fontFamily: 'Satoshi', fontWeight: '700', wordWrap: 'break-word' }}>
+                            Generate Presentation
+                        </div>
+                    </button> */}
+                    <button onClick={handleGeneratePresentation} disabled={!selectedOutline} style={{ width: 224, paddingLeft: 32, paddingRight: 32, paddingTop: 12, paddingBottom: 12, background: '#8552FF', borderRadius: 26.89, justifyContent: 'center', alignItems: 'center', gap: 10, display: 'flex', border: 'none', cursor: selectedOutline ? 'pointer' : 'not-allowed', opacity: selectedOutline ? 1 : 0.5 }}>
+                        <div style={{ textAlign: 'center', color: 'white', fontSize: 16, fontFamily: 'Satoshi', fontWeight: '700', wordWrap: 'break-word' }}>
+                            Generate Presentation
+                        </div>
+                    </button>
+
                 </div>
             </div>
         </div>

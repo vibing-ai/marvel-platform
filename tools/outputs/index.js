@@ -12,6 +12,7 @@ const TOOL_OUTPUTS = {
   [TOOLS_ID.WORKSHEET_GENERATOR]: WorksheetGeneratorResponse,
   [TOOLS_ID.SYLLABUS_GENERATOR]: SyllabusGeneratorResponse,
   [TOOLS_ID.PRESENTATION_GENERATOR]: PresentationOutline,
+  
 };
 
 export default TOOL_OUTPUTS;

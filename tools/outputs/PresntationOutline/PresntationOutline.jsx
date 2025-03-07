@@ -26,16 +26,17 @@ const PresentationOutline = () => {
             
         };
         try {
-            const response = await submitPrompt(payload);
-            if (response) {
-                router.push({
-                    pathname: '/PresentationResponse',
-                    query: { data: JSON.stringify(response) },
-                });
-            }
-        } catch (error) {
-            console.error('Error generating presentation:', error);
+        const response = await submitPrompt(payload);
+        if (response) {
+            // Store response in sessionStorage
+            sessionStorage.setItem('presentationData', JSON.stringify(response));
+
+            // Redirect to the PresentationResponse page without the long URL
+            router.push('/PresentationResponse');
         }
+    } catch (error) {
+        console.error('Error generating presentation:', error);
+    }
     }
 
     // const handleGeneratePresentation = async () => {

@@ -110,7 +110,8 @@ export const styles = {
       userProfile: {
         width: "48px",
         height: "48px",
-        backgroundColor: "#1c1c1c",
+        // backgroundColor: "#1c1c1c",
+        backgroundColor:"white"
       },
       userName: {
         color: "#ffffff",
@@ -230,6 +231,7 @@ export const styles = {
       lineHeight: "1.6",
       padding: "8px 0 8px 24px",
       position: "relative",
+      listStyleType: 'disc',
       "&::before": {
         content: "''",
         position: "absolute",

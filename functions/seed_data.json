@@ -781,7 +781,8 @@
       {
         "label": "Content",
         "name": "content",
-        "placeholder": "Provide a subject, topic, text, description, and/or upload files. \nExamples:\n'World War I' \n'Grammar assessment on commas.' \nAn excerpt from a textbook. \nUploaded images of famous monuments.",
+        
+          "placeholder": "Describe what you’d like to make, and/or upload files.",
         "tooltip": "Provide a clear and focused topic to guide the content and design of your presentation.",
         "type": "text"
       },

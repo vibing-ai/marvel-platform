@@ -32,7 +32,23 @@ const saveResponseToFirestore = async (sessionData) => {
  */
 const submitPrompt = async (payload) => {
 
-  const presentation_outline  = ["Introduction to World War II", "Causes of the War", "Major Battles", "The Aftermath", "Legacy and Lessons","The Aftermath","Introduction to World War II", "Causes of the War", "Major Battles"]
+  const presentation_outline = [
+    "Introduction to World War II",
+    "Causes of the War",
+    "Rise of Totalitarian Regimes",
+    "Major Battles and Strategies",
+    "Key Figures and Leaders",
+    "The Role of Technology and Warfare Innovations",
+    "The Home Front and War Efforts",
+    "Allied vs. Axis Powers: A Comparison",
+    "The Holocaust and Human Rights Violations",
+    "End of the War and Surrender",
+    "The Aftermath and Global Impact",
+    "The Formation of the United Nations",
+    "Cold War Beginnings",
+    "Legacy and Lessons Learned"
+  ];
+  
 
   const presentation_response = [
     {

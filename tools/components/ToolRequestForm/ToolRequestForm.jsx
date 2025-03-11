@@ -13,6 +13,7 @@ import PrimaryDatePickerInput from '@/components/PrimaryDatePickerInput';
 import PrimaryFileUpload from '@/components/PrimaryFileUpload';
 import PrimarySelectorInput from '@/components/PrimarySelectorInput';
 import PrimaryTextFieldInput from '@/components/PrimaryTextFieldInput';
+import PrimaryTextAreaInput from '@/components/PrimaryTextAreaInput';
 
 import styles from './styles';
 
@@ -181,7 +182,15 @@ const ToolRequestForm = (props) => {
   };
 
   const renderTextInput = (inputProps) => {
-    const { name: inputName, placeholder, tooltip, label, isRequired = true } = inputProps;
+    const { 
+      name: inputName, 
+      placeholder, 
+      tooltip, 
+      label, 
+      isRequired = true, 
+      rows = null 
+    } = inputProps;
+  
     const renderLabel = () => (
       <Grid {...styles.textFieldLabelGridProps}>
         <Typography {...styles.labelProps(errors?.[inputName])}>
@@ -194,27 +203,39 @@ const ToolRequestForm = (props) => {
         )}
       </Grid>
     );
-
+  
     return (
       <Grid key={inputName} {...styles.inputGridProps}>
-        <PrimaryTextFieldInput
-          id={inputName}
-          name={inputName}
-          title={renderLabel()}
-          error={errors?.[inputName]}
-          control={control}
-          placeholder={placeholder}
-          helperText={errors?.[inputName]?.message}
-          validation={
-            isRequired
-              ? { required: 'Field is required' }
-              : {}
-          }
-          ref={register}
-        />
+        {rows && Number.isInteger(rows) && rows > 0 ? (
+          <PrimaryTextAreaInput
+            id={inputName}
+            name={inputName}
+            title={renderLabel()}
+            error={errors?.[inputName]}
+            control={control}
+            placeholder={placeholder}
+            helperText={errors?.[inputName]?.message}
+            validation={isRequired ? { required: 'Field is required' } : {}}
+            rows={rows}
+            ref={register}
+          />
+        ) : (
+          <PrimaryTextFieldInput
+            id={inputName}
+            name={inputName}
+            title={renderLabel()}
+            error={errors?.[inputName]}
+            control={control}
+            placeholder={placeholder}
+            helperText={errors?.[inputName]?.message}
+            validation={isRequired ? { required: 'Field is required' } : {}}
+            ref={register}
+          />
+        )}
       </Grid>
     );
   };
+  
 
   const renderNumberInput = (inputProps) => {
     const { name: inputName, placeholder, tooltip, label, isRequired = true } = inputProps;

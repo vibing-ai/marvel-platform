@@ -37,12 +37,9 @@ const QuizResponse = () => {
           {questionNo}. {questionTitle}
         </Typography>
         <Grid>
-          {questionChoices?.map((choice, index) => (
-            <Typography
-              key={`${questionNo}-choice-${index}`}
-              {...styles.choiceProps}
-            >
-              {choice?.key}. {choice?.value}
+            {Object.entries(question.choices).map(([key, value]) => (
+            <Typography key={`${questionNo}-choice-${key}`} {...styles.choiceProps}>
+              {key}. {value}
             </Typography>
           ))}
         </Grid>

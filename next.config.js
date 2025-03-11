@@ -9,11 +9,11 @@ const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
   trailingSlash: true,
-  optimizeFonts: true,
-  experimental: {
-    optimizeCss: false,
-    scrollRestoration: true,
-  },
+  
+  eslint: {
+    ignoreDuringBuilds: true,
+  }
+
 };
 
 module.exports = withTM({

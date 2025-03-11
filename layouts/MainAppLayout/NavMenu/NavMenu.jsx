@@ -18,12 +18,12 @@ const PAGES = [
     icon: <HomeIcon />,
     id: 'page_1',
   },
-  {
-    name: 'Chat',
-    link: ROUTES.CHAT,
-    icon: <ChatBubble />,
-    id: 'page_3',
-  },
+  // {
+  //   name: 'Chat',
+  //   link: ROUTES.CHAT,
+  //   icon: <ChatBubble />,
+  //   id: 'page_3',
+  // },
   {
     name: 'History',
     link: ROUTES.HISTORY,

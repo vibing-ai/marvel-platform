@@ -25,10 +25,6 @@ import ToolbarSeparator from './ToolbarSeparator';
 import { withTooltip } from './tooltip';
 import UndoRedo from './UndoRedo';
 
-import { actions as toolActions } from '@/tools/data';
-
-const { undo, redo } = toolActions;
-
 const toolbarButtonVariants = cva(
   cn(
     'inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium text-white/80 hover:bg-gray-700 hover:text-white transition-colors',
@@ -94,8 +90,8 @@ export const EditorToolbar = (props) => {
   const { editor } = props;
   if (!editor) return null;
 
-  const handleUndo = () => dispatch(undo());
-  const handleRedo = () => dispatch(redo());
+  const handleUndo = () => editor.undo();
+  const handleRedo = () => editor.redo();
 
   const open = Boolean(anchorEl);
   const openFontSize = Boolean(fontSizeAnchorEl);
@@ -248,7 +244,7 @@ export const EditorToolbar = (props) => {
           >
             {/* Needs a rework */}
             <Typography className="mr-1 list-style-dropdown">
-              14 pt 
+              14 pt
             </Typography>
           </IconButton>
           <DropdownArrowIcon className="dropdown-arrow" />

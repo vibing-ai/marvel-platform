@@ -36,7 +36,7 @@ const {
   setResponse,
   setSessionId,
   setTopic,
-  addStateToEditHistory,
+  setCurrentState,
 } = toolActions;
 
 const ToolRequestForm = (props) => {
@@ -142,9 +142,9 @@ const ToolRequestForm = (props) => {
           value = parseInt(originalValue.trim(), 10);
         }
         // Ensure value key exists even if it's an empty string
-        return { 
-          name, 
-          value: value === null || value === undefined ? '' : value 
+        return {
+          name,
+          value: value === null || value === undefined ? '' : value
         };
       }).filter(Boolean); // Remove null entries
 
@@ -183,22 +183,15 @@ const ToolRequestForm = (props) => {
 
       const markdown = convertResponseToMarkdown(response, id);
 
-      // Use the editor's markdown API to process the content
-      const editorMarkdownData =
-        markdownEditor.api.markdown.deserialize(markdown);
-      markdownEditor.children = editorMarkdownData;
-      const markdownToSave = markdownEditor.api.markdown.serialize();
-
       dispatch(setResponse(response));
       dispatch(setSessionId(sessionId));
       dispatch(setTopic(topic));
       const historyEntry = {
-        content: markdownToSave,
+        content: markdown,
         timestamp: Date.now(),
         type: EDIT_HISTORY_TYPES.INITIAL,
       };
-      dispatch(addStateToEditHistory(historyEntry));
-      dispatch(syncHistoryEntry(historyEntry));
+      dispatch(setCurrentState(historyEntry));
       dispatch(setFormOpen(false));
       dispatch(setCommunicatorLoading(false));
       dispatch(fetchToolHistory({ firestore }));

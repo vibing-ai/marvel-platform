@@ -64,6 +64,9 @@ const tools = createSlice({
     setTopic: (state, action) => {
       state.topic = action.payload;
     },
+    setCurrentState: (state, action) => {
+      state.editorState.currentState = action.payload;
+    },
     addStateToEditHistory: (state, action) => {
       if (!state.editorState.currentState.content) {
         state.editorState.currentState = action.payload;

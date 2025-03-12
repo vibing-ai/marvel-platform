@@ -374,11 +374,11 @@
   }
 
   .slate-editor p:not(:first-child) {
-    margin-top: 32px;
+    margin-top: 8px;
   }
 
   .slate-editor p:not(:last-child) {
-    margin-bottom: 32px;
+    margin-bottom: 8px;
   }
 
   .slate-editor blockquote {
@@ -646,23 +646,23 @@
   .slate-editor ol[type='1'] {
     list-style-type: decimal;
   }
-  
+
   .slate-editor ol[type='a s'] {
     list-style-type: lower-alpha;
   }
-  
+
   .slate-editor ol[type='A s'] {
     list-style-type: upper-alpha;
   }
-  
+
   .slate-editor ol[type='i s'] {
     list-style-type: lower-roman;
   }
-  
+
   .slate-editor ol[type='I s'] {
     list-style-type: upper-roman;
   }
-  
+
   .slate-editor li > p {
     margin-top: 16px;
   }
@@ -1399,7 +1399,7 @@
   overflow: hidden;
   box-shadow: inset 0px 0px 0px 1px --borderColor-default;
 }
-  
+
   .slate-editor ul li::marker,
   .slate-editor ol li::marker {
     color: #8065ff;

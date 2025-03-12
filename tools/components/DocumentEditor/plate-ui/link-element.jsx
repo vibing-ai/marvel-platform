@@ -2,23 +2,28 @@
 
 import React from 'react';
 
-import { withRef } from '@udecode/cn';
+import { cn, withRef } from '@udecode/cn';
+import { useLink } from '@udecode/plate-link/react';
 import { PlateElement } from '@udecode/plate/react';
 
-export const LinkElement = withRef(({ children, ...props }, ref) => {
-  const { element } = props;
-  const { url } = element;
+export const LinkElement = withRef(
+  ({ children, className, ...props }, ref) => {
+    const element = props.element;
+    const { props: linkProps } = useLink({ element });
 
-  const handleClick = (e) => {
-    e.stopPropagation();
-    window.open(url, '_blank', 'noopener,noreferrer');
-  };
-
-  return (
-    <PlateElement ref={ref} asChild {...props}>
-      <a href={url} onClick={handleClick} className="cursor-pointer">
+    return (
+      <PlateElement
+        ref={ref}
+        as="a"
+        className={cn(
+          className,
+          'font-medium text-primary underline decoration-primary underline-offset-4'
+        )}
+        {...linkProps}
+        {...props}
+      >
         {children}
-      </a>
-    </PlateElement>
-  );
-});
+      </PlateElement>
+    );
+  }
+);

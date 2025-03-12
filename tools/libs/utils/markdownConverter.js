@@ -82,7 +82,7 @@ const convertWorksheetToMarkdown = (response) => {
       // Word Bank
       markdown += '**Word Bank:**\n';
       markdown += q.word_bank
-        .map((word) => `• ${escapeMarkdown(word)}`)
+        .map((word) => `- ${escapeMarkdown(word)}`)
         .join('\n');
       markdown += '\n\n';
 
@@ -129,7 +129,7 @@ const convertSyllabusToMarkdown = (response) => {
   const objectives = response.course_description_objectives?.objectives;
   if (objectives) {
     const allObjectives = objectives
-      .map((obj) => `• ${escapeMarkdown(obj)}`)
+      .map((obj) => `- ${escapeMarkdown(obj)}`)
       .join('<br>');
     markdown += `| Objectives | ${allObjectives} |\n`;
   }
@@ -138,7 +138,7 @@ const convertSyllabusToMarkdown = (response) => {
     response.course_description_objectives?.intended_learning_outcomes;
   if (outcomes) {
     const allOutcomes = outcomes
-      .map((out) => `• ${escapeMarkdown(out)}`)
+      .map((out) => `- ${escapeMarkdown(out)}`)
       .join('<br>');
     markdown += `| Learning Outcomes | ${allOutcomes} |\n`;
   }

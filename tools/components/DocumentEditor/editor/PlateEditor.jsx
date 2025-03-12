@@ -32,7 +32,7 @@ import { IndentListPlugin } from '@udecode/plate-indent-list/react';
 import { LinkPlugin } from '@udecode/plate-link/react';
 import { ListPlugin, TodoListPlugin } from '@udecode/plate-list/react';
 import { MarkdownPlugin } from '@udecode/plate-markdown';
-import Prism from 'prismjs';
+import { all, createLowlight } from 'lowlight';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { CodeBlockElement } from '../plate-ui/code-block-element';
@@ -42,9 +42,10 @@ import { Editor, EditorContainer } from '../plate-ui/editor';
 import { LinkElement } from '../plate-ui/link-element';
 import { TodoListElement } from '../plate-ui/todo-list-element';
 import { EditorToolbar } from '../plate-ui/toolbar';
+import { TableElement } from '../plate-ui/table-element';
 
+import 'highlight.js/styles/github-dark.css';
 import styles from './PlateEditor.module.css';
-import 'prismjs/themes/prism.css';
 
 import { actions as toolActions } from '@/tools/data';
 import { syncHistoryEntry } from '@/tools/data/thunks/editHistory';
@@ -72,6 +73,21 @@ const debounce = (callback, wait) => {
 };
 
 /**
+ * Removes extra <br> tags from markdown content.
+ * @param {string} markdown - The markdown content to clean.
+ * @returns {string} - The cleaned markdown without extra <br> tags.
+ */
+const removeExtraBreaks = (markdown) => {
+  // Then, replace consecutive <br> tags with a single <br>
+  let result = markdown.replace(/(<br\s*\/?>)+/g, '<br />');
+
+  // First, replace <br> tags followed by | with just |
+  result = result.replace(/<br\s*\/?>\s*\|/g, '|');
+
+  return result;
+};
+
+/**
  * PlateEditor Component
  *
  * A rich-text editor component built with Plate.js that supports Markdown parsing,
@@ -86,6 +102,7 @@ export function PlateEditor(props) {
   const dispatch = useDispatch();
   const { editorState } = useSelector((state) => state.tools);
   const [debugValue, setDebugValue] = useState([]);
+  const lowlight = createLowlight(all);
 
   // Plugins for editor instance & useplateeditor
   const plugins = [
@@ -135,25 +152,16 @@ export function PlateEditor(props) {
         handleClick: false, // Let our custom handler work
       },
     }),
-    TablePlugin.configure({
-      options: {},
-    }),
+    TablePlugin,
     CodePlugin,
     CodeBlockPlugin.configure({
       options: {
-        prism: Prism,
-        defaultLanguage: 'javascript',
+        lowlight,
+        defaultLanguage: 'auto',
       },
     }),
-    CodeLinePlugin.configure({}),
-    CodeSyntaxPlugin.configure({
-      syntax: {
-        languages: {
-          js: 'javascript',
-        },
-        defaultLanguage: 'javascript',
-      },
-    }),
+    CodeLinePlugin,
+    CodeSyntaxPlugin,
     StrikethroughPlugin,
     MarkdownPlugin,
     HeadingPlugin,
@@ -172,13 +180,6 @@ export function PlateEditor(props) {
       validAlignments: ['left', 'center', 'right', 'justify'],
     }),
   ];
-
-  // const editorInstance = createPlateEditor({ plugins });
-
-  // // Deserialize raw Markdown content into editor value
-  // const parsedMarkdownContent = markdownContent
-  //   ? editorInstance.api.markdown.deserialize(markdownContent)
-  //   : [];
 
   const editor = usePlateEditor({
     override: {
@@ -211,10 +212,7 @@ export function PlateEditor(props) {
           return acc;
         }, {}),
         p: withProps(PlateElement, { as: 'p', className: 'text-base mb-4' }),
-        table: withProps(PlateElement, {
-          as: 'table',
-          className: 'w-full border-collapse border border-gray-200',
-        }),
+        table: TableElement,
         tr: withProps(PlateElement, {
           as: 'tr',
           className: 'border-b border-gray-200',
@@ -251,7 +249,7 @@ export function PlateEditor(props) {
       editor.children = content;
       editor.onChange();
     }
-  }, [markdownContent]);
+  }, []);
 
   /**
    * Handles autosaving of the editor content with a debounce mechanism.
@@ -263,7 +261,8 @@ export function PlateEditor(props) {
    * @param {string} editorContent - The current content of the Plate.js editor.
    */
   const handleAutosave = debounce((editorContent) => {
-    const editorMarkdown = editor.api.markdown.serialize(editorContent);
+    let editorMarkdown = editor.api.markdown.serialize(editorContent);
+    editorMarkdown = removeExtraBreaks(editorMarkdown);
     const newHistoryEntry = {
       timestamp: Date.now(),
       content: editorMarkdown,

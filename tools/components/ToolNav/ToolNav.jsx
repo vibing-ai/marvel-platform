@@ -1,6 +1,7 @@
-import { Grid } from '@mui/material';
+import { useState } from 'react';
+import { Grid, TextField, ClickAwayListener, IconButton } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import AIChatIcon from '@/assets/svg/AIChatIcon.svg';
 import HistoryIcon from '@/assets/svg/HistoryIcon.svg';
@@ -14,11 +15,43 @@ import styles from './styles';
 
 import ROUTES from '@/libs/constants/routes';
 import EditorExport from '@/tools/components/EditorExport/EditorExport';
+import { actions as toolActions } from '@/tools/data';
 
 const ToolNav = (props) => {
   const { toolDoc, popoutOpen } = props;
   const router = useRouter();
+  const dispatch = useDispatch();
   const topicName = useSelector((state) => state.tools.topic);
+  
+  // Add state to track editing mode
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTopicName, setEditedTopicName] = useState(topicName || toolDoc?.name || '');
+
+  // Handle editing the topic name
+  const handleEditClick = () => {
+    setEditedTopicName(topicName || toolDoc?.name || '');
+    setIsEditing(true);
+  };
+
+  // Handle saving the edited topic name
+  const handleSaveTopic = () => {
+    if (editedTopicName.trim()) {
+      dispatch(toolActions.setTopic(editedTopicName.trim()));
+    }
+    setIsEditing(false);
+  };
+
+  // Handle click away to save
+  const handleClickAway = () => {
+    handleSaveTopic();
+  };
+
+  // Handle key press in the text field
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSaveTopic();
+    }
+  };
 
   return (
     <Grid
@@ -53,10 +86,40 @@ const ToolNav = (props) => {
           sx={{ gap: '15px', fontFamily: 'Satoshi Bold' }}
         >
           <Grid item>
-            <h2>{topicName || toolDoc?.name} </h2>{' '}
+            {isEditing ? (
+              <ClickAwayListener onClickAway={handleClickAway}>
+                <TextField
+                  value={editedTopicName}
+                  onChange={(e) => setEditedTopicName(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  autoFocus
+                  variant="standard"
+                  InputProps={{
+                    sx: {
+                      fontSize: '1.5rem',
+                      fontFamily: 'Satoshi Bold',
+                      color: 'white',
+                      '&:before': { borderBottom: '1px solid #9D7BFF' },
+                      '&:after': { borderBottom: '2px solid #9D7BFF' },
+                    }
+                  }}
+                  sx={{ minWidth: '200px' }}
+                />
+              </ClickAwayListener>
+            ) : (
+              <h2>{topicName || toolDoc?.name} </h2>
+            )}
           </Grid>
           <Grid>
-            <EditIconOutline />
+            <IconButton 
+              onClick={handleEditClick}
+              sx={{ 
+                padding: '4px', 
+                '&:hover': { backgroundColor: 'rgba(157, 123, 255, 0.08)' } 
+              }}
+            >
+              <EditIconOutline />
+            </IconButton>
           </Grid>
         </Grid>
 
@@ -81,8 +144,12 @@ const ToolNav = (props) => {
         spacing={0}
         sx={{ gap: '7px' }}
       >
-        <Grid item sx={{ paddingRight: '25px' }}>
-          <EditPromptPopout toolDoc={toolDoc} popoutOpen={popoutOpen} />
+        <Grid item sx={{ paddingRight: '25px', display: 'flex', alignItems: 'center' }}>
+          <EditPromptPopout 
+            toolDoc={toolDoc} 
+            popoutOpen={popoutOpen} 
+            setTopic={(topic) => dispatch(toolActions.setTopic(topic))}
+          />
         </Grid>
         <Grid item>
           <HistoryIcon />

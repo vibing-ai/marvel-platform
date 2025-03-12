@@ -56,7 +56,7 @@ const EditorExport = () => {
   return (
     <Grid>
       <GradientOutlinedButton
-        icon={<ExportIcon />}
+        icon={<ExportIcon width="30px" height="40px"/>}
         iconPlacement="left"
         clickHandler={handleClick}
         loading={isExporting}

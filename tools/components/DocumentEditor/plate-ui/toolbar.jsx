@@ -218,10 +218,10 @@ export const EditorToolbar = (props) => {
     handleFontSizeMenuClose();
   };
 
-  // const getCurrentFontSize = () => {
-  //   const marks = editor?.getMarks() || {};
-  //   return marks.fontSize ? `${marks.fontSize} pt` : '14 pt';
-  // };
+  const getCurrentFontSize = () => {
+    const marks = editor?.getMarks() || {};
+    return marks.fontSize ? `${marks.fontSize} pt` : '14 pt';
+  };
 
   return (
     <Toolbar className="slate-toolbar">
@@ -243,8 +243,9 @@ export const EditorToolbar = (props) => {
             onClick={handleFontSizeMenuOpen}
             className="list-style-dropdown flex items-center"
           >
-            {/* Needs a rework */}
-            <Typography className="mr-1 list-style-dropdown">14 pt</Typography>
+            <Typography className="mr-1 list-style-dropdown">
+              {getCurrentFontSize()}
+            </Typography>
           </IconButton>
           <DropdownArrowIcon className="dropdown-arrow" />
 

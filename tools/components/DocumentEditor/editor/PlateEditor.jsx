@@ -40,6 +40,7 @@ import { CodeLineElement } from '../plate-ui/code-line-element';
 import { CodeSyntaxLeaf } from '../plate-ui/code-syntax-leaf';
 import { Editor, EditorContainer } from '../plate-ui/editor';
 import { LinkElement } from '../plate-ui/link-element';
+import { LinkPopup } from '../plate-ui/LinkPopup';
 import { TodoListElement } from '../plate-ui/todo-list-element';
 import { EditorToolbar } from '../plate-ui/toolbar';
 import { TableElement } from '../plate-ui/table-element';
@@ -274,7 +275,10 @@ export function PlateEditor(props) {
   }, 2000);
 
   return (
-    <Plate editor={editor} onChange={({ value }) => handleAutosave(value)}>
+    <Plate
+      editor={editor}
+      onChange={({ value }) => handleAutosave(value)}
+    >
       <div className="mb-4">
         <EditorToolbar editor={editor} />
       </div>
@@ -286,6 +290,7 @@ export function PlateEditor(props) {
           className={`text-foreground ${styles['slate-editor']}`}
         />
       </EditorContainer>
+      <LinkPopup editor={editor} />
     </Plate>
   );
 }

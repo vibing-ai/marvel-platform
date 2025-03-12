@@ -17,9 +17,10 @@ import { cva } from 'class-variance-authority';
 import { useDispatch } from 'react-redux';
 
 import AlignDropdownMenu from './AlignDropdownMenu';
+import CodeBlockButton from './CodeBlockButton';
 import FontStyle from './FontStyle';
 import LinkToolbarButton from './LinkToolbarButton';
-import ListToolbarButton from './ListToolbarButton';
+import ListDropdownMenu from './ListDropdownMenu';
 import TextStyle from './TextStyle';
 import ToolbarSeparator from './ToolbarSeparator';
 import { withTooltip } from './tooltip';
@@ -243,9 +244,7 @@ export const EditorToolbar = (props) => {
             className="list-style-dropdown flex items-center"
           >
             {/* Needs a rework */}
-            <Typography className="mr-1 list-style-dropdown">
-              14 pt
-            </Typography>
+            <Typography className="mr-1 list-style-dropdown">14 pt</Typography>
           </IconButton>
           <DropdownArrowIcon className="dropdown-arrow" />
 
@@ -288,35 +287,18 @@ export const EditorToolbar = (props) => {
 
         <ToolbarSeparator />
 
-        <div className="slate-toolbar-group flex items-center">
-          <ListToolbarButton
-            key="bulleted-list"
-            nodeType="ul"
-            editor={editor}
-            isActive={isBlockActive('ul')}
-            onClick={() => toggleBlock('ul')}
-          />
-          <ListToolbarButton
-            key="numbered-list"
-            nodeType="ol"
-            editor={editor}
-            isActive={isBlockActive('ol')}
-            onClick={() => toggleBlock('ol')}
-          />
-          <ListToolbarButton
-            key="todo-list"
-            nodeType="action_item"
-            editor={editor}
-            isActive={isBlockActive('action_item')}
-            onClick={() => toggleBlock('action_item')}
-          />
-        </div>
+        <ListDropdownMenu
+          editor={editor}
+          isBlockActive={isBlockActive}
+          toggleBlock={toggleBlock}
+        />
 
         <AlignDropdownMenu />
 
         <ToolbarSeparator />
 
         <LinkToolbarButton />
+        <CodeBlockButton editor={editor} />
       </div>
     </Toolbar>
   );

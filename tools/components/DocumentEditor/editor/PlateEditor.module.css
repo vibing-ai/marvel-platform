@@ -1463,3 +1463,90 @@
   .slate-editor button[role="checkbox"]:hover {
     border-color: #8065ff !important;
   }
+
+.slate-editor [data-slate-type="code_block"] {
+  background-color: #f6f8fa;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  padding: 16px;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+  font-size: 85%;
+  line-height: 1.45;
+  overflow: auto;
+  position: relative;
+}
+
+.slate-editor [data-slate-type="code_line"] {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+}
+
+/* Language label and copy button styling */
+.slate-editor .code-block-header {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0.7;
+}
+
+.slate-editor .code-block-header:hover {
+  opacity: 1;
+}
+
+/* Syntax highlighting */
+.slate-editor .token.comment,
+.slate-editor .token.prolog,
+.slate-editor .token.doctype,
+.slate-editor .token.cdata {
+  color: #8b949e;
+}
+
+.slate-editor .token.punctuation {
+  color: #c9d1d9;
+}
+
+.slate-editor .token.property,
+.slate-editor .token.tag,
+.slate-editor .token.boolean,
+.slate-editor .token.number,
+.slate-editor .token.constant,
+.slate-editor .token.symbol,
+.slate-editor .token.deleted {
+  color: #79c0ff;
+}
+
+.slate-editor .token.selector,
+.slate-editor .token.attr-name,
+.slate-editor .token.string,
+.slate-editor .token.char,
+.slate-editor .token.builtin,
+.slate-editor .token.inserted {
+  color: #a5d6ff;
+}
+
+.slate-editor .token.operator,
+.slate-editor .token.entity,
+.slate-editor .token.url,
+.slate-editor .language-css .token.string,
+.slate-editor .style .token.string {
+  color: #79c0ff;
+}
+
+.slate-editor .token.atrule,
+.slate-editor .token.attr-value,
+.slate-editor .token.keyword {
+  color: #ff7b72;
+}
+
+.slate-editor .token.function {
+  color: #d2a8ff;
+}
+
+.slate-editor .token.regex,
+.slate-editor .token.important,
+.slate-editor .token.variable {
+  color: #ffa657;
+}

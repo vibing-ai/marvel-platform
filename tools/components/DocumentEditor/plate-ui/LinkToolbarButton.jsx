@@ -2,28 +2,28 @@
 
 import React from 'react';
 
-import { useLinkToolbarButton, useLinkToolbarButtonState } from '@udecode/plate-link/react';
-import {
-    Link as LinkIcon
-  } from '@mui/icons-material';
-  
+import { Link as LinkIcon } from '@mui/icons-material';
 
 import { ToolbarButton } from './toolbar';
 
- const LinkToolbarButton = (props) => {
-  const state = useLinkToolbarButtonState();
-  const { props: buttonProps } = useLinkToolbarButton(state);
+const LinkToolbarButton = (props) => {
+  // Simple function to dispatch custom event
+  const handleLinkButtonClick = () => {
+    // Create and dispatch custom event
+    const event = new CustomEvent('linkButtonClick');
+    document.dispatchEvent(event);
+  };
 
   return (
     <ToolbarButton
-      data-plate-focus
       tooltip="Link"
-      {...buttonProps}
+      onClick={handleLinkButtonClick}
       {...props}
       className="slate-btn"
     >
-      <LinkIcon />
+      <LinkIcon className="h-5 w-5" />
     </ToolbarButton>
   );
 };
+
 export default LinkToolbarButton;

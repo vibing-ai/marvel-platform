@@ -4,7 +4,7 @@ const { default: axios } = require('axios');
 const { logger } = require('firebase-functions/v1');
 const { Timestamp } = require('firebase-admin/firestore');
 const { BOT_TYPE, AI_ENDPOINTS } = require('../constants');
-
+const dotenv = require('dotenv')
 // const DEBUG = process.env.DEBUG;
 const DEBUG = true;
 

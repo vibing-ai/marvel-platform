@@ -41,9 +41,9 @@ import { CodeSyntaxLeaf } from '../plate-ui/code-syntax-leaf';
 import { Editor, EditorContainer } from '../plate-ui/editor';
 import { LinkElement } from '../plate-ui/link-element';
 import { LinkPopup } from '../plate-ui/LinkPopup';
+import { TableElement } from '../plate-ui/table-element';
 import { TodoListElement } from '../plate-ui/todo-list-element';
 import { EditorToolbar } from '../plate-ui/toolbar';
-import { TableElement } from '../plate-ui/table-element';
 
 import 'highlight.js/styles/github-dark.css';
 import styles from './PlateEditor.module.css';
@@ -278,19 +278,50 @@ export function PlateEditor(props) {
     <Plate
       editor={editor}
       onChange={({ value }) => handleAutosave(value)}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        width: '100%',
+        overflow: 'hidden',
+      }}
     >
-      <div className="mb-4">
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          width: '100%',
+          overflow: 'hidden',
+        }}
+      >
         <EditorToolbar editor={editor} />
+        <EditorContainer
+          style={{
+            flex: '1 1 auto',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            height: '100%',
+          }}
+        >
+          <Editor
+            placeholder="Start typing here..."
+            autoFocus={false}
+            spellCheck
+            className={`slate-editor ${styles['slate-editor']}`}
+            style={{
+              flex: '1 1 auto',
+              height: 'auto',
+              minHeight: 0,
+              overflowY: 'auto',
+              overflowX: 'hidden',
+              padding: '16px',
+            }}
+          />
+        </EditorContainer>
+        <LinkPopup editor={editor} />
       </div>
-      <EditorContainer className="p-6 bg-background text-foreground rounded-lg shadow-editor">
-        <Editor
-          placeholder="Start typing here..."
-          autoFocus={false}
-          spellCheck
-          className={`text-foreground ${styles['slate-editor']}`}
-        />
-      </EditorContainer>
-      <LinkPopup editor={editor} />
     </Plate>
   );
 }

@@ -1279,6 +1279,23 @@
     max-width: 100%;
     white-space: pre-wrap;
   }
+  .slate-editor {
+    height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    padding: 16px !important;
+  }
+  .slate-editor {
+    line-height: 1.8 !important;
+    font-weight: 400 !important;
+    -webkit-font-smoothing: antialiased !important;
+    font-size: 20px !important;
+    font-family: 'Satoshi', sans-serif !important;
+    word-break: break-word !important;
+    white-space: pre-wrap !important;
+  }
 
   .slate-editor h1,
   .slate-editor h2,

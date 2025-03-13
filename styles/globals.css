@@ -69,6 +69,24 @@
   overflow-x: auto;
 }
 
+.slate-toolbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 999 !important;
+  flex: 0 0 auto !important;
+}
+.slate-toolbar {
+  display: flex !important;
+  justify-content: center !important; /* Center horizontally */
+  align-items: center !important; /* Center vertically */
+  width: 100% !important;
+  padding: 8px 16px !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 999 !important;
+  flex: 0 0 auto !important;
+}
+
 .slate-toolbar-group {
   display: flex;
   align-items: center;

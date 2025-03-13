@@ -3,7 +3,7 @@ const TOOLS_ID = {
   FLASHCARDS_GENERATOR: 'flashcard-generator',
   WORKSHEET_GENERATOR: 'worksheet-generator',
   SYLLABUS_GENERATOR: 'syllabus-generator',
-  PRESENTATION_GENERATOR: 'presentation-generator'
+  PRESENTATION_GENERATOR: 'presentation-generator',
 };
 
 export { TOOLS_ID };

@@ -11,6 +11,8 @@ import GlobalProvider from '@/libs/providers/GlobalProvider';
 import theme from '@/libs/theme/theme';
 
 import '@/styles/globals.css';
+import 'reveal.js/dist/reveal.css';
+import 'reveal.js/dist/theme/white.css';
 
 const App = ({ Component, pageProps }) => {
   const getLayout = Component.getLayout || ((page) => page);

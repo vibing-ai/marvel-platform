@@ -1,5 +1,6 @@
-import React from "react";
-import { styles } from "../styles";
+import React from 'react';
+
+import { styles } from '../styles';
 
 const TitleBulletsSlide = ({ title, content }) => {
   return (

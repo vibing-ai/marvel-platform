@@ -44,6 +44,7 @@
     "remark-gfm": "^4.0.0",
     "remark-html": "^16.0.1",
     "remark-parse": "^11.0.0",
+    "reveal.js": "^5.1.0",
     "unified": "^11.0.2"
   },
   "devDependencies": {

@@ -1,9 +1,11 @@
-"use client";
-import React from "react";
-import TopBar from "./TopBar";
-import Sidebar from "./Sidebar";
-import Slides from "./Slides";
-import { styles } from "./styles";
+'use client';
+
+import React from 'react';
+
+import Sidebar from './Sidebar';
+import Slides from './Slides';
+import { styles } from './styles';
+import TopBar from './TopBar';
 
 const PresentationResponse = () => {
   return (

@@ -1,8 +1,8 @@
-import React from "react";
-import { styles } from "./styles";
+import React from 'react';
 
-const NavItem = ({ number, text}) => {
+import { styles } from './styles';
 
+const NavItem = ({ number, text }) => {
   console.log(text);
   return (
     <div

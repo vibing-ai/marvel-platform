@@ -2,7 +2,7 @@ import FlashCardList from './FlashCardList';
 import QuizResponse from './QuizResponse';
 import SyllabusGeneratorResponse from './SyllabusGeneratorResponse';
 import WorksheetGeneratorResponse from './WorksheetGeneratorResponse';
-import PresentationOutline from './PresntationOutline';
+import PresentationOutline from './PresentationOutline';
 
 import { TOOLS_ID } from '@/tools/libs/constants/tools';
 

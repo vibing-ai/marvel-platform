@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 import { Help } from '@mui/icons-material';
 import { Grid, Tooltip, Typography, useTheme } from '@mui/material';
@@ -40,15 +40,25 @@ const {
 } = toolActions;
 
 const ToolRequestForm = (props) => {
-  const { id, inputs, isPopout } = props;
+  const { id, inputs, isPopout, savedInputs } = props;
   const theme = useTheme();
   const dispatch = useDispatch();
   const { handleOpenSnackBar } = useContext(AuthContext);
   const { communicatorLoading } = useSelector((state) => state.tools);
   const { data: userData } = useSelector((state) => state.user);
 
-  // Extract default values from inputs
+  // Extract default values from savedInputs or input defaults
   const defaultValues = inputs.reduce((acc, input) => {
+    // Check if we have a saved input value in savedInputs
+    if (savedInputs && Array.isArray(savedInputs)) {
+      const savedInput = savedInputs.find(item => item.name === input.name);
+      if (savedInput) {
+        acc[input.name] = savedInput.value;
+        return acc;
+      }
+    }
+    
+    // Otherwise use default values from the input definition
     if (input.defaultValue !== undefined) {
       acc[input.name] = input.defaultValue;
     }
@@ -69,7 +79,12 @@ const ToolRequestForm = (props) => {
       // eslint-disable-next-line no-console
       console.log('Form submission started with values:', values);
       dispatch(setResponse(null));
-      dispatch(setTopic(null));
+      
+      // Only reset topic if not in popout mode
+      if (!isPopout) {
+        dispatch(setTopic(null));
+      }
+      
       dispatch(setCommunicatorLoading(true));
 
       // Handle file uploads first using original values
@@ -155,7 +170,7 @@ const ToolRequestForm = (props) => {
           if (values[input.name]) {
             updateData.push({
               name: `${input.name}_type`,
-              value: values[input.name].toLowerCase(),
+              value: values[input.name].toUpperCase(), // Save in uppercase
             });
           }
         });

@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Grid, TextField, ClickAwayListener, IconButton } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
+import { doc, updateDoc, collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
 
 import AIChatIcon from '@/assets/svg/AIChatIcon.svg';
 import HistoryIcon from '@/assets/svg/HistoryIcon.svg';
@@ -16,12 +17,15 @@ import styles from './styles';
 import ROUTES from '@/libs/constants/routes';
 import EditorExport from '@/tools/components/EditorExport/EditorExport';
 import { actions as toolActions } from '@/tools/data';
+import { firestore } from '@/libs/redux/store';
 
 const ToolNav = (props) => {
   const { toolDoc, popoutOpen } = props;
   const router = useRouter();
   const dispatch = useDispatch();
   const topicName = useSelector((state) => state.tools.topic);
+  const sessionId = useSelector((state) => state.tools.sessionId);
+  const userId = useSelector((state) => state.user?.data?.id);
   
   // Add state to track editing mode
   const [isEditing, setIsEditing] = useState(false);
@@ -33,10 +37,49 @@ const ToolNav = (props) => {
     setIsEditing(true);
   };
 
+  // Update the topic in Firestore
+  const updateTopicInFirestore = async (topic) => {
+    try {
+      if (sessionId) {
+        // Update the existing document with the session ID
+        const docRef = doc(firestore, 'toolSessions', sessionId);
+        await updateDoc(docRef, {
+          topic: topic
+        });
+        console.log('Topic updated in Firestore');
+      } else if (userId && toolDoc?.id) {
+        // Find the most recent session for this tool and user
+        const toolSessionsCollection = collection(firestore, 'toolSessions');
+        const q = query(
+          toolSessionsCollection,
+          where('userId', '==', userId),
+          where('toolId', '==', toolDoc.id),
+          orderBy('createdAt', 'desc'),
+          limit(1)
+        );
+        
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const docRef = doc(firestore, 'toolSessions', querySnapshot.docs[0].id);
+          await updateDoc(docRef, {
+            topic: topic
+          });
+          console.log('Topic updated in the most recent session');
+        }
+      }
+    } catch (error) {
+      console.error('Error updating topic in Firestore:', error);
+    }
+  };
+
   // Handle saving the edited topic name
   const handleSaveTopic = () => {
     if (editedTopicName.trim()) {
-      dispatch(toolActions.setTopic(editedTopicName.trim()));
+      const newTopic = editedTopicName.trim();
+      dispatch(toolActions.setTopic(newTopic));
+      
+      // Update in Firestore
+      updateTopicInFirestore(newTopic);
     }
     setIsEditing(false);
   };
@@ -52,6 +95,32 @@ const ToolNav = (props) => {
       handleSaveTopic();
     }
   };
+
+  // Fetch the topic from Firestore when the component mounts or sessionId changes
+  useEffect(() => {
+    const fetchTopic = async () => {
+      try {
+        if (sessionId) {
+          const docRef = doc(firestore, 'toolSessions', sessionId);
+          const docSnap = await getDocs(docRef);
+          
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (data.topic && data.topic !== topicName) {
+              dispatch(toolActions.setTopic(data.topic));
+              setEditedTopicName(data.topic);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching topic from Firestore:', error);
+      }
+    };
+
+    if (sessionId) {
+      fetchTopic();
+    }
+  }, [sessionId, dispatch]);
 
   return (
     <Grid
@@ -148,7 +217,10 @@ const ToolNav = (props) => {
           <EditPromptPopout 
             toolDoc={toolDoc} 
             popoutOpen={popoutOpen} 
-            setTopic={(topic) => dispatch(toolActions.setTopic(topic))}
+            setTopic={(topic) => {
+              dispatch(toolActions.setTopic(topic));
+              updateTopicInFirestore(topic);
+            }}
           />
         </Grid>
         <Grid item>

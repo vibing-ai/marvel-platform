@@ -6,22 +6,56 @@ const escapeMarkdown = (text) => {
 };
 
 const convertQuizToMarkdown = (response) => {
-  if (!Array.isArray(response)) return '';
+  if (!Array.isArray(response)) {
+    // Handle case when response is not an array but might be in data property
+    if (response && response.data && Array.isArray(response.data)) {
+      response = response.data;
+    } else {
+      return '';
+    }
+  }
 
-  return response
+  // Generate questions section
+  const questionsMarkdown = response
     .map((question, index) => {
       const escapedQuestion = escapeMarkdown(question.question);
-      const questionText = `# ${index + 1}. ${escapedQuestion}\n`;
-      const choices = question.choices
-        .map(
-          (choice) =>
-            `&nbsp;&nbsp;${choice.key}. ${escapeMarkdown(choice.value)}`
-        )
-        .join('\n\n');
+      const questionText = `${index + 1}. ${escapedQuestion}`;
+
+      // Handle different formats of choices (array or object)
+      let choices = '';
+      if (question.choices) {
+        if (Array.isArray(question.choices)) {
+          // Handle array format
+          choices = question.choices
+            .map((choice) => `${choice.key}. ${escapeMarkdown(choice.value)}`)
+            .join('\n');
+        } else if (typeof question.choices === 'object') {
+          // Handle object format
+          choices = Object.entries(question.choices)
+            .map(([key, value]) => `${key}. ${escapeMarkdown(value)}`)
+            .join('\n');
+        }
+      }
 
       return `${questionText}\n${choices}`;
     })
     .join('\n\n');
+
+  // Generate answer key with explanations
+  const answerKeyMarkdown = `\nAnswer Key (Always review AI generated answers for accuracy)\n${response
+    .map((question, index) => {
+      const answerLine = `${index + 1}. ${question.answer || ''}`;
+
+      // Add explanation if available
+      const explanation = question.explanation
+        ? `   Explanation: ${escapeMarkdown(question.explanation)}`
+        : '';
+
+      return answerLine + (explanation ? '\n' + explanation : '');
+    })
+    .join('\n')}`;
+
+  return `${questionsMarkdown}\n\n${answerKeyMarkdown}`;
 };
 
 const convertFlashcardsToMarkdown = (response) => {

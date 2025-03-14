@@ -32,7 +32,7 @@ const saveResponseToFirestore = async (sessionData) => {
  * @param {string} payload.user.id - The ID of the user
  * @return {Promise<object>} The response from the backend
  */
-const submitPrompt = async (payload) => {
+const submitPrompt = async (payload, dispatch) => {
   try {
     const url = `${process.env.NEXT_PUBLIC_MARVEL_ENDPOINT}submit-tool`;
 
@@ -42,6 +42,8 @@ const submitPrompt = async (payload) => {
         'API-Key': 'dev',
       },
     });
+
+    console.log('Response:', response.data);
 
     // Safely extract the topic from inputs
     const topicInput = payload.tool_data.inputs.find(
@@ -61,6 +63,8 @@ const submitPrompt = async (payload) => {
       editHistory: [],
       topic, // Use the safely extracted topic
       userId: payload.user.id, // Extract userId from user
+      savedInputs: payload.tool_data.inputs, // Store all input data in the same document
+      lastEditedAt: Timestamp.fromMillis(Date.now()),
     };
 
     // Save the response to Firestore and get the session ID

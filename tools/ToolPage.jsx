@@ -15,6 +15,7 @@ import ROUTES from '@/libs/constants/routes';
 import theme from '@/libs/theme/theme';
 import { actions as ToolActions } from '@/tools/data';
 import ToolForm from '@/tools/views/ToolFormView';
+import GradientOutlinedButton from '@/components/GradientOutlinedButton';
 
 import navStyles from '@/layouts/MainAppLayout/styles';
 
@@ -53,14 +54,32 @@ const ToolPage = (props) => {
 
   const ToolOutputComponent = TOOL_OUTPUTS[id];
 
+  const renderBackButton = () => {
+    return (
+      <Grid {...styles.backButtonGridProps}>
+        <GradientOutlinedButton
+          bgcolor="#24272F"
+          icon={<ArrowBack />}
+          textColor="#AC92FF"
+          iconPlacement="left"
+          onHoverTextColor={theme.palette.Background.white2}
+          clickHandler={handleRoute}
+          text="Back"
+          {...styles.outlinedButtonProps}
+        />
+      </Grid>
+    );
+  };
+
   return (
     <>
       {response && (
         <Grid {...navStyles.navBarContainer}>
-          <ToolNav toolDoc={toolDoc} popoutOpen={popoutOpen} />
+          <ToolNav toolDoc={toolDoc} popoutOpen={popoutOpen}/>
         </Grid>
       )}
       <Grid {...styles.mainGridProps}>
+        {!response && renderBackButton()}
         <ToolForm toolDoc={toolDoc} formOpen={formOpen} response={response} />
         {!formOpen && response && <ToolOutputComponent />}
       </Grid>

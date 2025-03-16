@@ -359,4 +359,72 @@ export const styles = {
       borderRadius: '4px',
     },
   },
+  editor: {
+    container: {
+      width: '100%',
+      height: '100%',
+    },
+    content: {
+      outline: 'none',
+      padding: '0',
+      '&:focus': {
+        outline: 'none',
+        border: 'none',
+      },
+    },
+    title: {
+      fontSize: '2.5em',
+      fontWeight: 'bold',
+      color: '#0F0535',
+      marginBottom: '0.5em',
+      fontFamily: 'Satoshi, sans-serif',
+    },
+    body: {
+      fontSize: '1.5em',
+      lineHeight: '1.5',
+      color: '#0F0535',
+      fontFamily: 'Satoshi, sans-serif',
+    },
+    toolbarContainer: {
+      position: 'absolute',
+      top: '10px',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      zIndex: 1000,
+      width: '90%',
+      maxWidth: '800px',
+    },
+    toolbar: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      padding: '8px',
+      backgroundColor: '#ffffff',
+      borderRadius: '4px',
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+      justifyContent: 'center',
+    },
+    toolbarButton: {
+      padding: '6px 10px',
+      margin: '0 2px',
+      backgroundColor: 'transparent',
+      border: '1px solid #ddd',
+      borderRadius: '3px',
+      cursor: 'pointer',
+      fontSize: '14px',
+      transition: 'all 0.2s ease',
+      '&:hover': {
+        backgroundColor: '#f0f0f0',
+      },
+      '&:disabled': {
+        opacity: 0.5,
+        cursor: 'not-allowed',
+      },
+    },
+    separator: {
+      width: '1px',
+      height: '24px',
+      margin: '0 8px',
+      backgroundColor: '#ddd',
+    },
+  },
 };

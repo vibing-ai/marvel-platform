@@ -13,14 +13,14 @@ const CodeComponent = (props) => {
   if (languageMatch) {
     const language = languageMatch[1];
     return (
-      <SyntaxHighlighter
-        {...rest}
-        PreTag="div"
-        language={language}
-        style={duotoneDark}
-      >
+      (<SyntaxHighlighter
+                  {...rest}
+                  PreTag="div"
+                  language={language}
+                  style={duotoneDark}
+                >
         {String(children).replace(/\n$/, '')}
-      </SyntaxHighlighter>
+      </SyntaxHighlighter>)
     );
   }
 

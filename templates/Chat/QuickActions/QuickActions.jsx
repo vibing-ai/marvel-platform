@@ -87,7 +87,7 @@ const QuickActions = ({ handleSendMessage }) => {
   return displayQuickActions ? (
     // Wrap the QuickActions component with ClickAwayListener to handle clicks outside the component
     // ClickAwayListener triggers the handleClose function when a click occurs outside the component
-    <ClickAwayListener onClickAway={handleClose}>
+    (<ClickAwayListener onClickAway={handleClose}>
       <Grid {...styles.quickActionsMain}>
         {/* Render the Grid container for the QuickActions component */}
         <Grid {...styles.quickActionsGridContainer}>
@@ -110,7 +110,7 @@ const QuickActions = ({ handleSendMessage }) => {
           })}
         </Grid>
       </Grid>
-    </ClickAwayListener>
+    </ClickAwayListener>)
   ) : null;
 };
 

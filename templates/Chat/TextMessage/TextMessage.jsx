@@ -1,5 +1,5 @@
 import { Box, Fade, Grid, Typography } from '@mui/material';
-import Image from 'next/image';
+import Image from "next/image";
 import emoji from 'remark-emoji';
 import remarkGfm from 'remark-gfm';
 
@@ -15,17 +15,20 @@ const TextMessage = (props) => {
   const { isMyMessage, message } = props;
 
   return (
-    <Fade in>
+    (<Fade in>
       <Grid id="message" {...styles.mainGridProps(isMyMessage)}>
         <Grid {...styles.messageWrapperProps(isMyMessage)}>
           {!isMyMessage && (
             <Box>
               <Image
-                width="38.74px"
-                height="38.74px"
+                width="39"
+                height="39"
                 src={ImageURLs.MarvelCircleAvatar}
                 alt="Marvel AI"
-              />
+                style={{
+                  maxWidth: "100%",
+                  height: "auto"
+                }} />
             </Box>
           )}
           <Typography {...styles.messageProps()}>
@@ -38,7 +41,7 @@ const TextMessage = (props) => {
           </Typography>
         </Grid>
       </Grid>
-    </Fade>
+    </Fade>)
   );
 };
 

@@ -182,13 +182,13 @@ const ChatHistory = () => {
    */
   const NoChatHistory = () => (
     // Grid container to center the component
-    <Grid {...styles.centerChatMessage}>
+    (<Grid {...styles.centerChatMessage}>
       {/* Typography component to display the message */}
       <Typography variant="h5">
         {/* Display the message */}
         No Chat History
       </Typography>
-    </Grid>
+    </Grid>)
   );
 
   /**
@@ -210,13 +210,13 @@ const ChatHistory = () => {
    */
   const skeleton = () => (
     // Grid container with 100% height
-    <Grid container height="100%" flexDirection="column">
+    (<Grid container height="100%" flexDirection="column">
       {/* Map over an array of length 5 */}
       {Array.from({ length: 5 }).map((_, index) => (
         // Skeleton component with specified props
-        <Skeleton key={index} animation="wave" width="100%" height="10%" />
+        (<Skeleton key={index} animation="wave" width="100%" height="10%" />)
       ))}
-    </Grid>
+    </Grid>)
   );
 
   // Handles rendering of chat history, error messages, and skeleton loader

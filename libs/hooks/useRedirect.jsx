@@ -79,38 +79,19 @@ const useRedirect = (firestore, functions, handleOpenSnackBar) => {
   }, [authData]);
 
   useEffect(() => {
-    // redirect based on onboarding status, provided that the user is already authed
+    // User is on an onboarding page but we want to redirect them to homepage
     if (auth.currentUser) {
       const isOnboardingUrl = onboardingRegex.test(asPath);
-      const isHomeUrl = homeRegex.test(asPath);
-      const onboardingStatus = userData?.needsBoarding;
 
-      // If already logged in and onboarding is required, redirect to onboarding
-      if (
-        !isOnboardingUrl &&
-        (onboardingStatus ||
-          (onboardingStatus === undefined && userData !== false))
-      ) {
-        dispatch(setUserLoading(true));
-        router.push(ROUTES.ONBOARDING.replace('[onboardingId]', '0'));
-        return;
-      }
-
-      // If users who have already completed onboarding wrongly enter the onboarding page or just completed the last onboarding task.
+      // If users are on the onboarding page, redirect them to home
       if (isOnboardingUrl) {
-        dispatch(setUserLoading(false));
-        if (onboardingStatus === false) {
-          dispatch(setUserLoading(true));
-          router.push(ROUTES.HOME);
-          return;
-        }
+        dispatch(setUserLoading(true));
+        router.push(ROUTES.HOME);
         return;
       }
 
-      // If users are coming from the onboarding page
-      if (isHomeUrl && !onboardingStatus) {
-        dispatch(setUserLoading(false));
-      }
+      // Set loading to false for any other pages
+      dispatch(setUserLoading(false));
     }
   }, [userData, router]);
 

@@ -26,8 +26,14 @@ import fetchUserData from '@/libs/redux/thunks/user';
 import AUTH_REGEX from '@/libs/regex/auth';
 
 const DEFAULT_FORM_VALUES = {
-  email: typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'user@test.com' : '',
-  password: typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'Test@123' : '',
+  email:
+    typeof window !== 'undefined' && window.location.hostname === 'localhost'
+      ? 'user@test.com'
+      : '',
+  password:
+    typeof window !== 'undefined' && window.location.hostname === 'localhost'
+      ? 'Test@123'
+      : '',
 };
 
 const DEFAULT_ERR_STATE = {
@@ -99,11 +105,7 @@ const SignInForm = (props) => {
       const userData = await dispatch(
         fetchUserData({ firestore, id: userCred.user.uid })
       ).unwrap();
-      if (userData?.needsBoarding) {
-        router.replace(ROUTES.ONBOARDING);
-      } else {
-        router.replace(ROUTES.HOME);
-      }
+      router.replace(ROUTES.HOME);
     } catch ({ code }) {
       setError({ password: { message: AUTH_ERROR_MESSAGES[code] } });
     } finally {

@@ -15,6 +15,7 @@ import TitleBulletsSlide from './SlideTemplates/TitleBulletsSlide';
 import TitleImageSlide from './SlideTemplates/TitleImageSlide';
 import TwoColumnImageSlide from './SlideTemplates/TwoColumnImageSlide';
 import { styles } from './styles';
+import { Slide } from '@mui/material';
 
 // Create a separate component for editable slides
 const EditableSlide = React.memo(({ slide, index, updateSlideContent }) => {
@@ -156,6 +157,67 @@ const EditableSlide = React.memo(({ slide, index, updateSlideContent }) => {
         break;
     }
   };
+
+  const SlideToolbar = () => {
+    return (
+      <div style={styles.slideToolbar.container}>
+        <div style={styles.slideToolbar.buttonGroup}>
+          <button
+            style={styles.slideToolbar.button}
+            title="Undo"
+            onClick={() => titleEditor?.chain().focus().undo().run()}
+          >
+            ↩
+          </button>
+          <button
+            style={styles.slideToolbar.button}
+            title="Redo"
+            onClick={() => titleEditor?.chain().focus().redo().run()}
+          >
+            ↪
+          </button>
+        </div>
+        
+        <div style={styles.slideToolbar.buttonGroup}>
+          <button
+            style={styles.slideToolbar.button}
+            title="Insert"
+          >
+            +
+          </button>
+        </div>
+
+        <div style={styles.slideToolbar.buttonGroup}>
+          <button
+            style={styles.slideToolbar.button}
+            title="Card Styling"
+          >
+            <span style={{ fontSize: '14px' }}>Style</span>
+          </button>
+        </div>
+
+        <div style={styles.slideToolbar.buttonGroup}>
+          <button
+            style={styles.slideToolbar.button}
+            title="AI Options"
+          >
+            <span style={{ fontSize: '14px' }}>AI</span>
+          </button>
+        </div>
+
+        <div style={styles.slideToolbar.buttonGroup}>
+          <button
+            style={styles.slideToolbar.button}
+            title="Slide Options"
+          >
+            <span style={{ fontSize: '14px' }}>⋮</span>
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+
 
   // Toolbar component that works with the active editor
   const FormattingToolbar = () => {
@@ -314,11 +376,11 @@ const EditableSlide = React.memo(({ slide, index, updateSlideContent }) => {
     );
   };
 
-  // Only make titleBody and titleBullets editable for now
   switch (template) {
     case 'titleBody':
       return (
         <article style={styles.slide.container}>
+          <SlideToolbar/>
           {showToolbar && <FormattingToolbar />}
           <div style={styles.slide.content}>
             <div style={{
@@ -343,6 +405,7 @@ const EditableSlide = React.memo(({ slide, index, updateSlideContent }) => {
     case 'titleBullets':
       return (
         <article style={styles.slide.container}>
+          <SlideToolbar/>
           {showToolbar && <FormattingToolbar />}
           <div style={styles.slide.content}>
             <div style={{
@@ -364,24 +427,46 @@ const EditableSlide = React.memo(({ slide, index, updateSlideContent }) => {
           </div>
         </article>
       );
-    // For all other templates, use the original components
     case 'titleImage':
-      return <TitleImageSlide title={title} subtitle={subtitle} imageUrl={imageUrl} />;
+      return (
+        <article style={styles.slide.container}>
+          <SlideToolbar />
+          <TitleImageSlide title={title} subtitle={subtitle} imageUrl={imageUrl} />
+        </article>
+      );    
     case 'titleBodyImage':
-      return <TitleBodyImageSlide title={title} content={content} imageUrl={imageUrl} />;
+      return (
+        <article style={styles.slide.container}>
+          <SlideToolbar />
+          <TitleBodyImageSlide title={title} content={content} imageUrl={imageUrl} />
+        </article>
+      );    
     case 'titleBulletsImage':
-      return <TitleBulletsImageSlide title={title} content={content} imageUrl={imageUrl} />;
+      return (
+        <article style={styles.slide.container}>
+          <SlideToolbar />
+          <TitleBulletsImageSlide title={title} content={content} imageUrl={imageUrl} />
+        </article>
+      );
     case 'twoColumnImage':
       return (
+        <article style={ styles.slide.container}>
+        <SlideToolbar/>
         <TwoColumnImageSlide
           title={title}
           leftContent={leftContent}
           rightContent={rightContent}
           imageUrl={imageUrl}
         />
+        </article>
       );
     case 'stretchImage':
-      return <StretchImageSlide title={title} caption={caption} imageUrl={imageUrl} />;
+      return (
+      <Article className='styles.slide.container'>
+        <SlideToolbar/>
+        <StretchImageSlide title={title} caption={caption} imageUrl={imageUrl} />;
+      </Article>
+    )
     default:
       return null;
   }

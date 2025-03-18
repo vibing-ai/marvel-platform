@@ -1,3 +1,5 @@
+import { isAbsoluteUrl } from "next/dist/shared/lib/utils";
+
 export const styles = {
   app: {
     background: `radial-gradient(
@@ -17,6 +19,51 @@ export const styles = {
       flexDirection: 'column',
     },
   },
+
+  slideToolbar: {
+
+    container: {
+      position: 'absolute',
+      top: '10px',
+      left: '10px',
+      right: '10px',
+      zIndex: 100,
+      display: 'flex',
+      justifyContent: 'flex-start',
+      padding: '5px 10px',
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      borderRadius: '5px',
+      boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+    },
+    buttonGroup: {
+      display: 'flex',
+      gap: '1px',
+      alignItems: 'flex-start',
+      marginRight: '15px',   //maybe change to proportional to the width of the button group
+    },
+
+    button: {
+      width: '36px',
+      height: '36px',
+      borderRadius: '4px',
+      border: '1px solid #ddd',
+      backgroundColor: 'white',
+      color: '#333',
+      fontWeight: '500',
+      fontSize: '16px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+      transition: 'all 0.2s',
+      '&:hover': {
+        backgroundColor: '#f0f0f0',
+        borderColor: '#aaa',
+      }
+    }
+  },
+
+
   topBar: {
     container: {
       display: 'flex',

@@ -58,6 +58,7 @@
     "jspdf": "^2.5.2",
     "lowlight": "^3.3.0",
     "lucide-react": "^0.473.0",
+    "markdown-it": "^14.1.0",
     "moment": "^2.29.4",
     "next": "12.3.0",
     "next-transpile-modules": "^10.0.1",

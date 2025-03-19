@@ -812,7 +812,7 @@ function processCodeBlock(doc, element, yPos, dimensions) {
   if (!text) return yPos;
 
   // Add spacing before code block
-  yPos += 5;
+  yPos += 9;
 
   // Set monospace font for code
   doc.setFontSize(10);
@@ -841,7 +841,7 @@ function processCodeBlock(doc, element, yPos, dimensions) {
   doc.setFont('helvetica', 'normal');
 
   // Return updated y position
-  return yPos + textHeight + 8; // More space after code blocks
+  return yPos + textHeight + doc.getFontSize() * 0.3 + 4; // More space after code blocks
 }
 
 // Process inline code

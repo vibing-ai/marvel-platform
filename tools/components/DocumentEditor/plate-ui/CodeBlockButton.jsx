@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import CodeIcon from '@mui/icons-material/Code';
 
-import { ToolbarButton } from './toolbar';
+import { ToolbarButton } from './ToolbarButton';
 
 /**
  * Toolbar button to convert selected text into a code block

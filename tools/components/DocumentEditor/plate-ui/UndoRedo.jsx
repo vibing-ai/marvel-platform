@@ -1,5 +1,5 @@
 import React from 'react';
-import { ToolbarButton } from './toolbar';
+import { ToolbarButton } from './ToolbarButton';
 import { Undo as UndoIcon, Redo as RedoIcon } from '@mui/icons-material';
 
  const UndoRedo = (props) => {

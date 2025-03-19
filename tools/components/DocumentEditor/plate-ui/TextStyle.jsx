@@ -1,13 +1,15 @@
 import React from 'react';
-import { ToolbarButton } from './toolbar';
-import { 
-  FormatBold as BoldIcon, 
-  FormatItalic as ItalicIcon, 
-  FormatUnderlined as UnderlineIcon 
+
+import {
+  FormatBold as BoldIcon,
+  FormatItalic as ItalicIcon,
+  FormatUnderlined as UnderlineIcon,
 } from '@mui/icons-material';
 
- const TextStyle = (props) => {
-   const  { editor, isMarkActive, toggleMark } =props;
+import { ToolbarButton } from './ToolbarButton';
+
+const TextStyle = (props) => {
+  const { editor, isMarkActive, toggleMark } = props;
   return (
     <div className="slate-toolbar-group">
       <ToolbarButton

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import * as ToolbarPrimitive from '@radix-ui/react-toolbar';
@@ -11,6 +11,7 @@ import styles from '../editor/PlateEditor.module.css';
 
 import AlignDropdownMenu from './AlignDropdownMenu';
 import CodeBlockButton from './CodeBlockButton';
+import FontSize from './FontSizeDropdown';
 import FontStyle from './FontStyle';
 import LinkToolbarButton from './LinkToolbarButton';
 import ListDropdownMenu from './ListDropdownMenu';
@@ -29,13 +30,37 @@ export const FloatingContextualToolbar = () => {
   const selection = useEditorSelector((state) => state.selection);
   const [position, setPosition] = useState({ top: -9999, left: -9999 });
   const [isVisible, setIsVisible] = useState(false);
+  const toolbarRef = useRef(null);
+  const [dimensions, setDimensions] = useState({ width: 500, height: 44 });
 
   const {
     checkMarkActive,
     checkBlockActive,
     handleToggleMark,
     handleToggleBlock,
+    getCurrentFontSize,
   } = useToolbarFunctionsHook(editor);
+
+  const TOOLBAR_GAP = 10;
+
+  // Measure toolbar dimensions
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (toolbarRef.current) {
+        const rect = toolbarRef.current.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          setDimensions({
+            width: rect.width,
+            height: rect.height,
+          });
+        }
+      }
+    };
+
+    if (isVisible) {
+      setTimeout(updateDimensions, 5);
+    }
+  }, [isVisible]);
 
   useEffect(() => {
     if (!editor || !selection) {
@@ -59,17 +84,35 @@ export const FloatingContextualToolbar = () => {
           const range = domSelection.getRangeAt(0);
           const rect = range.getBoundingClientRect();
 
-          // Only show if there's an actual selection with width
           if (rect && rect.width > 0) {
             const editorElement = document.querySelector('.slate-editor');
             if (!editorElement) {
               setIsVisible(false);
               return;
             }
+            const viewportHeight = window.innerHeight;
 
-            const viewportOffset = editorElement.getBoundingClientRect();
-            const top = rect.bottom - viewportOffset.top + 30;
-            const left = rect.left - viewportOffset.left;
+            // Calculate center of selection
+            const selectionHCenter = rect.left + rect.width / 2;
+
+            // Place toolbar directly below the selection (in viewport coordinates)
+            let top = rect.bottom + TOOLBAR_GAP;
+            let left = selectionHCenter - dimensions.width / 2;
+
+            // Check if enough space below selection, otherwise position above
+            const spaceBelow = viewportHeight - rect.bottom;
+            if (spaceBelow < dimensions.height + TOOLBAR_GAP + 10) {
+              top = rect.top - dimensions.height - TOOLBAR_GAP;
+            }
+
+            // Convert viewport coordinates to position within the editor's parent
+            const bodyRect = document.body.getBoundingClientRect();
+            top -= bodyRect.top;
+            left -= bodyRect.left;
+
+            // Constrain horizontally to prevent overflow
+            const maxLeft = document.body.clientWidth - dimensions.width - 10;
+            left = Math.max(10, Math.min(left, maxLeft));
 
             setPosition({ top, left });
             setIsVisible(true);
@@ -79,11 +122,13 @@ export const FloatingContextualToolbar = () => {
 
         setIsVisible(false);
       };
-      const timerId = setTimeout(positionToolbar, 5);
+
+      // Small delay to ensure accurate positioning
+      const timerId = setTimeout(positionToolbar, 10);
       return () => clearTimeout(timerId);
     }
     setIsVisible(false);
-  }, [editor, selection]);
+  }, [editor, selection, dimensions]);
 
   useEffect(() => {
     if (!isVisible) return undefined;
@@ -113,35 +158,48 @@ export const FloatingContextualToolbar = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isVisible]);
 
-  const ensureInViewport = (positionToCheck) => {
-    if (!document.querySelector('.slate-editor')) return positionToCheck;
+  // Handle window resize and scroll events
+  useEffect(() => {
+    if (!isVisible) return undefined;
+
+    const handleResize = () => {
+      // Trigger recalculation of toolbar position on resize
+      const domSelection = window.getSelection();
+      if (domSelection && !domSelection.isCollapsed) {
+        // Force position update
+        setIsVisible(false);
+        setTimeout(() => setIsVisible(true), 10);
+      } else {
+        setIsVisible(false);
+      }
+    };
 
     const editorElement = document.querySelector('.slate-editor');
-    const editorRect = editorElement.getBoundingClientRect();
-    const toolbarWidth = 450;
 
-    let newLeft = positionToCheck.left;
-    if (newLeft + toolbarWidth > editorRect.width) {
-      newLeft = editorRect.width - toolbarWidth - 20;
+    window.addEventListener('resize', handleResize);
+    if (editorElement) {
+      editorElement.addEventListener('scroll', handleResize);
     }
 
-    return {
-      ...positionToCheck,
-      left: Math.max(10, newLeft),
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (editorElement) {
+        editorElement.removeEventListener('scroll', handleResize);
+      }
     };
-  };
-
-  const adjustedPosition = ensureInViewport(position);
+  }, [isVisible]);
 
   const toolbarStyle = {
     position: 'absolute',
-    top: `${adjustedPosition.top}px`,
-    left: `${adjustedPosition.left}px`,
+    top: `${position.top}px`,
+    left: `${position.left}px`,
     zIndex: 1000,
+    transition: 'opacity 0.2s ease',
   };
 
   return createPortal(
     <div
+      ref={toolbarRef}
       style={toolbarStyle}
       className={`${styles.toolbarContainer} ${
         isVisible ? styles.toolbarVisible : ''
@@ -153,28 +211,26 @@ export const FloatingContextualToolbar = () => {
             editor={editor}
             isBlockActive={checkBlockActive}
             toggleBlock={handleToggleBlock}
+          />
+          <FontSize
+            editor={editor}
+            getCurrentFontSize={getCurrentFontSize}
+            checkMarkActive={checkMarkActive}
             compact
           />
-
           <TextStyle
             editor={editor}
             isMarkActive={checkMarkActive}
             toggleMark={handleToggleMark}
-            compact
           />
-
           <ListDropdownMenu
             editor={editor}
             isBlockActive={checkBlockActive}
             toggleBlock={handleToggleBlock}
-            compact
           />
-
-          <AlignDropdownMenu compact />
-
-          <LinkToolbarButton compact />
-
-          <CodeBlockButton editor={editor} compact />
+          <AlignDropdownMenu />
+          <LinkToolbarButton />
+          <CodeBlockButton editor={editor} />
         </div>
       </ContextualToolbar>
     </div>,

@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Link as LinkIcon } from '@mui/icons-material';
 
-import { ToolbarButton } from './toolbar';
+import { ToolbarButton } from './ToolbarButton';
 
 const LinkToolbarButton = (props) => {
   // Simple function to dispatch custom event

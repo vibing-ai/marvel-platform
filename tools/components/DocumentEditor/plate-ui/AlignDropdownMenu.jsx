@@ -15,7 +15,7 @@ import { useEditorRef, useSelectionFragmentProp } from '@udecode/plate/react';
 import { setAlign } from '@udecode/plate-alignment';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { ToolbarButton } from './toolbar';
+import { ToolbarButton } from './ToolbarButton';
 
 import { actions as toolActions } from '@/tools/data';
 

@@ -1567,3 +1567,48 @@
 .slate-editor .token.variable {
   color: #ffa657;
 }
+.toolbarContainer {
+  position: absolute;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+.toolbarVisible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.purpleToolbar {
+  border-color: #8a5cf6 !important; /* Purple border */
+  border-width: 1px;
+  box-shadow: 0 0 10px rgba(138, 92, 246, 0.3);
+  border-radius: 9999px;
+  padding: 4px 12px !important; /* Horizontal padding */
+  background-color: #262834 !important;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: row;
+  width: auto;
+}
+
+/* Toolbar content in one line */
+.toolbarContent {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  white-space: nowrap;
+  gap: 6px;
+}
+
+/* Toolbar more compact */
+.purpleToolbar button {
+  color: #a78bfa !important;
+  padding: 0 3px !important;
+}
+
+.purpleToolbar button[data-active=true] {
+  color: #ffffff !important;
+  background-color: #4c1d95 !important;
+}

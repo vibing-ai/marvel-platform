@@ -38,6 +38,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CodeBlockElement } from '../plate-ui/code-block-element';
 import { CodeLineElement } from '../plate-ui/code-line-element';
 import { CodeSyntaxLeaf } from '../plate-ui/code-syntax-leaf';
+import { FloatingContextualToolbar } from '../plate-ui/ContextualToolbar';
 import { Editor, EditorContainer } from '../plate-ui/editor';
 import { LinkElement } from '../plate-ui/link-element';
 import { LinkPopup } from '../plate-ui/LinkPopup';
@@ -293,6 +294,7 @@ export function PlateEditor(props) {
           height: '100%',
           width: '100%',
           overflow: 'hidden',
+          position: 'relative', // Ensure relative positioning for proper floating toolbar positioning
         }}
       >
         <EditorToolbar editor={editor} />
@@ -321,6 +323,7 @@ export function PlateEditor(props) {
           />
         </EditorContainer>
         <LinkPopup editor={editor} />
+        <FloatingContextualToolbar />
       </div>
     </Plate>
   );

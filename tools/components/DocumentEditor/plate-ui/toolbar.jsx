@@ -14,7 +14,8 @@ import * as ToolbarPrimitive from '@radix-ui/react-toolbar';
 import { cn, withCn } from '@udecode/cn';
 
 import { cva } from 'class-variance-authority';
-import { useDispatch } from 'react-redux';
+
+import useToolbarFunctionsHook from '../../../libs/hooks/useToolbarFunctions';
 
 import AlignDropdownMenu from './AlignDropdownMenu';
 import CodeBlockButton from './CodeBlockButton';
@@ -76,120 +77,27 @@ export const ToolbarButton = withTooltip(
   )
 );
 
-const handleError = (error, context) => {
-  if (process.env.NODE_ENV === 'development') {
-    console.warn(`Editor toolbar error (${context}):`, error);
-  }
-};
-
 export const EditorToolbar = (props) => {
-  const dispatch = useDispatch();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [alignmentAnchorEl, setAlignmentAnchorEl] = React.useState(null);
-  const [fontSizeAnchorEl, setFontSizeAnchorEl] = React.useState(null);
-
   const { editor } = props;
   if (!editor) return null;
+  // const dispatch = useDispatch();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  // const [alignmentAnchorEl, setAlignmentAnchorEl] = React.useState(null);
+  const [fontSizeAnchorEl, setFontSizeAnchorEl] = React.useState(null);
+  const {
+    checkMarkActive,
+    checkBlockActive,
+    handleToggleMark,
+    handleToggleBlock,
+    getCurrentFontSize,
+    handleUndo,
+    handleRedo,
+  } = useToolbarFunctionsHook(editor);
 
-  const handleUndo = () => editor.undo();
-  const handleRedo = () => editor.redo();
+  if (!editor) return null;
 
-  const open = Boolean(anchorEl);
   const openFontSize = Boolean(fontSizeAnchorEl);
-
-  const setAlignment = (alignment) => {
-    if (editor && alignment) {
-      editor.setNodes({ align: alignment });
-    }
-  };
-
-  const isMarkActive = (format) => {
-    const { selection } = editor;
-    if (!selection) return false;
-    const [match] = editor.nodes({
-      match: (node) => node[format] === true,
-      at: selection,
-    });
-    return !!match;
-  };
-
-  const isBlockActive = (type) => {
-    const { selection } = editor;
-    if (!selection) return false;
-    try {
-      const [match] = editor.nodes({
-        match: (node) => node.type === type,
-        at: selection,
-      });
-      return !!match;
-    } catch (error) {
-      handleError(error, 'isBlockActive');
-      return false;
-    }
-  };
-
-  const toggleMark = (format) => {
-    if (!format) return;
-    isMarkActive(format)
-      ? editor.removeMark(format)
-      : editor.addMark(format, true);
-  };
-
-  const toggleBlock = (type) => {
-    try {
-      const { selection } = editor;
-      if (!selection) return;
-
-      const [currentNodeEntry] = editor.nodes({
-        match: (n) => n.type,
-        at: selection,
-      });
-
-      if (!currentNodeEntry) return;
-
-      const [currentNode] = currentNodeEntry;
-      const currentAlign = currentNode.align || 'left';
-      const isHeading = currentNode.type && currentNode.type.startsWith('h');
-
-      if (type === 'ul' || type === 'ol') {
-        if (currentNode.type === type) {
-          editor.setNodes({
-            type: 'paragraph',
-            align: currentAlign,
-          });
-        } else {
-          editor.setNodes({
-            type,
-            align: currentAlign,
-          });
-        }
-      } else if (type === 'action_item') {
-        editor.setNodes({
-          type: 'action_item',
-          checked: false,
-        });
-      } else if (type.startsWith('h')) {
-        if (isHeading && currentNode.type === type) {
-          editor.setNodes({
-            type: 'paragraph',
-            align: currentAlign,
-          });
-        } else {
-          editor.setNodes({
-            type,
-            align: currentAlign,
-          });
-        }
-      } else {
-        editor.setNodes({
-          type: isBlockActive(type) ? 'paragraph' : type,
-          align: currentAlign,
-        });
-      }
-    } catch (error) {
-      handleError(error, 'toggleBlock');
-    }
-  };
+  const open = Boolean(anchorEl);
 
   const handleListMenuClose = () => {
     setAnchorEl(null);
@@ -197,7 +105,7 @@ export const EditorToolbar = (props) => {
 
   const handleListStyleSelect = (blockType) => {
     if (blockType) {
-      toggleBlock(blockType);
+      handleToggleBlock(blockType);
       handleListMenuClose();
     }
   };
@@ -212,15 +120,10 @@ export const EditorToolbar = (props) => {
 
   const handleFontSizeSelect = (fontSizeStr) => {
     const size = parseInt(fontSizeStr.replace('fontSize', ''), 10);
-    if (!isNaN(size)) {
+    if (!Number.isNaN(size)) {
       editor.addMark('fontSize', size);
     }
     handleFontSizeMenuClose();
-  };
-
-  const getCurrentFontSize = () => {
-    const marks = editor?.getMarks() || {};
-    return marks.fontSize ? `${marks.fontSize} pt` : '14 pt';
   };
 
   return (
@@ -231,8 +134,8 @@ export const EditorToolbar = (props) => {
       <div className="slate-btn-container">
         <FontStyle
           editor={editor}
-          isBlockActive={isBlockActive}
-          toggleBlock={toggleBlock}
+          isBlockActive={checkBlockActive}
+          toggleBlock={handleToggleBlock}
         />
         <div className="slate-toolbar-group flex items-center">
           <IconButton
@@ -268,7 +171,7 @@ export const EditorToolbar = (props) => {
                 key={size}
                 onClick={() => handleFontSizeSelect(`fontSize${size}`)}
                 className={`list-option ${
-                  isMarkActive(`fontSize${size}`) ? 'is-active' : ''
+                  checkMarkActive(`fontSize${size}`) ? 'is-active' : ''
                 }`}
               >
                 <ListItemText
@@ -282,16 +185,16 @@ export const EditorToolbar = (props) => {
         <ToolbarSeparator />
         <TextStyle
           editor={editor}
-          isMarkActive={isMarkActive}
-          toggleMark={toggleMark}
+          isMarkActive={checkMarkActive}
+          toggleMark={handleToggleMark}
         />
 
         <ToolbarSeparator />
 
         <ListDropdownMenu
           editor={editor}
-          isBlockActive={isBlockActive}
-          toggleBlock={toggleBlock}
+          isBlockActive={checkBlockActive}
+          toggleBlock={handleToggleBlock}
         />
 
         <AlignDropdownMenu />

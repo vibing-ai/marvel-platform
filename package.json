@@ -55,6 +55,7 @@
     "firebase": "^9.22.0",
     "firebase-admin": "^11.8.0",
     "highlight.js": "^11.11.1",
+    "html2pdf.js": "^0.10.3",
     "jspdf": "^2.5.2",
     "lowlight": "^3.3.0",
     "lucide-react": "^0.473.0",

@@ -3,19 +3,13 @@ import markdownit from 'markdown-it';
 import { markdownUtils } from './markdownUtils';
 import { htmlUtils } from './htmlUtils';
 import { plainTextUtils } from './textUtils';
-import { generatePDFfromHTML } from './pdfUtils';
+import { generatePDFfromHTML } from './pdfUtils'; // IMPORTANT: Reverted path back to original
 
-// Helper function to preserve spaces between inline elements
 function preserveInlineElementSpaces(html) {
-  // Replace spaces between adjacent inline elements with a non-breaking space entity
-  // This ensures the space is preserved in the DOM
   return html
-    // Space between </em> and <strong>
-    .replace(/(<\/em>)\s+(<strong>)/g, '$1&nbsp;$2')
-    // Space between </strong> and <em>
-    .replace(/(<\/strong>)\s+(<em>)/g, '$1&nbsp;$2')
-    // Space between other inline elements
-    .replace(/(<\/[a-z]+>)\s+(<[a-z]+>)/g, '$1&nbsp;$2');
+    .replace(/(<\/em>)\s+(<strong>)/g, '$1 $2')
+    .replace(/(<\/strong>)\s+(<em>)/g, '$1 $2')
+    .replace(/(<\/[a-z]+>)\s+(<[a-z]+>)/g, '$1 $2');
 }
 
 const EXPORT_FORMATS = {
@@ -27,7 +21,6 @@ const EXPORT_FORMATS = {
         markdown.replaceAll('<br />', '\n\n').replaceAll('***', '**')
       );
 
-      // Preprocess HTML to preserve spaces between inline elements
       htmlContent = preserveInlineElementSpaces(htmlContent);
 
       return generatePDFfromHTML(htmlContent);
@@ -47,7 +40,6 @@ const EXPORT_FORMATS = {
       const elements = markdownUtils.parse(markdown);
       let html = htmlUtils.convert(elements);
 
-      // Preprocess HTML to preserve spaces between inline elements
       html = preserveInlineElementSpaces(html);
 
       return new Blob([html], { type: 'text/html' });

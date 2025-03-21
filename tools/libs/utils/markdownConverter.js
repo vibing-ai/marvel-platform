@@ -24,17 +24,9 @@ const convertQuizToMarkdown = (response) => {
       // Handle different formats of choices (array or object)
       let choices = '';
       if (question.choices) {
-        if (Array.isArray(question.choices)) {
-          // Handle array format
-          choices = question.choices
-            .map((choice) => `${choice.key}. ${escapeMarkdown(choice.value)}`)
-            .join('\n');
-        } else if (typeof question.choices === 'object') {
-          // Handle object format
-          choices = Object.entries(question.choices)
-            .map(([key, value]) => `${key}. ${escapeMarkdown(value)}`)
-            .join('\n');
-        }
+        choices = Object.values(question.choices)
+          .map((value, index) => `\t${index + 1}. ${escapeMarkdown(value)}`)
+          .join('\n');
       }
 
       return `${questionText}\n${choices}`;

@@ -1432,6 +1432,10 @@
     margin-top: 12px;
   }
 
+  .slate-editor ol li ol {
+    list-style-type: upper-alpha;
+  }
+
   .markdown-in-widget {
     padding: 40px 32px;
   }

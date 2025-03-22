@@ -14,6 +14,7 @@ const styles = {
     mobileSmall: true,
     justifyContent: 'center',
     alignItems: 'flex-start',
+    minWidth: '1200px', // prevent shrinks horizontally
   },
   innerListGridProps: {
     container: true,

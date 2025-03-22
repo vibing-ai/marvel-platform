@@ -24,6 +24,21 @@ const styles = {
       pl: 1,
     }),
   },
+  containerGridProps: {
+    container: true,
+    direction: 'column',
+    spacing: 2,
+  },
+  innerContainerGridProps: {
+    item: true,
+    container: true,
+    alignItems: 'center',
+    spacing: 2,
+    justifyContent: 'space-between',
+  },
+  filtersGridProps: {
+    item: true,
+  },
   titleProps: {
     fontFamily: 'Satoshi Bold',
     fontSize: '29.44px',

@@ -48,6 +48,8 @@ const seedDatabase = async () => {
           linkedin: null,
           xHandle: null,
         },
+        favoriteToolsId: [],
+        toolsFrequency: {},
         createdAt: Timestamp.fromMillis(Date.now()),
         updatedAt: Timestamp.fromMillis(Date.now()),
       };

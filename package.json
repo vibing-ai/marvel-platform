@@ -23,6 +23,9 @@
     "@mui/material": "^5.13.0",
     "@mui/x-date-pickers": "^6.5.0",
     "@reduxjs/toolkit": "^1.9.5",
+    "@tiptap/pm": "^2.11.5",
+    "@tiptap/react": "^2.11.5",
+    "@tiptap/starter-kit": "^2.11.5",
     "axios": "^1.4.0",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
@@ -44,7 +47,7 @@
     "remark-gfm": "^4.0.0",
     "remark-html": "^16.0.1",
     "remark-parse": "^11.0.0",
-    "reveal.js": "^5.1.0",
+    "reveal.js": "^5.2.0",
     "unified": "^11.0.2"
   },
   "devDependencies": {

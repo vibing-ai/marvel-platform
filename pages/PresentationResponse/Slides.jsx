@@ -1,28 +1,31 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
-import StretchImageSlide from './SlideTemplates/StretchImageSlide';
-import TitleBodyImageSlide from './SlideTemplates/TitleBodyImageSlide';
 import TitleBodySlide from './SlideTemplates/TitleBodySlide';
-
-// Import slide templates
-import TitleBulletsImageSlide from './SlideTemplates/TitleBulletsImageSlide';
 import TitleBulletsSlide from './SlideTemplates/TitleBulletsSlide';
-// Import image slide templates
 import TitleImageSlide from './SlideTemplates/TitleImageSlide';
+import TitleBodyImageSlide from './SlideTemplates/TitleBodyImageSlide';
+import TitleBulletsImageSlide from './SlideTemplates/TitleBulletsImageSlide';
 import TwoColumnImageSlide from './SlideTemplates/TwoColumnImageSlide';
-import { styles } from './styles';
+import { styles, globalStyles } from './styles';
 import { Slide } from '@mui/material';
+
+// Import the new components and utilities
+import ImageSelector from './components/ImageSelector';
+import SlideToolbar from './components/SlideToolbar';
+import { getToggleTemplate, isImageTemplate } from './utils/layoutUtils';
 
 // Create a separate component for editable slides
 const EditableSlide = React.memo(({ slide, index, updateSlideContent }) => {
+  console.log("Rendering EditableSlide with slide data:", slide);
   const { template, title, content, subtitle, imageUrl, leftContent, rightContent, caption } = slide;
   
   // Track active editor with a ref to prevent state updates from causing re-renders
   const [showToolbar, setShowToolbar] = useState(false);
+  const [showImageSelector, setShowImageSelector] = useState(false);
   const activeEditorRef = useRef(null);
   
   // Auto-save timeout ref to prevent too many saves
@@ -32,18 +35,18 @@ const EditableSlide = React.memo(({ slide, index, updateSlideContent }) => {
   const titleEditor = useEditor({
     extensions: [StarterKit],
     content: title,
+    editable: true,
     onFocus: () => {
       activeEditorRef.current = 'title';
       setShowToolbar(true);
     },
     onBlur: () => {
-      // Don't set activeEditor to null here to allow toolbar interactions
-      // We'll hide the toolbar after a short delay
+      // Use a simple timeout to prevent flickering
       setTimeout(() => {
-        if (activeEditorRef.current === 'title') {
+        if (!document.activeElement || !document.activeElement.closest('[role="textbox"]')) {
           setShowToolbar(false);
         }
-      }, 250);
+      }, 100);
     },
     onUpdate: ({ editor }) => {
       // Clear any existing timeout
@@ -55,6 +58,13 @@ const EditableSlide = React.memo(({ slide, index, updateSlideContent }) => {
       saveTimeoutRef.current = setTimeout(() => {
         updateSlideContent(index, 'title', editor.getHTML());
       }, 500);
+    },
+    editorProps: {
+      attributes: {
+        class: 'tiptap-editor-content',
+        spellcheck: 'false',
+        role: 'textbox'
+      }
     }
   });
 
@@ -64,18 +74,18 @@ const EditableSlide = React.memo(({ slide, index, updateSlideContent }) => {
     content: Array.isArray(content) ? 
       `<ul>${content.map(item => `<li>${item}</li>`).join('')}</ul>` : 
       content,
+    editable: true,
     onFocus: () => {
       activeEditorRef.current = 'content';
       setShowToolbar(true);
     },
     onBlur: () => {
-      // Don't set activeEditor to null here to allow toolbar interactions
-      // We'll hide the toolbar after a short delay
+      // Use a simple timeout to prevent flickering
       setTimeout(() => {
-        if (activeEditorRef.current === 'content') {
+        if (!document.activeElement || !document.activeElement.closest('[role="textbox"]')) {
           setShowToolbar(false);
         }
-      }, 250);
+      }, 100);
     },
     onUpdate: ({ editor }) => {
       // Clear any existing timeout
@@ -94,6 +104,208 @@ const EditableSlide = React.memo(({ slide, index, updateSlideContent }) => {
           updateSlideContent(index, 'content', editor.getHTML());
         }
       }, 500);
+    },
+    editorProps: {
+      attributes: {
+        class: 'tiptap-editor-content',
+        spellcheck: 'false',
+        role: 'textbox'
+      }
+    }
+  });
+
+  // Create a dedicated bulletsEditor for bullet list layouts
+  const bulletsEditor = useEditor({
+    extensions: [StarterKit],
+    content: Array.isArray(content) ? 
+      `<ul>${content.map(item => `<li>${item}</li>`).join('')}</ul>` : 
+      '<ul><li>Add bullet points here</li></ul>',
+    editable: true,
+    onFocus: () => {
+      activeEditorRef.current = 'bullets';
+      setShowToolbar(true);
+    },
+    onBlur: () => {
+      setTimeout(() => {
+        if (!document.activeElement || !document.activeElement.closest('[role="textbox"]')) {
+          setShowToolbar(false);
+        }
+      }, 100);
+    },
+    onUpdate: ({ editor }) => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      
+      saveTimeoutRef.current = setTimeout(() => {
+        const doc = new DOMParser().parseFromString(editor.getHTML(), 'text/html');
+        const listItems = Array.from(doc.querySelectorAll('li')).map(li => li.innerHTML);
+        updateSlideContent(index, 'content', listItems);
+      }, 500);
+    },
+    editorProps: {
+      attributes: {
+        class: 'tiptap-editor-content',
+        spellcheck: 'false',
+        role: 'textbox'
+      }
+    }
+  });
+
+  // Create editors for left and right columns in twoColumnImage
+  const leftColumnEditor = useEditor({
+    extensions: [StarterKit],
+    content: leftContent?.title || 'Left Column',
+    editable: true,
+    onFocus: () => {
+      activeEditorRef.current = 'leftTitle';
+      setShowToolbar(true);
+    },
+    onBlur: () => {
+      setTimeout(() => {
+        if (!document.activeElement || !document.activeElement.closest('[role="textbox"]')) {
+          setShowToolbar(false);
+        }
+      }, 100);
+    },
+    onUpdate: ({ editor }) => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      
+      saveTimeoutRef.current = setTimeout(() => {
+        const newLeftContent = {
+          ...(leftContent || {}),
+          title: editor.getHTML()
+        };
+        updateSlideContent(index, 'leftContent', newLeftContent);
+      }, 500);
+    },
+    editorProps: {
+      attributes: {
+        class: 'tiptap-editor-content',
+        spellcheck: 'false',
+        role: 'textbox'
+      }
+    }
+  });
+  
+  const leftBulletsEditor = useEditor({
+    extensions: [StarterKit],
+    content: leftContent?.bullets ? 
+      `<ul>${leftContent.bullets.map(item => `<li>${item}</li>`).join('')}</ul>` : 
+      '<ul><li>Add points here</li></ul>',
+    editable: true,
+    onFocus: () => {
+      activeEditorRef.current = 'leftBullets';
+      setShowToolbar(true);
+    },
+    onBlur: () => {
+      setTimeout(() => {
+        if (!document.activeElement || !document.activeElement.closest('[role="textbox"]')) {
+          setShowToolbar(false);
+        }
+      }, 100);
+    },
+    onUpdate: ({ editor }) => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      
+      saveTimeoutRef.current = setTimeout(() => {
+        const doc = new DOMParser().parseFromString(editor.getHTML(), 'text/html');
+        const bullets = Array.from(doc.querySelectorAll('li')).map(li => li.innerHTML);
+        const newLeftContent = {
+          ...(leftContent || {}),
+          bullets
+        };
+        updateSlideContent(index, 'leftContent', newLeftContent);
+      }, 500);
+    },
+    editorProps: {
+      attributes: {
+        class: 'tiptap-editor-content',
+        spellcheck: 'false',
+        role: 'textbox'
+      }
+    }
+  });
+  
+  const rightColumnEditor = useEditor({
+    extensions: [StarterKit],
+    content: rightContent?.title || 'Right Column',
+    editable: true,
+    onFocus: () => {
+      activeEditorRef.current = 'rightTitle';
+      setShowToolbar(true);
+    },
+    onBlur: () => {
+      setTimeout(() => {
+        if (!document.activeElement || !document.activeElement.closest('[role="textbox"]')) {
+          setShowToolbar(false);
+        }
+      }, 100);
+    },
+    onUpdate: ({ editor }) => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      
+      saveTimeoutRef.current = setTimeout(() => {
+        const newRightContent = {
+          ...(rightContent || {}),
+          title: editor.getHTML()
+        };
+        updateSlideContent(index, 'rightContent', newRightContent);
+      }, 500);
+    },
+    editorProps: {
+      attributes: {
+        class: 'tiptap-editor-content',
+        spellcheck: 'false',
+        role: 'textbox'
+      }
+    }
+  });
+  
+  const rightBulletsEditor = useEditor({
+    extensions: [StarterKit],
+    content: rightContent?.bullets ? 
+      `<ul>${rightContent.bullets.map(item => `<li>${item}</li>`).join('')}</ul>` : 
+      '<ul><li>Add points here</li></ul>',
+    editable: true,
+    onFocus: () => {
+      activeEditorRef.current = 'rightBullets';
+      setShowToolbar(true);
+    },
+    onBlur: () => {
+      setTimeout(() => {
+        if (!document.activeElement || !document.activeElement.closest('[role="textbox"]')) {
+          setShowToolbar(false);
+        }
+      }, 100);
+    },
+    onUpdate: ({ editor }) => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      
+      saveTimeoutRef.current = setTimeout(() => {
+        const doc = new DOMParser().parseFromString(editor.getHTML(), 'text/html');
+        const bullets = Array.from(doc.querySelectorAll('li')).map(li => li.innerHTML);
+        const newRightContent = {
+          ...(rightContent || {}),
+          bullets
+        };
+        updateSlideContent(index, 'rightContent', newRightContent);
+      }, 500);
+    },
+    editorProps: {
+      attributes: {
+        class: 'tiptap-editor-content',
+        spellcheck: 'false',
+        role: 'textbox'
+      }
     }
   });
 
@@ -110,7 +322,54 @@ const EditableSlide = React.memo(({ slide, index, updateSlideContent }) => {
   const getCurrentEditor = () => {
     if (activeEditorRef.current === 'title') return titleEditor;
     if (activeEditorRef.current === 'content') return contentEditor;
+    if (activeEditorRef.current === 'bullets') return bulletsEditor;
+    if (activeEditorRef.current === 'leftTitle') return leftColumnEditor;
+    if (activeEditorRef.current === 'leftBullets') return leftBulletsEditor;
+    if (activeEditorRef.current === 'rightTitle') return rightColumnEditor;
+    if (activeEditorRef.current === 'rightBullets') return rightBulletsEditor;
     return null;
+  };
+
+  // Add the layout change handler
+  const handleLayoutChange = (newTemplate) => {
+    if (newTemplate !== template) {
+      // If changing to an image template and no image URL exists, add a placeholder
+      let updatedSlide = { ...slide, template: newTemplate };
+      if (isImageTemplate(newTemplate) && !slide.imageUrl) {
+        updatedSlide.imageUrl = 'https://picsum.photos/800/400';
+      }
+      
+      // Update the template
+      updateSlideContent(index, 'template', newTemplate);
+      
+      // If adding an image, also update the imageUrl if needed
+      if (updatedSlide.imageUrl && isImageTemplate(newTemplate)) {
+        updateSlideContent(index, 'imageUrl', updatedSlide.imageUrl);
+      }
+    }
+  };
+  
+  // Add the image change handler
+  const handleImageChange = (newImageUrl) => {
+    updateSlideContent(index, 'imageUrl', newImageUrl);
+    setShowImageSelector(false);
+  };
+  
+  // Add handler for undo/redo
+  const handleUndoRedo = (action) => {
+    const editor = getCurrentEditor();
+    if (!editor) return;
+    
+    if (action === 'undo') {
+      editor.chain().focus().undo().run();
+    } else if (action === 'redo') {
+      editor.chain().focus().redo().run();
+    }
+  };
+  
+  // Handler to toggle the image selector
+  const handleImageSelect = () => {
+    setShowImageSelector(!showImageSelector);
   };
 
   // Handle toolbar button clicks
@@ -158,7 +417,7 @@ const EditableSlide = React.memo(({ slide, index, updateSlideContent }) => {
     }
   };
 
-  const SlideToolbar = () => {
+  const SlideToolbarComponent = () => {
     return (
       <div style={styles.slideToolbar.container}>
         <div style={styles.slideToolbar.buttonGroup}>
@@ -217,8 +476,6 @@ const EditableSlide = React.memo(({ slide, index, updateSlideContent }) => {
     );
   };
 
-
-
   // Toolbar component that works with the active editor
   const FormattingToolbar = () => {
     const editor = getCurrentEditor();
@@ -228,7 +485,14 @@ const EditableSlide = React.memo(({ slide, index, updateSlideContent }) => {
     }
 
     return (
-      <div style={styles.editor.toolbarContainer}>
+      <div 
+        style={styles.editor.toolbarContainer}
+        data-tiptap-toolbar="true"
+        onMouseDown={(e) => {
+          // Prevent editor from losing focus when clicking toolbar
+          e.preventDefault();
+        }}
+      >
         <div style={styles.editor.toolbar}>
           <button
             onMouseDown={(e) => {
@@ -376,106 +640,644 @@ const EditableSlide = React.memo(({ slide, index, updateSlideContent }) => {
     );
   };
 
-  switch (template) {
-    case 'titleBody':
-      return (
-        <article style={styles.slide.container}>
-          <SlideToolbar/>
-          {showToolbar && <FormattingToolbar />}
+  // Common title editor for all slide templates
+  const TitleEditor = () => (
+    <div 
+      style={{
+        ...styles.slide.title,
+        border: activeEditorRef.current === 'title' ? '1px dashed #9D74FF' : '1px solid transparent',
+        padding: '5px',
+        borderRadius: '4px',
+        cursor: 'text',
+        minHeight: '60px',
+      }}
+      onClick={(e) => {
+        e.stopPropagation(); // Stop propagation to prevent slide click handler
+        if (titleEditor) {
+          titleEditor.commands.focus();
+          activeEditorRef.current = 'title';
+          setShowToolbar(true);
+          
+          // Make sure the editor is enabled
+          if (!titleEditor.isEditable) {
+            titleEditor.setEditable(true);
+          }
+        }
+      }}
+    >
+      <EditorContent editor={titleEditor} />
+    </div>
+  );
+
+  // Common content editor for all slide templates
+  const ContentEditor = () => (
+    <div 
+      style={{
+        ...styles.slide.body,
+        border: activeEditorRef.current === 'content' ? '1px dashed #9D74FF' : '1px solid transparent',
+        padding: '5px',
+        borderRadius: '4px',
+        cursor: 'text',
+        minHeight: '100px',
+      }}
+      onClick={(e) => {
+        e.stopPropagation(); // Stop propagation to prevent slide click handler
+        if (contentEditor) {
+          contentEditor.commands.focus();
+          activeEditorRef.current = 'content';
+          setShowToolbar(true);
+          
+          // Make sure the editor is enabled
+          if (!contentEditor.isEditable) {
+            contentEditor.setEditable(true);
+          }
+        }
+      }}
+    >
+      <EditorContent editor={contentEditor} />
+    </div>
+  );
+
+  // Common bulleted list editor for all slide templates
+  const BulletsEditor = () => (
+    <div 
+      style={{
+        ...styles.slide.bulletList,
+        border: activeEditorRef.current === 'content' ? '1px dashed #9D74FF' : '1px solid transparent',
+        padding: '5px 20px',
+        borderRadius: '4px',
+        cursor: 'text',
+        minHeight: '100px',
+      }}
+      onClick={(e) => {
+        e.stopPropagation(); // Stop propagation to prevent slide click handler
+        if (contentEditor) {
+          contentEditor.commands.focus();
+          activeEditorRef.current = 'content';
+          setShowToolbar(true);
+          
+          // Make sure the editor is enabled
+          if (!contentEditor.isEditable) {
+            contentEditor.setEditable(true);
+          }
+        }
+      }}
+    >
+      <EditorContent editor={contentEditor} />
+    </div>
+  );
+
+  // Remove the complex slide container click handler
+  const handleSlideContainerClick = (e) => {
+    // Only show toolbar if clicking on an editor element, not the whole slide
+    if (!e.target.closest('[role="textbox"]') && 
+        !e.target.classList.contains('tiptap-editor-content')) {
+      setShowToolbar(false);
+    }
+  };
+
+  // Render the slide based on the template
+  const renderSlide = () => {
+    // Create the base slide based on template
+    let slideContent;
+    
+    switch (template) {
+      case 'titleBody':
+        slideContent = (
+          <article style={styles.slide.container} onClick={handleSlideContainerClick}>
+            <SlideToolbar 
+              template={template} 
+              onLayoutChange={handleLayoutChange}
+              onUndoRedo={handleUndoRedo}
+              onImageSelect={handleImageSelect}
+            />
+            {showToolbar && <FormattingToolbar />}
+            <div style={styles.slide.content}>
+              <div style={{
+                border: activeEditorRef.current === 'title' ? '1px dashed #9D74FF' : '1px solid transparent',
+                padding: '5px',
+                borderRadius: '4px',
+                cursor: 'text',
+                marginBottom: '10px',
+              }}
+              onClick={(e) => {
+                e.stopPropagation(); // Stop propagation to prevent slide click handler
+                if (titleEditor) {
+                  titleEditor.commands.focus();
+                  activeEditorRef.current = 'title';
+                  setShowToolbar(true);
+                  
+                  // Make sure the editor is enabled
+                  if (!titleEditor.isEditable) {
+                    titleEditor.setEditable(true);
+                  }
+                }
+              }}>
+                <EditorContent editor={titleEditor} />
+              </div>
+              <div style={{
+                border: activeEditorRef.current === 'content' ? '1px dashed #9D74FF' : '1px solid transparent',
+                padding: '5px',
+                borderRadius: '4px',
+                cursor: 'text',
+              }}
+              onClick={(e) => {
+                e.stopPropagation(); // Stop propagation to prevent slide click handler
+                if (contentEditor) {
+                  contentEditor.commands.focus();
+                  activeEditorRef.current = 'content';
+                  setShowToolbar(true);
+                  
+                  // Make sure the editor is enabled
+                  if (!contentEditor.isEditable) {
+                    contentEditor.setEditable(true);
+                  }
+                }
+              }}>
+                <EditorContent editor={contentEditor} />
+              </div>
+            </div>
+          </article>
+        );
+        break;
+        
+      case 'titleBullets':
+        slideContent = (
+          <article style={styles.slide.container} onClick={handleSlideContainerClick}>
+            <SlideToolbar 
+              template={template} 
+              onLayoutChange={handleLayoutChange}
+              onUndoRedo={handleUndoRedo}
+              onImageSelect={handleImageSelect}
+            />
+            {showToolbar && <FormattingToolbar />}
+            <div style={styles.slide.content}>
+              <div style={{
+                border: activeEditorRef.current === 'title' ? '1px dashed #9D74FF' : '1px solid transparent',
+                padding: '5px',
+                borderRadius: '4px',
+                cursor: 'text',
+                marginBottom: '10px',
+              }}
+              onClick={(e) => {
+                e.stopPropagation(); // Stop propagation to prevent slide click handler
+                if (titleEditor) {
+                  titleEditor.commands.focus();
+                  activeEditorRef.current = 'title';
+                  setShowToolbar(true);
+                  
+                  // Make sure the editor is enabled
+                  if (!titleEditor.isEditable) {
+                    titleEditor.setEditable(true);
+                  }
+                }
+              }}>
+                <EditorContent editor={titleEditor} />
+              </div>
+              <div style={{
+                border: activeEditorRef.current === 'bullets' ? '1px dashed #9D74FF' : '1px solid transparent',
+                padding: '5px',
+                borderRadius: '4px',
+                cursor: 'text',
+              }}
+              onClick={(e) => {
+                e.stopPropagation(); // Stop propagation to prevent slide click handler
+                if (bulletsEditor) {
+                  bulletsEditor.commands.focus();
+                  activeEditorRef.current = 'bullets';
+                  setShowToolbar(true);
+                  
+                  // Make sure the editor is enabled
+                  if (!bulletsEditor.isEditable) {
+                    bulletsEditor.setEditable(true);
+                  }
+                }
+              }}>
+                <EditorContent editor={bulletsEditor} />
+              </div>
+            </div>
+          </article>
+        );
+        break;
+        
+      case 'titleImage':
+        slideContent = (
+          <article style={styles.slide.container} onClick={handleSlideContainerClick}>
+            <SlideToolbar 
+              template={template} 
+              onLayoutChange={handleLayoutChange}
+              onUndoRedo={handleUndoRedo}
+              onImageSelect={handleImageSelect}
+            />
+            {showToolbar && <FormattingToolbar />}
+            <div style={styles.slide.content}>
+              <div style={styles.slide.titleImageContainer}>
+                <div style={{
+                  border: activeEditorRef.current === 'title' ? '1px dashed #9D74FF' : '1px solid transparent',
+                  padding: '5px',
+                  borderRadius: '4px',
+                  cursor: 'text',
+                  marginBottom: '10px',
+                }}
+                onClick={(e) => {
+                  e.stopPropagation(); // Stop propagation to prevent slide click handler
+                  if (titleEditor) {
+                    titleEditor.commands.focus();
+                    activeEditorRef.current = 'title';
+                    setShowToolbar(true);
+                    
+                    // Make sure the editor is enabled
+                    if (!titleEditor.isEditable) {
+                      titleEditor.setEditable(true);
+                    }
+                  }
+                }}>
+                  <EditorContent editor={titleEditor} />
+                </div>
+                <div style={styles.slide.imageWrapper}>
+                  <img
+                    src={imageUrl || 'https://picsum.photos/800/400'}
+                    alt={title || 'Slide image'}
+                    style={styles.slide.mainImage}
+                  />
+                </div>
+              </div>
+            </div>
+          </article>
+        );
+        break;
+        
+      case 'titleBodyImage':
+        slideContent = (
+          <article style={styles.slide.container} onClick={handleSlideContainerClick}>
+            <SlideToolbar 
+              template={template} 
+              onLayoutChange={handleLayoutChange}
+              onUndoRedo={handleUndoRedo}
+              onImageSelect={handleImageSelect}
+            />
+            {showToolbar && <FormattingToolbar />}
+            <div style={styles.slide.content}>
+              <div style={{
+                border: activeEditorRef.current === 'title' ? '1px dashed #9D74FF' : '1px solid transparent',
+                padding: '5px',
+                borderRadius: '4px',
+                cursor: 'text',
+                marginBottom: '10px',
+              }}
+              onClick={(e) => {
+                e.stopPropagation(); // Stop propagation to prevent slide click handler
+                if (titleEditor) {
+                  titleEditor.commands.focus();
+                  activeEditorRef.current = 'title';
+                  setShowToolbar(true);
+                  
+                  // Make sure the editor is enabled
+                  if (!titleEditor.isEditable) {
+                    titleEditor.setEditable(true);
+                  }
+                }
+              }}>
+                <EditorContent editor={titleEditor} />
+              </div>
+              <div style={styles.slide.bodyImageContainer}>
+                <div style={{
+                  border: activeEditorRef.current === 'content' ? '1px dashed #9D74FF' : '1px solid transparent',
+                  padding: '5px',
+                  borderRadius: '4px',
+                  cursor: 'text',
+                }}
+                onClick={(e) => {
+                  e.stopPropagation(); // Stop propagation to prevent slide click handler
+                  if (contentEditor) {
+                    contentEditor.commands.focus();
+                    activeEditorRef.current = 'content';
+                    setShowToolbar(true);
+                    
+                    // Make sure the editor is enabled
+                    if (!contentEditor.isEditable) {
+                      contentEditor.setEditable(true);
+                    }
+                  }
+                }}>
+                  <EditorContent editor={contentEditor} />
+                </div>
+                <div style={styles.slide.imageWrapper}>
+                  <img
+                    src={imageUrl || 'https://picsum.photos/800/400'}
+                    alt={title || 'Slide image'}
+                    style={styles.slide.contentImage}
+                  />
+                </div>
+              </div>
+            </div>
+          </article>
+        );
+        break;
+        
+      case 'titleBulletsImage':
+        slideContent = (
+          <article style={styles.slide.container} onClick={handleSlideContainerClick}>
+            <SlideToolbar 
+              template={template} 
+              onLayoutChange={handleLayoutChange}
+              onUndoRedo={handleUndoRedo}
+              onImageSelect={handleImageSelect}
+            />
+            {showToolbar && <FormattingToolbar />}
+            <div style={styles.slide.content}>
+              <div style={{
+                border: activeEditorRef.current === 'title' ? '1px dashed #9D74FF' : '1px solid transparent',
+                padding: '5px',
+                borderRadius: '4px',
+                cursor: 'text',
+                marginBottom: '10px',
+              }}
+              onClick={(e) => {
+                e.stopPropagation(); // Stop propagation to prevent slide click handler
+                if (titleEditor) {
+                  titleEditor.commands.focus();
+                  activeEditorRef.current = 'title';
+                  setShowToolbar(true);
+                  
+                  // Make sure the editor is enabled
+                  if (!titleEditor.isEditable) {
+                    titleEditor.setEditable(true);
+                  }
+                }
+              }}>
+                <EditorContent editor={titleEditor} />
+              </div>
+              <div style={styles.slide.bodyImageContainer}>
+                <div style={{
+                  border: activeEditorRef.current === 'bullets' ? '1px dashed #9D74FF' : '1px solid transparent',
+                  padding: '5px',
+                  borderRadius: '4px',
+                  cursor: 'text',
+                }}
+                onClick={(e) => {
+                  e.stopPropagation(); // Stop propagation to prevent slide click handler
+                  if (bulletsEditor) {
+                    bulletsEditor.commands.focus();
+                    activeEditorRef.current = 'bullets';
+                    setShowToolbar(true);
+                    
+                    // Make sure the editor is enabled
+                    if (!bulletsEditor.isEditable) {
+                      bulletsEditor.setEditable(true);
+                    }
+                  }
+                }}>
+                  <EditorContent editor={bulletsEditor} />
+                </div>
+                <div style={styles.slide.imageWrapper}>
+                  <img
+                    src={imageUrl || 'https://picsum.photos/800/400'}
+                    alt={title || 'Slide image'}
+                    style={styles.slide.contentImage}
+                  />
+                </div>
+              </div>
+            </div>
+          </article>
+        );
+        break;
+        
+      case 'twoColumnImage':
+        slideContent = (
+          <article style={styles.slide.container} onClick={handleSlideContainerClick}>
+            <SlideToolbar 
+              template={template} 
+              onLayoutChange={handleLayoutChange}
+              onUndoRedo={handleUndoRedo}
+              onImageSelect={handleImageSelect}
+            />
+            {showToolbar && <FormattingToolbar />}
+            <div style={styles.slide.content}>
+              <TitleEditor />
+              <div style={styles.slide.threeColumnContainer}>
+                <div style={styles.slide.column}>
+                  <div style={{
+                    border: activeEditorRef.current === 'leftTitle' ? '1px dashed #9D74FF' : '1px solid transparent',
+                    padding: '5px',
+                    borderRadius: '4px',
+                    marginBottom: '10px',
+                    cursor: 'text',
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Stop propagation to prevent slide click handler
+                    if (leftColumnEditor) {
+                      leftColumnEditor.commands.focus();
+                      activeEditorRef.current = 'leftTitle';
+                      setShowToolbar(true);
+                      
+                      // Make sure the editor is enabled
+                      if (!leftColumnEditor.isEditable) {
+                        leftColumnEditor.setEditable(true);
+                      }
+                    }
+                  }}>
+                    <EditorContent editor={leftColumnEditor} />
+                  </div>
+                  <div style={{
+                    border: activeEditorRef.current === 'leftBullets' ? '1px dashed #9D74FF' : '1px solid transparent',
+                    padding: '5px',
+                    borderRadius: '4px',
+                    cursor: 'text',
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Stop propagation to prevent slide click handler
+                    if (leftBulletsEditor) {
+                      leftBulletsEditor.commands.focus();
+                      activeEditorRef.current = 'leftBullets';
+                      setShowToolbar(true);
+                      
+                      // Make sure the editor is enabled
+                      if (!leftBulletsEditor.isEditable) {
+                        leftBulletsEditor.setEditable(true);
+                      }
+                    }
+                  }}>
+                    <EditorContent editor={leftBulletsEditor} />
+                  </div>
+                </div>
+                <div style={styles.slide.column}>
+                  <div style={{
+                    border: activeEditorRef.current === 'rightTitle' ? '1px dashed #9D74FF' : '1px solid transparent',
+                    padding: '5px',
+                    borderRadius: '4px',
+                    marginBottom: '10px',
+                    cursor: 'text',
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Stop propagation to prevent slide click handler
+                    if (rightColumnEditor) {
+                      rightColumnEditor.commands.focus();
+                      activeEditorRef.current = 'rightTitle';
+                      setShowToolbar(true);
+                      
+                      // Make sure the editor is enabled
+                      if (!rightColumnEditor.isEditable) {
+                        rightColumnEditor.setEditable(true);
+                      }
+                    }
+                  }}>
+                    <EditorContent editor={rightColumnEditor} />
+                  </div>
+                  <div style={{
+                    border: activeEditorRef.current === 'rightBullets' ? '1px dashed #9D74FF' : '1px solid transparent',
+                    padding: '5px',
+                    borderRadius: '4px',
+                    cursor: 'text',
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Stop propagation to prevent slide click handler
+                    if (rightBulletsEditor) {
+                      rightBulletsEditor.commands.focus();
+                      activeEditorRef.current = 'rightBullets';
+                      setShowToolbar(true);
+                      
+                      // Make sure the editor is enabled
+                      if (!rightBulletsEditor.isEditable) {
+                        rightBulletsEditor.setEditable(true);
+                      }
+                    }
+                  }}>
+                    <EditorContent editor={rightBulletsEditor} />
+                  </div>
+                </div>
+                <div style={styles.slide.imageColumn}>
+                  <img
+                    src={imageUrl || 'https://picsum.photos/800/400'}
+                    alt={title || 'Slide image'}
+                    style={styles.slide.contentImage}
+                  />
+                </div>
+              </div>
+            </div>
+          </article>
+        );
+        break;
+        
+      case 'oneColumnImage':
+        slideContent = (
           <div style={styles.slide.content}>
-            <div style={{
-              ...styles.slide.title,
-              border: activeEditorRef.current === 'title' ? '1px dashed #9D74FF' : 'none',
-              padding: '5px',
-              borderRadius: '4px',
-            }}>
-              <EditorContent editor={titleEditor} />
-            </div>
-            <div style={{
-              ...styles.slide.body,
-              border: activeEditorRef.current === 'content' ? '1px dashed #9D74FF' : 'none',
-              padding: '5px',
-              borderRadius: '4px',
-            }}>
-              <EditorContent editor={contentEditor} />
-            </div>
+            <article style={styles.slide.article}>
+              <div style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px',
+              }}>
+                <div style={{
+                  border: activeEditorRef.current === 'title' ? '1px dashed #9D74FF' : '1px solid transparent',
+                  padding: '5px',
+                  borderRadius: '4px',
+                  cursor: 'text',
+                }}
+                onClick={(e) => {
+                  e.stopPropagation(); // Stop propagation to prevent slide click handler
+                  if (titleEditor) {
+                    titleEditor.commands.focus();
+                    activeEditorRef.current = 'title';
+                    setShowToolbar(true);
+                    
+                    // Make sure the editor is enabled
+                    if (!titleEditor.isEditable) {
+                      titleEditor.setEditable(true);
+                    }
+                  }
+                }}>
+                  <EditorContent editor={titleEditor} />
+                </div>
+                <div style={{
+                  border: activeEditorRef.current === 'content' ? '1px dashed #9D74FF' : '1px solid transparent',
+                  padding: '5px',
+                  borderRadius: '4px',
+                  cursor: 'text',
+                }}
+                onClick={(e) => {
+                  e.stopPropagation(); // Stop propagation to prevent slide click handler
+                  if (contentEditor) {
+                    contentEditor.commands.focus();
+                    activeEditorRef.current = 'content';
+                    setShowToolbar(true);
+                    
+                    // Make sure the editor is enabled
+                    if (!contentEditor.isEditable) {
+                      contentEditor.setEditable(true);
+                    }
+                  }
+                }}>
+                  <EditorContent editor={contentEditor} />
+                </div>
+              </div>
+            </article>
           </div>
-        </article>
-      );
-    case 'titleBullets':
+        );
+        break;
+        
+      default:
+        slideContent = null;
+    }
+    
+    // Add the image selector overlay if needed
+    if (showImageSelector) {
       return (
-        <article style={styles.slide.container}>
-          <SlideToolbar/>
-          {showToolbar && <FormattingToolbar />}
-          <div style={styles.slide.content}>
-            <div style={{
-              ...styles.slide.title,
-              border: activeEditorRef.current === 'title' ? '1px dashed #9D74FF' : 'none',
-              padding: '5px',
-              borderRadius: '4px',
-            }}>
-              <EditorContent editor={titleEditor} />
-            </div>
-            <div style={{
-              ...styles.slide.bulletList,
-              border: activeEditorRef.current === 'content' ? '1px dashed #9D74FF' : 'none',
-              padding: '5px 20px',
-              borderRadius: '4px',
-            }}>
-              <EditorContent editor={contentEditor} />
-            </div>
+        <div style={{ position: 'relative' }}>
+          {slideContent}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 1000,
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px'
+          }}>
+            <ImageSelector
+              onImageSelect={handleImageChange}
+              onClose={() => setShowImageSelector(false)}
+            />
           </div>
-        </article>
+        </div>
       );
-    case 'titleImage':
-      return (
-        <article style={styles.slide.container}>
-          <SlideToolbar />
-          <TitleImageSlide title={title} subtitle={subtitle} imageUrl={imageUrl} />
-        </article>
-      );    
-    case 'titleBodyImage':
-      return (
-        <article style={styles.slide.container}>
-          <SlideToolbar />
-          <TitleBodyImageSlide title={title} content={content} imageUrl={imageUrl} />
-        </article>
-      );    
-    case 'titleBulletsImage':
-      return (
-        <article style={styles.slide.container}>
-          <SlideToolbar />
-          <TitleBulletsImageSlide title={title} content={content} imageUrl={imageUrl} />
-        </article>
-      );
-    case 'twoColumnImage':
-      return (
-        <article style={ styles.slide.container}>
-        <SlideToolbar/>
-        <TwoColumnImageSlide
-          title={title}
-          leftContent={leftContent}
-          rightContent={rightContent}
-          imageUrl={imageUrl}
-        />
-        </article>
-      );
-    case 'stretchImage':
-      return (
-      <Article className='styles.slide.container'>
-        <SlideToolbar/>
-        <StretchImageSlide title={title} caption={caption} imageUrl={imageUrl} />;
-      </Article>
-    )
-    default:
-      return null;
-  }
+    }
+    
+    return slideContent;
+  };
+
+  return renderSlide();
 });
 
 const Slides = () => {
   const [presentationData, setPresentationData] = useState([]);
   const [revealLoaded, setRevealLoaded] = useState(false);
   const revealRef = useRef(null);
+  
+  // Add global styles once when component mounts
+  useEffect(() => {
+    // Add global styles for TipTap editors
+    if (!document.getElementById('tiptap-global-styles')) {
+      const styleTag = document.createElement('style');
+      styleTag.id = 'tiptap-global-styles';
+      styleTag.innerHTML = globalStyles;
+      document.head.appendChild(styleTag);
+      
+      return () => {
+        // Clean up styles on unmount
+        const styleElement = document.getElementById('tiptap-global-styles');
+        if (styleElement) {
+          styleElement.remove();
+        }
+      };
+    }
+  }, []);
 
   // Function to update slide content with debounce for auto-save
   const updateSlideContent = (index, field, value) => {
@@ -504,50 +1306,32 @@ const Slides = () => {
     } else {
       // Use the existing sample data
       const sampleData = [
-        // Standalone horizontal slide - Title slide
+        // First vertical group
+        {
+          template: 'titleBullets',
+          title: 'Welcome to Presentation',
+          content: [
+            'Create professional presentations',
+            'Easily add and arrange slides',
+            'Choose from multiple layouts',
+            'Present with confidence'
+          ],
+          group: 'intro'
+        },
+        {
+          template: 'titleBodyImage',
+          title: 'Key Features',
+          content: [
+            'Our platform offers a simple yet powerful presentation builder that helps you create engaging slides.',
+          ],
+          imageUrl: 'https://picsum.photos/id/1005/800/600',
+          group: 'intro'
+        },
+        
+        // Standalone horizontal slide - Using titleImage instead of stretchImage
         {
           template: 'titleImage',
-          title: 'Presentation with Images',
-          subtitle: 'Using Reveal.js image capabilities',
-          imageUrl: 'https://picsum.photos/id/1015/800/600',
-        },
-
-        // First vertical group - Image examples
-        {
-          template: 'titleBodyImage',
-          title: 'Working with Images',
-          content: [
-            'This section demonstrates different ways to incorporate images into your presentation slides.',
-          ],
-          imageUrl: 'https://picsum.photos/id/1019/800/600',
-          group: 'imageExamples',
-        },
-        {
-          template: 'titleBodyImage',
-          title: 'Title with Body and Image',
-          content: [
-            'This slide demonstrates how to combine text content with an image. Images can help illustrate concepts and make your presentations more engaging.',
-          ],
-          imageUrl: 'https://picsum.photos/id/1019/800/600',
-          group: 'imageExamples',
-        },
-        {
-          template: 'titleBulletsImage',
-          title: 'Bullet Points with Image',
-          content: [
-            'First important point',
-            'Second important point',
-            'Third important point with more detail',
-          ],
-          imageUrl: 'https://picsum.photos/id/1016/800/600',
-          group: 'imageExamples',
-        },
-
-        // Standalone horizontal slide - Special image layout
-        {
-          template: 'stretchImage',
           title: 'Full-Size Image Example',
-          caption: 'Using r-stretch to fill available space',
           imageUrl: 'https://picsum.photos/id/1018/1200/800',
         },
 
@@ -659,6 +1443,7 @@ const Slides = () => {
 
   const renderSlides = () => {
     if (presentationData.length === 0) {
+      console.log("No presentation data found");
       return (
         <section>
           <h2>No presentation data found</h2>
@@ -666,6 +1451,8 @@ const Slides = () => {
         </section>
       );
     }
+
+    console.log("Rendering slides with data:", presentationData);
 
     // Group slides by group property if it exists
     const groupedSlides = {};
@@ -677,13 +1464,17 @@ const Slides = () => {
       groupedSlides[group].push({ ...slide, originalIndex: idx });
     });
 
+    console.log("Grouped slides:", groupedSlides);
+
     // Render slides according to groups
     return Object.keys(groupedSlides).map((group, groupIndex) => {
       const slides = groupedSlides[group];
+      console.log(`Rendering group ${group} with ${slides.length} slides`);
 
       // If this is a standalone slide (no group property in the original slide)
       if (group.startsWith('standalone_') && slides.length === 1) {
         const slide = slides[0];
+        console.log(`Rendering standalone slide: ${slide.template}`);
         return (
           <section key={groupIndex} data-transition="slide">
             <EditableSlide 
@@ -696,6 +1487,7 @@ const Slides = () => {
       }
 
       // If this is a group of vertical slides
+      console.log(`Rendering slide group: ${group} with ${slides.length} slides`);
       return (
         <section key={groupIndex} data-transition="slide">
           {slides.map((slide, slideIndex) => (

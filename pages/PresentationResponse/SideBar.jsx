@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useCallback } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -60,8 +59,18 @@ const Sidebar = () => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <nav style={styles.sidebar.container}>
-        <div style={styles.sidebar.navItems}>
+      <nav style={{
+        ...styles.sidebar.container,
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        overflowY: 'auto'
+      }}>
+        <div style={{
+          ...styles.sidebar.navItems,
+          flex: 1,
+          overflowY: 'auto'
+        }}>
           {presentationData.length > 0 ? (
             presentationData.map((slide, index) => (
               <NavItem

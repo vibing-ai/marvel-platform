@@ -1,4 +1,45 @@
 import { isAbsoluteUrl } from "next/dist/shared/lib/utils";
+import Button from '@mui/material/Button';
+
+// Add global styles that will be added via a style tag in the main component
+export const globalStyles = `
+  .tiptap-editor-content {
+    min-height: 20px;
+    outline: none !important;
+  }
+  
+  .tiptap-editor-content p {
+    margin: 0.5em 0;
+  }
+  
+  .tiptap-editor-content ul {
+    padding-left: 1.5em;
+    margin: 0.5em 0;
+  }
+  
+  .tiptap-editor-content:focus {
+    outline: 2px solid #9D74FF !important;
+    border-radius: 3px;
+  }
+  
+  /* Basic selection styling */
+  .tiptap-editor-content ::selection {
+    background-color: #9D74FF;
+    color: white;
+  }
+  
+  /* Make sure cursor appears as text */
+  [role="textbox"] {
+    cursor: text !important;
+  }
+  
+  /* Firefox compatibility */
+  @-moz-document url-prefix() {
+    .tiptap-editor-content ::selection {
+      background-color: #9D74FF;
+    }
+  }
+`;
 
 export const styles = {
   app: {
@@ -47,8 +88,8 @@ export const styles = {
       height: '36px',
       borderRadius: '4px',
       border: '1px solid #ddd',
-      backgroundColor: 'white',
-      color: '#333',
+      backgroundColor: '#363636',
+      color: '#8b58d0',
       fontWeight: '500',
       fontSize: '16px',
       display: 'flex',
@@ -405,6 +446,108 @@ export const styles = {
       boxShadow: '0 4px 20px rgba(15, 5, 53, 0.2)',
       borderRadius: '4px',
     },
+    // Container for the title and image in titleImage template
+    titleImageContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      width: '100%',
+      height: '100%',
+    },
+    
+    // Container for content and image side by side
+    bodyImageContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '100%',
+      marginTop: '20px',
+      gap: '20px',
+    },
+    
+    // Wrapper for images to control size
+    imageWrapper: {
+      overflow: 'hidden',
+      borderRadius: '4px',
+      boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+      maxHeight: '400px',
+      minWidth: '300px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#f5f5f5',
+    },
+    
+    // For the main large image in titleImage
+    mainImage: {
+      width: '100%',
+      maxWidth: '700px',
+      maxHeight: '400px',
+      objectFit: 'contain',
+      marginTop: '20px',
+      borderRadius: '4px',
+    },
+    
+    // For images that appear alongside content
+    contentImage: {
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      maxHeight: '300px',
+    },
+    
+    // Image container styling
+    imageContainer: {
+      position: 'relative',
+      width: '100%',
+      height: '100%',
+      minHeight: '300px',
+      borderRadius: '4px',
+      overflow: 'hidden',
+    },
+    
+    // The image inside the container
+    image: {
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+    },
+    
+    // Three column container for twoColumnImage
+    threeColumnContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '100%',
+      marginTop: '20px',
+      gap: '15px',
+    },
+    
+    // Column styling
+    column: {
+      flex: '1',
+      padding: '10px',
+      borderRadius: '4px',
+      backgroundColor: '#f9f9f9',
+    },
+    
+    // Image column in three column layout
+    imageColumn: {
+      flex: '1',
+      overflow: 'hidden',
+      borderRadius: '4px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    
+    // Column title styling
+    columnTitle: {
+      fontSize: '18px',
+      marginBottom: '10px',
+      fontWeight: 'bold',
+      color: '#333',
+    },
   },
   editor: {
     container: {
@@ -472,6 +615,10 @@ export const styles = {
       height: '24px',
       margin: '0 8px',
       backgroundColor: '#ddd',
+    },
+    // Add styles for selected text
+    selection: {
+      backgroundColor: 'rgba(157, 116, 255, 0.3)',
     },
   },
 };

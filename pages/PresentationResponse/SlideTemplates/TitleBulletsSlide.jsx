@@ -1,19 +1,44 @@
 import React from 'react';
+import { EditorContent } from '@tiptap/react';
 
 import { styles } from '../styles';
 
-const TitleBulletsSlide = ({ title, content }) => {
+const TitleBulletsSlide = ({ 
+  titleEditor, 
+  bulletsEditor,
+  handleEditorClick, 
+  getEditorContainerStyle,
+  handleSlideContainerClick,
+  SlideToolbar,
+  FormattingToolbar,
+  showToolbar,
+  template,
+  handleLayoutChange,
+  handleUndoRedo,
+  handleImageSelect
+}) => {
   return (
-    <article style={styles.slide.container}>
+    <article style={styles.slide.container} onClick={handleSlideContainerClick}>
+      <SlideToolbar 
+        template={template} 
+        onLayoutChange={handleLayoutChange}
+        onUndoRedo={handleUndoRedo}
+        onImageSelect={handleImageSelect}
+      />
+      {showToolbar && <FormattingToolbar />}
       <div style={styles.slide.content}>
-        <h2 style={styles.slide.title}>{title}</h2>
-        <ul style={styles.slide.bulletList}>
-          {content.map((bullet, index) => (
-            <li key={index} style={styles.slide.bulletItem}>
-              {bullet}
-            </li>
-          ))}
-        </ul>
+        <div 
+          style={getEditorContainerStyle('title', { marginBottom: '10px' })}
+          onClick={handleEditorClick(titleEditor, 'title')}
+        >
+          <EditorContent editor={titleEditor} />
+        </div>
+        <div 
+          style={getEditorContainerStyle('bullets')}
+          onClick={handleEditorClick(bulletsEditor, 'bullets')}
+        >
+          <EditorContent editor={bulletsEditor} />
+        </div>
       </div>
     </article>
   );

@@ -1,13 +1,44 @@
 import React from 'react';
+import { EditorContent } from '@tiptap/react';
 
 import { styles } from '../styles';
 
-const TitleBodySlide = ({ title, content }) => {
+const TitleBodySlide = ({ 
+  titleEditor, 
+  contentEditor, 
+  handleEditorClick, 
+  getEditorContainerStyle,
+  handleSlideContainerClick,
+  SlideToolbar,
+  FormattingToolbar,
+  showToolbar,
+  template,
+  handleLayoutChange,
+  handleUndoRedo,
+  handleImageSelect
+}) => {
   return (
-    <article style={styles.slide.container}>
+    <article style={styles.slide.container} onClick={handleSlideContainerClick}>
+      <SlideToolbar 
+        template={template} 
+        onLayoutChange={handleLayoutChange}
+        onUndoRedo={handleUndoRedo}
+        onImageSelect={handleImageSelect}
+      />
+      {showToolbar && <FormattingToolbar />}
       <div style={styles.slide.content}>
-        <h2 style={styles.slide.title}>{title}</h2>
-        <p style={styles.slide.body}>{content[0]}</p>
+        <div 
+          style={getEditorContainerStyle('title', { marginBottom: '10px' })}
+          onClick={handleEditorClick(titleEditor, 'title')}
+        >
+          <EditorContent editor={titleEditor} />
+        </div>
+        <div 
+          style={getEditorContainerStyle('content')}
+          onClick={handleEditorClick(contentEditor, 'content')}
+        >
+          <EditorContent editor={contentEditor} />
+        </div>
       </div>
     </article>
   );

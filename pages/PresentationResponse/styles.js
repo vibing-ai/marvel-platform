@@ -10,11 +10,32 @@ export const globalStyles = `
   
   .tiptap-editor-content p {
     margin: 0.5em 0;
+    line-height: 1.5;
   }
   
   .tiptap-editor-content ul {
     padding-left: 1.5em;
     margin: 0.5em 0;
+  }
+  
+  .tiptap-editor-content li {
+    margin-bottom: 0.5em;
+    position: relative;
+  }
+  
+  /* Paragraph-specific styles for body content */
+  .body-content p {
+    text-align: justify;
+    margin-bottom: 0.8em;
+  }
+  
+  /* Bullet-specific styles */
+  .bullets-content ul {
+    list-style-type: disc;
+  }
+  
+  .bullets-content li {
+    padding-left: 0.5em;
   }
   
   .tiptap-editor-content:focus {

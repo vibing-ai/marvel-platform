@@ -3,8 +3,9 @@ import { EditorContent } from '@tiptap/react';
 
 import { styles } from '../styles';
 
-const StretchImageSlide = ({
+const OneColumnImageSlide = ({
   titleEditor,
+  contentEditor,
   handleEditorClick,
   getEditorContainerStyle,
   handleSlideContainerClick,
@@ -15,7 +16,7 @@ const StretchImageSlide = ({
   handleLayoutChange,
   handleUndoRedo,
   handleImageSelect,
-  imageUrl = 'https://picsum.photos/1920/1080'
+  imageUrl = 'https://picsum.photos/800/400'
 }) => {
   return (
     <article style={styles.slide.container} onClick={handleSlideContainerClick}>
@@ -28,29 +29,31 @@ const StretchImageSlide = ({
       {showToolbar && <FormattingToolbar />}
       <div style={styles.slide.content}>
         <div 
-          style={{
-            ...getEditorContainerStyle('title'),
-            position: 'absolute',
-            zIndex: 2,
-            width: '100%',
-            textAlign: 'center',
-            color: '#fff',
-            textShadow: '0 0 10px rgba(0,0,0,0.8)'
-          }}
+          style={getEditorContainerStyle('title', { marginBottom: '10px' })}
           onClick={handleEditorClick(titleEditor, 'title')}
         >
           <EditorContent editor={titleEditor} />
         </div>
-        <div style={styles.slide.stretchImageContainer}>
-          <img
-            src={imageUrl}
-            alt="Slide background"
-            style={styles.slide.stretchImage}
-          />
+        <div style={styles.slide.oneColumnFlexContainer}>
+          <div style={styles.slide.contentColumn}>
+            <div 
+              style={getEditorContainerStyle('content')}
+              onClick={handleEditorClick(contentEditor, 'content')}
+            >
+              <EditorContent editor={contentEditor} />
+            </div>
+          </div>
+          <div style={styles.slide.imageColumn}>
+            <img
+              src={imageUrl}
+              alt="Slide image"
+              style={styles.slide.contentImage}
+            />
+          </div>
         </div>
       </div>
     </article>
   );
 };
 
-export default StretchImageSlide;
+export default OneColumnImageSlide; 

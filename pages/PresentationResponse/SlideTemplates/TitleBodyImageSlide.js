@@ -1,27 +1,50 @@
 import React from 'react';
+import { EditorContent } from '@tiptap/react';
 
 import { styles } from '../styles';
 
-const TitleBodyImageSlide = ({ title, content, imageUrl }) => {
-  // Default placeholder image if none provided
-  const defaultImage = 'https://picsum.photos/800/400';
-
+const TitleBodyImageSlide = ({
+  titleEditor,
+  contentEditor,
+  handleEditorClick,
+  getEditorContainerStyle,
+  handleSlideContainerClick,
+  SlideToolbar,
+  FormattingToolbar,
+  showToolbar,
+  template,
+  handleLayoutChange,
+  handleUndoRedo,
+  handleImageSelect,
+  imageUrl = 'https://picsum.photos/800/400'
+}) => {
   return (
-    <article style={styles.slide.container}>
+    <article style={styles.slide.container} onClick={handleSlideContainerClick}>
+      <SlideToolbar 
+        template={template} 
+        onLayoutChange={handleLayoutChange}
+        onUndoRedo={handleUndoRedo}
+        onImageSelect={handleImageSelect}
+      />
+      {showToolbar && <FormattingToolbar />}
       <div style={styles.slide.content}>
-        <h2 style={styles.slide.title}>{title}</h2>
-
-        <div style={styles.slide.flexContainer}>
-          <div style={styles.slide.textColumn}>
-            <p style={styles.slide.body}>
-              {Array.isArray(content) ? content[0] : content}
-            </p>
+        <div 
+          style={getEditorContainerStyle('title', { marginBottom: '10px' })}
+          onClick={handleEditorClick(titleEditor, 'title')}
+        >
+          <EditorContent editor={titleEditor} />
+        </div>
+        <div style={styles.slide.bodyImageContainer}>
+          <div 
+            style={getEditorContainerStyle('content')}
+            onClick={handleEditorClick(contentEditor, 'content')}
+          >
+            <EditorContent editor={contentEditor} />
           </div>
-
-          <div style={styles.slide.imageColumn}>
+          <div style={styles.slide.imageWrapper}>
             <img
-              src={imageUrl || defaultImage}
-              alt={title}
+              src={imageUrl}
+              alt="Slide image"
               style={styles.slide.contentImage}
             />
           </div>

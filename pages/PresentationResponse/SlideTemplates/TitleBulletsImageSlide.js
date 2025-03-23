@@ -1,33 +1,51 @@
 import React from 'react';
+import { EditorContent } from '@tiptap/react';
 
 import { styles } from '../styles';
 
-const TitleBulletsImageSlide = ({ title, content, imageUrl }) => {
-  // Default placeholder image if none provided
-  const defaultImage = 'https://picsum.photos/800/400';
-
+const TitleBulletsImageSlide = ({
+  titleEditor,
+  bulletsEditor,
+  handleEditorClick,
+  getEditorContainerStyle,
+  handleSlideContainerClick,
+  SlideToolbar,
+  FormattingToolbar,
+  showToolbar,
+  template,
+  handleLayoutChange,
+  handleUndoRedo,
+  handleImageSelect,
+  imageUrl = 'https://picsum.photos/800/400'
+}) => {
   return (
-    <article style={styles.slide.container}>
+    <article style={styles.slide.container} onClick={handleSlideContainerClick}>
+      <SlideToolbar 
+        template={template} 
+        onLayoutChange={handleLayoutChange}
+        onUndoRedo={handleUndoRedo}
+        onImageSelect={handleImageSelect}
+      />
+      {showToolbar && <FormattingToolbar />}
       <div style={styles.slide.content}>
-        <h2 style={styles.slide.title}>{title}</h2>
-
-        <div style={styles.slide.flexContainer}>
-          <div style={styles.slide.textColumn}>
-            <ul style={styles.slide.bulletList}>
-              {content.map((bullet, index) => (
-                <li key={index} style={styles.slide.bulletItem}>
-                  {bullet}
-                </li>
-              ))}
-            </ul>
+        <div 
+          style={getEditorContainerStyle('title', { marginBottom: '10px' })}
+          onClick={handleEditorClick(titleEditor, 'title')}
+        >
+          <EditorContent editor={titleEditor} />
+        </div>
+        <div style={styles.slide.bodyImageContainer}>
+          <div 
+            style={getEditorContainerStyle('bullets')}
+            onClick={handleEditorClick(bulletsEditor, 'bullets')}
+          >
+            <EditorContent editor={bulletsEditor} />
           </div>
-
-          <div style={styles.slide.imageColumn}>
+          <div style={styles.slide.imageWrapper}>
             <img
-              src={imageUrl || defaultImage}
-              alt={title}
+              src={imageUrl}
+              alt="Slide image"
               style={styles.slide.contentImage}
-              className="r-frame"
             />
           </div>
         </div>

@@ -2,6 +2,8 @@ import React from 'react';
 
 import { styles } from '../styles';
 
+import TiptapEditor from '../Tiptap/TiptapEditor';
+
 const TitleImageSlide = ({ title, subtitle, imageUrl }) => {
   // Default placeholder image if none provided
   const defaultImage = 'https://picsum.photos/800/400';
@@ -9,8 +11,8 @@ const TitleImageSlide = ({ title, subtitle, imageUrl }) => {
   return (
     <article style={styles.slide.container}>
       <div style={styles.slide.content}>
-        <h2 style={styles.slide.title}>{title}</h2>
-        {subtitle && <h3 style={styles.slide.subtitle}>{subtitle}</h3>}
+        <TiptapEditor editorContent={title} />
+        <TiptapEditor editorContent={subtitle} />
 
         <div style={styles.slide.imageContainer}>
           <img

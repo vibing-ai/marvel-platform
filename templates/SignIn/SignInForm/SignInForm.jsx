@@ -105,11 +105,7 @@ const SignInForm = (props) => {
       const userData = await dispatch(
         fetchUserData({ firestore, id: userCred.user.uid })
       ).unwrap();
-      if (userData?.needsBoarding) {
-        router.replace(ROUTES.ONBOARDING);
-      } else {
-        router.replace(ROUTES.HOME);
-      }
+      router.replace(ROUTES.HOME);
     } catch ({ code }) {
       setError({ password: { message: AUTH_ERROR_MESSAGES[code] } });
     } finally {

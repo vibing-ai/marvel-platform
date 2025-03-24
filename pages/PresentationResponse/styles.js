@@ -1,3 +1,67 @@
+import { isAbsoluteUrl } from "next/dist/shared/lib/utils";
+import Button from '@mui/material/Button';
+
+// Add global styles that will be added via a style tag in the main component
+export const globalStyles = `
+  .tiptap-editor-content {
+    min-height: 20px;
+    outline: none !important;
+  }
+  
+  .tiptap-editor-content p {
+    margin: 0.5em 0;
+    line-height: 1.5;
+  }
+  
+  .tiptap-editor-content ul {
+    padding-left: 1.5em;
+    margin: 0.5em 0;
+  }
+  
+  .tiptap-editor-content li {
+    margin-bottom: 0.5em;
+    position: relative;
+  }
+  
+  /* Paragraph-specific styles for body content */
+  .body-content p {
+    text-align: justify;
+    margin-bottom: 0.8em;
+  }
+  
+  /* Bullet-specific styles */
+  .bullets-content ul {
+    list-style-type: disc;
+  }
+  
+  .bullets-content li {
+    padding-left: 0.5em;
+  }
+  
+  .tiptap-editor-content:focus {
+    outline: 2px solid #9D74FF !important;
+    border-radius: 3px;
+  }
+  
+  /* Basic selection styling */
+  .tiptap-editor-content ::selection {
+    background-color: #9D74FF;
+    color: white;
+  }
+  
+  /* Make sure cursor appears as text */
+  [role="textbox"] {
+    cursor: text !important;
+  }
+  
+  /* Firefox compatibility */
+  @-moz-document url-prefix() {
+    .tiptap-editor-content ::selection {
+      background-color: #9D74FF;
+    }
+  }
+`;
+
 export const styles = {
   app: {
     background: `radial-gradient(
@@ -17,6 +81,51 @@ export const styles = {
       flexDirection: 'column',
     },
   },
+
+  slideToolbar: {
+
+    container: {
+      position: 'absolute',
+      top: '10px',
+      left: '10px',
+      right: '10px',
+      zIndex: 100,
+      display: 'flex',
+      justifyContent: 'flex-start',
+      padding: '5px 10px',
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      borderRadius: '5px',
+      boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+    },
+    buttonGroup: {
+      display: 'flex',
+      gap: '1px',
+      alignItems: 'flex-start',
+      marginRight: '15px',   //maybe change to proportional to the width of the button group
+    },
+
+    button: {
+      width: '36px',
+      height: '36px',
+      borderRadius: '4px',
+      border: '1px solid #ddd',
+      backgroundColor: '#363636',
+      color: '#8b58d0',
+      fontWeight: '500',
+      fontSize: '16px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+      transition: 'all 0.2s',
+      '&:hover': {
+        backgroundColor: '#f0f0f0',
+        borderColor: '#aaa',
+      }
+    }
+  },
+
+
   topBar: {
     container: {
       display: 'flex',
@@ -357,6 +466,180 @@ export const styles = {
       border: '8px solid white',
       boxShadow: '0 4px 20px rgba(15, 5, 53, 0.2)',
       borderRadius: '4px',
+    },
+    // Container for the title and image in titleImage template
+    titleImageContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      width: '100%',
+      height: '100%',
+    },
+    
+    // Container for content and image side by side
+    bodyImageContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '100%',
+      marginTop: '20px',
+      gap: '20px',
+    },
+    
+    // Wrapper for images to control size
+    imageWrapper: {
+      overflow: 'hidden',
+      borderRadius: '4px',
+      boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+      maxHeight: '400px',
+      minWidth: '300px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#f5f5f5',
+    },
+    
+    // For the main large image in titleImage
+    mainImage: {
+      width: '100%',
+      maxWidth: '700px',
+      maxHeight: '400px',
+      objectFit: 'contain',
+      marginTop: '20px',
+      borderRadius: '4px',
+    },
+    
+    // For images that appear alongside content
+    contentImage: {
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      maxHeight: '300px',
+    },
+    
+    // Image container styling
+    imageContainer: {
+      position: 'relative',
+      width: '100%',
+      height: '100%',
+      minHeight: '300px',
+      borderRadius: '4px',
+      overflow: 'hidden',
+    },
+    
+    // The image inside the container
+    image: {
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+    },
+    
+    // Three column container for twoColumnImage
+    threeColumnContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '100%',
+      marginTop: '20px',
+      gap: '15px',
+    },
+    
+    // Column styling
+    column: {
+      flex: '1',
+      padding: '10px',
+      borderRadius: '4px',
+      backgroundColor: '#f9f9f9',
+    },
+    
+    // Image column in three column layout
+    imageColumn: {
+      flex: '1',
+      overflow: 'hidden',
+      borderRadius: '4px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    
+    // Column title styling
+    columnTitle: {
+      fontSize: '18px',
+      marginBottom: '10px',
+      fontWeight: 'bold',
+      color: '#333',
+    },
+  },
+  editor: {
+    container: {
+      width: '100%',
+      height: '100%',
+    },
+    content: {
+      outline: 'none',
+      padding: '0',
+      '&:focus': {
+        outline: 'none',
+        border: 'none',
+      },
+    },
+    title: {
+      fontSize: '2.5em',
+      fontWeight: 'bold',
+      color: '#0F0535',
+      marginBottom: '0.5em',
+      fontFamily: 'Satoshi, sans-serif',
+    },
+    body: {
+      fontSize: '1.5em',
+      lineHeight: '1.5',
+      color: '#0F0535',
+      fontFamily: 'Satoshi, sans-serif',
+    },
+    toolbarContainer: {
+      position: 'absolute',
+      top: '10px',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      zIndex: 1000,
+      width: '90%',
+      maxWidth: '800px',
+    },
+    toolbar: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      padding: '8px',
+      backgroundColor: '#ffffff',
+      borderRadius: '4px',
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+      justifyContent: 'center',
+    },
+    toolbarButton: {
+      padding: '6px 10px',
+      margin: '0 2px',
+      backgroundColor: 'transparent',
+      border: '1px solid #ddd',
+      borderRadius: '3px',
+      cursor: 'pointer',
+      fontSize: '14px',
+      transition: 'all 0.2s ease',
+      '&:hover': {
+        backgroundColor: '#f0f0f0',
+      },
+      '&:disabled': {
+        opacity: 0.5,
+        cursor: 'not-allowed',
+      },
+    },
+    separator: {
+      width: '1px',
+      height: '24px',
+      margin: '0 8px',
+      backgroundColor: '#ddd',
+    },
+    // Add styles for selected text
+    selection: {
+      backgroundColor: 'rgba(157, 116, 255, 0.3)',
     },
   },
 };

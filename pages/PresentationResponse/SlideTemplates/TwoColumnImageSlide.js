@@ -1,48 +1,75 @@
 import React from 'react';
+import { EditorContent } from '@tiptap/react';
 
 import { styles } from '../styles';
 
 const TwoColumnImageSlide = ({
-  title,
-  leftContent,
-  rightContent,
-  imageUrl,
+  titleEditor,
+  leftColumnEditor,
+  leftBulletsEditor,
+  rightColumnEditor,
+  rightBulletsEditor,
+  handleEditorClick,
+  getEditorContainerStyle,
+  handleSlideContainerClick,
+  SlideToolbar,
+  FormattingToolbar,
+  showToolbar,
+  template,
+  handleLayoutChange,
+  handleUndoRedo,
+  handleImageSelect,
+  imageUrl = 'https://picsum.photos/800/400'
 }) => {
-  // Default placeholder image if none provided
-  const defaultImage = 'https://picsum.photos/800/400';
-
   return (
-    <article style={styles.slide.container}>
+    <article style={styles.slide.container} onClick={handleSlideContainerClick}>
+      <SlideToolbar 
+        template={template} 
+        onLayoutChange={handleLayoutChange}
+        onUndoRedo={handleUndoRedo}
+        onImageSelect={handleImageSelect}
+      />
+      {showToolbar && <FormattingToolbar />}
       <div style={styles.slide.content}>
-        <h2 style={styles.slide.title}>{title}</h2>
-
+        <div 
+          style={getEditorContainerStyle('title', { marginBottom: '10px' })}
+          onClick={handleEditorClick(titleEditor, 'title')}
+        >
+          <EditorContent editor={titleEditor} />
+        </div>
         <div style={styles.slide.threeColumnContainer}>
           <div style={styles.slide.column}>
-            <h3 style={styles.slide.columnTitle}>{leftContent.title}</h3>
-            <ul style={styles.slide.bulletList}>
-              {leftContent.bullets.map((bullet, index) => (
-                <li key={index} style={styles.slide.bulletItem}>
-                  {bullet}
-                </li>
-              ))}
-            </ul>
+            <div 
+              style={getEditorContainerStyle('leftTitle', { marginBottom: '10px' })}
+              onClick={handleEditorClick(leftColumnEditor, 'leftTitle')}
+            >
+              <EditorContent editor={leftColumnEditor} />
+            </div>
+            <div 
+              style={getEditorContainerStyle('leftBullets')}
+              onClick={handleEditorClick(leftBulletsEditor, 'leftBullets')}
+            >
+              <EditorContent editor={leftBulletsEditor} />
+            </div>
           </div>
-
           <div style={styles.slide.column}>
-            <h3 style={styles.slide.columnTitle}>{rightContent.title}</h3>
-            <ul style={styles.slide.bulletList}>
-              {rightContent.bullets.map((bullet, index) => (
-                <li key={index} style={styles.slide.bulletItem}>
-                  {bullet}
-                </li>
-              ))}
-            </ul>
+            <div 
+              style={getEditorContainerStyle('rightTitle', { marginBottom: '10px' })}
+              onClick={handleEditorClick(rightColumnEditor, 'rightTitle')}
+            >
+              <EditorContent editor={rightColumnEditor} />
+            </div>
+            <div 
+              style={getEditorContainerStyle('rightBullets')}
+              onClick={handleEditorClick(rightBulletsEditor, 'rightBullets')}
+            >
+              <EditorContent editor={rightBulletsEditor} />
+            </div>
           </div>
-
           <div style={styles.slide.imageColumn}>
             <img
-              src={imageUrl || defaultImage}
-              alt={title}
+              src={imageUrl}
+              alt="Slide image"
               style={styles.slide.contentImage}
             />
           </div>

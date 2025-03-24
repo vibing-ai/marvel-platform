@@ -14,7 +14,7 @@
     "lint:fix": "eslint --ext .jsx --ext .js ./ --fix",
     "deploy": "npm run build && npm run export && firebase deploy",
     "deploy:frontend": "npm run build && npm run export && firebase deploy --only hosting",
-    "kill-emulators": "lsof -t -i:8080 -i:9000 | xargs kill -9"
+    "kill-emulators": "FOR /F \"tokens=5\" %P IN ('netstat -a -n -o | findstr :8080') DO TaskKill /PID %P /F && FOR /F \"tokens=5\" %P IN ('netstat -a -n -o | findstr :9000') DO TaskKill /PID %P /F"
   },
   "dependencies": {
     "@emotion/react": "^11.11.0",
@@ -24,6 +24,7 @@
     "@mui/x-date-pickers": "^6.5.0",
     "@reduxjs/toolkit": "^1.9.5",
     "axios": "^1.4.0",
+    "critters": "^0.0.25",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
     "firebase": "^9.22.0",

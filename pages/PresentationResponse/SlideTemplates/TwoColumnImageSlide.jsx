@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { styles } from '../styles';
+import TiptapEditor from '../Tiptap/TiptapEditor';
 
 const TwoColumnImageSlide = ({
   title,
@@ -14,11 +15,12 @@ const TwoColumnImageSlide = ({
   return (
     <article style={styles.slide.container}>
       <div style={styles.slide.content}>
-        <h2 style={styles.slide.title}>{title}</h2>
+        <TiptapEditor editorContent={title} />
 
         <div style={styles.slide.threeColumnContainer}>
           <div style={styles.slide.column}>
-            <h3 style={styles.slide.columnTitle}>{leftContent.title}</h3>
+            <TiptapEditor editorContent={leftContent.title} />
+            {/* <h3 style={styles.slide.columnTitle}>{leftContent.title}</h3> */}
             <ul style={styles.slide.bulletList}>
               {leftContent.bullets.map((bullet, index) => (
                 <li key={index} style={styles.slide.bulletItem}>
@@ -29,7 +31,8 @@ const TwoColumnImageSlide = ({
           </div>
 
           <div style={styles.slide.column}>
-            <h3 style={styles.slide.columnTitle}>{rightContent.title}</h3>
+          <TiptapEditor editorContent={rightContent.title} />
+            {/* <h3 style={styles.slide.columnTitle}>{rightContent.title}</h3> */}
             <ul style={styles.slide.bulletList}>
               {rightContent.bullets.map((bullet, index) => (
                 <li key={index} style={styles.slide.bulletItem}>

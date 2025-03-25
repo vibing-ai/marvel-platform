@@ -191,60 +191,6 @@ const Slides = () => {
     return routes && routes[direction];
   };
 
-  const renderSlides = () => {
-    if (presentationData.length === 0) {
-      return (
-        <section>
-          <h2>No presentation data found</h2>
-          <p>
-            Make sure you have stored your presentation data in sessionStorage.
-          </p>
-        </section>
-      );
-    }
-
-    // Group slides by group property if it exists
-    const groupedSlides = {};
-    presentationData.forEach((slide) => {
-      // If a slide has no group, it becomes its own standalone horizontal slide
-      const group =
-        slide.group ||
-        `standalone_${Math.random().toString(36).substring(2, 11)}`;
-      if (!groupedSlides[group]) {
-        groupedSlides[group] = [];
-      }
-      groupedSlides[group].push(slide);
-    });
-
-    // Render slides according to groups
-    return Object.keys(groupedSlides).map((group, groupIndex) => {
-      const slides = groupedSlides[group];
-
-      // If this is a standalone slide (no group property in the original slide)
-      if (group.startsWith('standalone_') && slides.length === 1) {
-        return (
-          <section key={groupIndex} data-transition="slide">
-            {renderSlide(slides[0], groupIndex)}
-          </section>
-        );
-      }
-
-      // If this is a group of vertical slides
-      return (
-        <section key={groupIndex} data-transition="slide">
-          {slides.map((slide, slideIndex) => (
-            <section
-              key={`${groupIndex}-${slideIndex}`}
-              data-transition="slide"
-            >
-              {renderSlide(slide, `${groupIndex}-${slideIndex}`)}
-            </section>
-          ))}
-        </section>
-      );
-    });
-  };
-
   const renderSlide = (slide, index) => {
     const {
       template,
@@ -324,6 +270,60 @@ const Slides = () => {
     }
   };
 
+  const renderSlides = () => {
+    if (presentationData.length === 0) {
+      return (
+        <section>
+          <h2>No presentation data found</h2>
+          <p>
+            Make sure you have stored your presentation data in sessionStorage.
+          </p>
+        </section>
+      );
+    }
+
+    // Group slides by group property if it exists
+    const groupedSlides = {};
+    presentationData.forEach((slide) => {
+      // If a slide has no group, it becomes its own standalone horizontal slide
+      const group =
+        slide.group ||
+        `standalone_${Math.random().toString(36).substring(2, 11)}`;
+      if (!groupedSlides[group]) {
+        groupedSlides[group] = [];
+      }
+      groupedSlides[group].push(slide);
+    });
+
+    // Render slides according to groups
+    return Object.keys(groupedSlides).map((group, groupIndex) => {
+      const slides = groupedSlides[group];
+
+      // If this is a standalone slide (no group property in the original slide)
+      if (group.startsWith('standalone_') && slides.length === 1) {
+        return (
+          <section key={groupIndex} data-transition="slide">
+            {renderSlide(slides[0], groupIndex)}
+          </section>
+        );
+      }
+
+      // If this is a group of vertical slides
+      return (
+        <section key={groupIndex} data-transition="slide">
+          {slides.map((slide, slideIndex) => (
+            <section
+              key={`${groupIndex}-${slideIndex}`}
+              data-transition="slide"
+            >
+              {renderSlide(slide, `${groupIndex}-${slideIndex}`)}
+            </section>
+          ))}
+        </section>
+      );
+    });
+  };
+
   // Navigation methods
   const goToNext = () => {
     if (window.Reveal) window.Reveal.next();
@@ -382,6 +382,7 @@ const Slides = () => {
         }}
       >
         <button
+          type="button"
           onClick={goToPrev}
           style={{ margin: '0 5px', padding: '5px 15px' }}
           disabled={!canNavigate('left')}
@@ -389,6 +390,7 @@ const Slides = () => {
           Previous
         </button>
         <button
+          type="button"
           onClick={goToNext}
           style={{ margin: '0 5px', padding: '5px 15px' }}
           disabled={!canNavigate('right')}
@@ -396,6 +398,7 @@ const Slides = () => {
           Next
         </button>
         <button
+          type="button"
           onClick={goToUp}
           style={{ margin: '0 5px', padding: '5px 15px' }}
           disabled={!canNavigate('up')}
@@ -403,6 +406,7 @@ const Slides = () => {
           Up
         </button>
         <button
+          type="button"
           onClick={goToDown}
           style={{ margin: '0 5px', padding: '5px 15px' }}
           disabled={!canNavigate('down')}
@@ -410,12 +414,14 @@ const Slides = () => {
           Down
         </button>
         <button
+          type="button"
           onClick={toggleOverview}
           style={{ margin: '0 5px', padding: '5px 15px' }}
         >
           Overview
         </button>
         <button
+          type="button"
           onClick={refreshSlides}
           style={{ margin: '0 5px', padding: '5px 15px' }}
         >

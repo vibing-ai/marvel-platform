@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux';
 
 import submitPrompt from '@/tools/libs/services/submitPrompt';
 
+import TiptapEditor from '@/pages/PresentationResponse/Tiptap/TiptapEditor';
+
 const PresentationOutline = () => {
   const { response } = useSelector((state) => state.tools);
   const { data: userData } = useSelector((state) => state.user);

@@ -1,9 +1,9 @@
-import { AutoAwesome } from '@mui/icons-material';
-import { Card, Chip, Grid, Typography } from '@mui/material';
-
+import React from 'react';
+import { Grid, Typography, IconButton, Card, Chip } from '@mui/material';
+import { Star, StarBorder } from '@mui/icons-material';
 import { useRouter } from 'next/router';
-
-import styles from './styles';
+import AutoAwesome from '@mui/icons-material/AutoAwesome';
+import styles from './styles'; // Assuming styles is an object with the necessary styles
 
 import { TOOLS_ID } from '@/tools/libs/constants/tools';
 
@@ -19,9 +19,16 @@ import { TOOLS_ID } from '@/tools/libs/constants/tools';
  * @return {JSX.Element} The Tool Card component.
  */
 const ToolCard = (props) => {
-  const { id, maskedToolUrl, backgroundImgURL, name, description } = props;
+  const {
+    id,
+    name,
+    description,
+    maskedToolUrl,
+    backgroundImgURL,
+    favorites,
+    handleToggleFavorite,
+  } = props;
 
-  // Check if TOOLS_ID is an object and id is present
   const isPublished =
     TOOLS_ID &&
     typeof TOOLS_ID === 'object' &&
@@ -59,7 +66,22 @@ const ToolCard = (props) => {
         <Grid {...styles.imageProps(backgroundImgURL)} />
         <Grid {...styles.toolDetailsGridProps}>
           {renderTitle()}
-          {renderLabel()}
+            <Grid sx={{ position: 'relative', bottom: 0, right: 100 }}>
+            {renderLabel()}
+            </Grid>
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              handleToggleFavorite(id);
+            }}
+            sx={{ position: 'relative', bottom: 0, right: 0 }}
+            >
+            {favorites.includes(id) ? (
+              <Star sx={{ color: '#9d74ff' }} />
+            ) : (
+              <StarBorder />
+            )}
+          </IconButton>
         </Grid>
       </Card>
     </Grid>

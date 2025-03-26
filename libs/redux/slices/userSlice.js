@@ -1,6 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { fetchUserData, updateUserData } from '../thunks/user';
+import {
+  fetchUserData,
+  updateUserData,
+  updateUserFavorite,
+} from '../thunks/user';
 
 const initialState = {
   data: null,
@@ -42,6 +46,21 @@ const userSlice = createSlice({
         state.data = { ...state.data, ...action.payload };
       })
       .addCase(updateUserData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateUserFavorite.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUserFavorite.fulfilled, (state, action) => {
+        state.loading = false;
+        if (!state.data) {
+          state.data = {};
+        }
+        state.data.favorites = action.payload.favorites;
+      })
+      .addCase(updateUserFavorite.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

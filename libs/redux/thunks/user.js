@@ -60,4 +60,29 @@ export const updateUserData = createAsyncThunk(
   }
 );
 
+// Thunk for submitting favourite tools data
+export const updateUserFavorite = createAsyncThunk(
+  'userData/updateFavourite',
+  async ({ firestore, favorites }, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      const userId = auth?.data?.uid;
+
+      if (!userId) {
+        throw new Error('User ID is undefined');
+      }
+
+      const userDocRef = doc(firestore, 'users', userId);
+
+      await setDoc(userDocRef, favorites, { merge: true });
+
+      return favorites;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('error in updateUserData', error);
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export default fetchUserData;

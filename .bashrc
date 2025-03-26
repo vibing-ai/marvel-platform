@@ -1,0 +1,1 @@
+export PATH="/c/Program Files/Java/jdk-11/bin:$PATH"

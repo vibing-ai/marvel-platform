@@ -58,7 +58,6 @@ const FileTypeSelectorInput = ({
         </Grid>
       );
     }
-
     return (
       <>
         <Grid item {...styles.inputGridProps} sx={{ marginTop: '-30px' }}>
@@ -87,6 +86,7 @@ const FileTypeSelectorInput = ({
 
   return (
     <Grid container direction="column" spacing={2}>
+      {/* Applying the Grid container for dropdown */}
       <Grid item {...styles.inputGridProps}>
         <PrimarySelectorInput
           name={`${name}`}
@@ -96,6 +96,9 @@ const FileTypeSelectorInput = ({
             id: type.key,
             label: type.label,
           }))}
+          // Pass grid styling for dropdown options
+          gridProps={styles.radioGroupGridProps}
+          itemProps={styles.radioItemGridProps}
         />
       </Grid>
       {renderInputField()}

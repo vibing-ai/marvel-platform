@@ -266,6 +266,9 @@
   .slate-editor th {
     padding: 0;
   }
+  .slate-editor th:first-of-type {
+    width: 130px;
+  }
 
   .slate-editor details summary {
     cursor: pointer;
@@ -696,6 +699,7 @@
   .slate-editor table td {
     padding: 6px 13px;
     border: 1px solid var(--borderColor-default);
+    vertical-align: top;
   }
 
   .slate-editor table td > :last-child {

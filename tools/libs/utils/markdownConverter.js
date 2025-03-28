@@ -138,7 +138,7 @@ const convertSyllabusToMarkdown = (response) => {
       courseInfo.course_title
     )} |\n`;
     markdown += `| Grade Level | ${escapeMarkdown(courseInfo.grade_level)} |\n`;
-    markdown += `| Description | ${escapeMarkdown(courseInfo.description)} |\n`;
+    markdown += `| Description | ${courseInfo.description.replace(/\\n\*\s/g, '<br>-&nbsp;').replace(/\\n\\n/g, '<br>').replace(/\\n/g, '').replace(/\*\*/g, '')} |\n`;
   }
 
   const instructorInfo = response.instructor_info;

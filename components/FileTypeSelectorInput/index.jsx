@@ -58,24 +58,9 @@ const FileTypeSelectorInput = ({
         </Grid>
       );
     }
+
     return (
       <>
-        {/* <Grid item {...styles.inputGridProps}>
-            <PrimaryTextFieldInput
-              name={`${name}_url`}
-              id={`${name}_url`}
-              title={renderLabel("URL")}
-              placeholder="Enter URL e.g http://..."
-              control={control}
-              error={error}
-              helperText={helperText}
-            />
-          </Grid>
-          <Grid container justifyContent="center" alignItems="center" sx={{ my: 0, mb: 0 }}>
-            <Typography variant="body2" color="textSecondary">
-              OR
-            </Typography>
-          </Grid> */}
         <Grid item {...styles.inputGridProps} sx={{ marginTop: '-30px' }}>
           <PrimaryFileUpload
             name={`${name}_file`}

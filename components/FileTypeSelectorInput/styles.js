@@ -19,6 +19,14 @@ const styles = {
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
+  radioGroupGridProps: { // This is the new part for grid layout of options
+    container: true,
+    spacing: 2,
+  },
+  radioItemGridProps: { // This controls how the dropdown options are displayed
+    item: true,
+    xs: 6, // This makes each option take half the available width
+  },
 };
 
 export default styles;

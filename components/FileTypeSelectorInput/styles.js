@@ -19,14 +19,31 @@ const styles = {
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
-  radioGroupGridProps: { // This is the new part for grid layout of options
-    container: true,
-    spacing: 2,
+  fileTypeButton: {
+    my: 0.5,
+    textTransform: 'none',
+    height: '48px',
+    borderRadius: '8px',
+    width: '100%',
+    backgroundColor: '#23252A',
+    color: 'white',
+    '&:hover': {
+      backgroundColor: '#2F3136',
+    },
+    '&.selected': {
+      backgroundColor: '#4A4D55',
+    }
   },
-  radioItemGridProps: { // This controls how the dropdown options are displayed
-    item: true,
-    xs: 6, // This makes each option take half the available width
-  },
+  gridContainer: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '8px',
+    width: '100%',
+    padding: '16px',
+    backgroundColor: '#1E1E1E',
+    borderRadius: '8px',
+  }
 };
 
 export default styles;
+

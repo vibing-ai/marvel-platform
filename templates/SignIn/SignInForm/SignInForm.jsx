@@ -124,7 +124,7 @@ const SignInForm = (props) => {
     );
   };
 
-  const renderPaswordInput = () => {
+  const renderPasswordInput = () => {
     return (
       <Grid {...styles.passwordGridProps}>
         <Grid {...styles.passwordInputGridProps}>
@@ -166,7 +166,7 @@ const SignInForm = (props) => {
     >
       <Grid {...sharedStyles.formGridProps}>
         {renderEmailInput()}
-        {renderPaswordInput()}
+        {renderPasswordInput()}
         {renderSubmitButton()}
       </Grid>
     </FormContainer>

@@ -21,13 +21,13 @@ const QuizOutput = ({ data }) => {
     );
   };
 
-  const renderChoices = (choices) => {
+  const renderChoices = (choices, questionNo) => {
     return (
       <List>
-        {choices?.map((choice, choiceIndex) => (
-          <ListItem key={choiceIndex} sx={{ py: 0 }}>
+        {Object.entries(choices).map(([key, value]) => (
+          <ListItem key={`${questionNo}-choice-${key}`} sx={{ py: 0 }}>
             <Typography {...styles.optionProps}>
-              {choice.key}. {choice.value}
+              {key}. {value}
             </Typography>
           </ListItem>
         ))}
@@ -38,11 +38,11 @@ const QuizOutput = ({ data }) => {
   return (
     <Grid container direction="column">
       {panelData.map((item, index) => (
-        <Grid key={index} sx={{ marginBottom: '16px' }}>
+        <Grid key={`question-${index}`} sx={{ marginBottom: '16px' }}>
           <Typography {...styles.questionProps}>
             {index + 1}. {item?.question}
           </Typography>
-          {renderChoices(item?.choices)}
+          {renderChoices(item?.choices, index + 1)}
           {renderCorrectAnswer(item?.answer)}
           {item?.explanation && renderExplanation(item?.explanation)}
         </Grid>

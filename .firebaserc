@@ -1,12 +1,15 @@
 {
   "projects": {
-     "default": "kai-ai-f63c8"
+    "default": "kai-platform-sandbox"
   },
   "targets": {
-    "kai-ai-f63c8": {
+    "kai-platform-sandbox": {
       "hosting": {
-        "next": [
-          "kai-ai-f63c8"
+        "main": [
+          "kai-platform-sandbox"
+        ],
+        "document-editor": [
+          "sandbox-document-editor"
         ]
       }
     }

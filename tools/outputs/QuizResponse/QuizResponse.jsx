@@ -14,6 +14,7 @@ import styles from './styles';
  * @returns {JSX.Element} The QuizResponse component.
  */
 const QuizResponse = () => {
+
   // Access the current markdown content from the Redux store
   const { content: markdownContent } = useSelector(
     (state) => state.tools.editorState.currentState

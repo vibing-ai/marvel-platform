@@ -30,12 +30,12 @@ const PAGES = [
     icon: <DiscoveryIcon />,
     id: 'discovery',
   }, */
-  {
-    name: 'Chat',
-    link: ROUTES.CHAT,
-    icon: <ChatIcon />,
-    id: 'chat',
-  },
+  // {
+  //   name: 'Chat',
+  //   link: ROUTES.CHAT,
+  //   icon: <ChatIcon />,
+  //   id: 'chat',
+  // },
 ];
 
 /**

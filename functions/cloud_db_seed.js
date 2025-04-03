@@ -40,7 +40,7 @@ const seedDatabase = async () => {
         email: 'user@test.com',
         fullName: 'Test User',
         id: userCredential.uid,
-        needsBoarding: true,
+        needsBoarding: false,
         occupation: null,
         profileImage: null,
         socialMedia: {

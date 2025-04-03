@@ -71,9 +71,15 @@ jobs:
           npm run build
           npm run export
 
-      - name: Deploy to Document Editor Site
+      - name: Set up Firebase targets
         env:
           FIREBASE_TOKEN: ${{ secrets.DEV_FIREBASE_TOKEN_DOCUMENT_EDITOR }}
         run: |
           npx firebase use kai-platform-sandbox --token "$FIREBASE_TOKEN"
-          npx firebase deploy --only hosting:sandbox-document-editor --token "$FIREBASE_TOKEN"
+          npx firebase target:apply hosting document-editor sandbox-document-editor --token "$FIREBASE_TOKEN"
+
+      - name: Deploy to Document Editor Site
+        env:
+          FIREBASE_TOKEN: ${{ secrets.DEV_FIREBASE_TOKEN_DOCUMENT_EDITOR }}
+        run: |
+          npx firebase deploy --only hosting:document-editor --token "$FIREBASE_TOKEN"

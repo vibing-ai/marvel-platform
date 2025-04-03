@@ -28,9 +28,8 @@ const styles = {
   navBarContainer: {
     position: 'fixed',
     justifyContent: 'center',
-    width: '1400px',
-    maxWidth: '100%',
-    height: '62xp',
+    width: '100vw !important',
+    height: '80px',
     maxHeight: '100%',
     paddingTop: '8px',
     paddingRight: '24px',

@@ -33,20 +33,38 @@
       "port": 9099
     }
   },
-  "hosting": {
-    "public": "out",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-    "rewrites": [
-      {
-        "source": "/api/tool/",
-        "function": "tool"
-      },
-      {
-        "regex": "^/([^/]+?)(?:/)?$",
-        "destination": "/[toolId]/index.html"
-      }
-    ]
-  },
+  "hosting": [
+    {
+      "target": "main",
+      "public": "out",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "/api/tool/",
+          "function": "tool"
+        },
+        {
+          "regex": "^/([^/]+?)(?:/)?$",
+          "destination": "/[toolId]/index.html"
+        }
+      ]
+    },
+    {
+      "target": "document-editor",
+      "public": "out",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "/api/tool/",
+          "function": "tool"
+        },
+        {
+          "regex": "^/([^/]+?)(?:/)?$",
+          "destination": "/[toolId]/index.html"
+        }
+      ]
+    }
+  ],
   "storage": {
     "rules": "storage.rules"
   }

@@ -20,7 +20,7 @@ const styles = {
     width: '100%',
   },
   name: {
-    maxWidth: '86px',
+    maxWidth: '150px', 
     width: 'auto',
     height: '24px',
     fontFamily: 'Satoshi Bold',
@@ -28,6 +28,9 @@ const styles = {
     color: '#9E94A5',
     textAlign: 'left',
     lineHeight: '16px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis', 
   },
   nameContainer: {
     position: 'relative',

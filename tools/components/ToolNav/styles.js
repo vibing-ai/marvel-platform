@@ -1,0 +1,61 @@
+const styles = {
+  logoGridProps: {
+    container: true,
+    item: true,
+    columnGap: 1.5,
+    display: 'flex',
+    maxWidth: '235px',
+    width: 'auto',
+    maxHeight: '89px',
+    height: 'auto',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    sx: {
+      cursor: 'pointer',
+    },
+  },
+  logoProps: {
+    width: '70px',
+    height: '70px',
+  },
+  mainGridProps: {
+    container: true,
+    item: true,
+    display: 'flex',
+    height: '100%',
+    width: 'auto',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    bgcolor: 'rgba(24, 26, 32, 0.37)',
+    borderRadius: '30px',
+    paddingLeft: '8px',
+  },
+  logoutGridProps: {
+    container: true,
+    item: true,
+    width: 'auto',
+    px: { laptop: 0.5, desktop: 1.5, desktopMedium: 2 },
+  },
+  // Add these new styles for the EditPromptPopout
+  promptButton: {
+    minWidth: '120px',
+    height: '40px',
+    padding: '8px 16px',
+    borderRadius: '30px',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    fontFamily: 'Satoshi',
+    fontWeight: '500',
+    fontSize: '16px',
+    lineHeight: '24px',
+    letterSpacing: '0.15px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '8px',
+    transition: 'all 0.2s ease-in-out',
+  },
+};
+
+export default styles;

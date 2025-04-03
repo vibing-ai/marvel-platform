@@ -11,8 +11,28 @@ const toolsState = {
 const communicator = {
   prompt: null,
   response: null,
+  sessionId: null,
+  editorState: {
+    /*
+      {
+        "content": string
+        "timestamp": timestamp,
+        "type": "initial" | "auto-save" | "manual-save" | "restore"
+      }
+    */
+    currentState: {
+      content: null,
+      timestamp: null,
+      type: null,
+    },
+    editHistory: [], // Contains all changes including current
+    undoStack: [],
+    redoStack: [],
+  },
   communicatorLoading: false,
   formOpen: true,
+  popoutOpen: false,
+  alignMenuOpen: false,
 };
 
 const initialState = {
@@ -38,8 +58,56 @@ const tools = createSlice({
     setResponse: (state, action) => {
       state.response = action.payload;
     },
+    setSessionId: (state, action) => {
+      state.sessionId = action.payload;
+    },
+    setTopic: (state, action) => {
+      state.topic = action.payload;
+    },
+    setCurrentState: (state, action) => {
+      state.editorState.currentState = action.payload;
+    },
+    addStateToEditHistory: (state, action) => {
+      if (!state.editorState.currentState.content) {
+        state.editorState.currentState = action.payload;
+        state.editorState.editHistory = [action.payload];
+        return;
+      }
+
+      if (action.payload.content === state.editorState.currentState.content) {
+        return;
+      }
+
+      state.editorState.redoStack = [];
+      state.editorState.undoStack.push(state.editorState.currentState);
+      state.editorState.currentState = action.payload;
+
+      // Update editHistory with all states
+      state.editorState.editHistory = [
+        ...state.editorState.undoStack,
+        state.editorState.currentState,
+      ].slice(-15);
+    },
+    undo: (state) => {
+      if (state.editorState.undoStack.length > 0) {
+        state.editorState.redoStack.push(state.editorState.currentState);
+        state.editorState.currentState = state.editorState.undoStack.pop();
+      }
+    },
+    redo: (state) => {
+      if (state.editorState.redoStack.length > 0) {
+        state.editorState.undoStack.push(state.editorState.currentState);
+        state.editorState.currentState = state.editorState.redoStack.pop();
+      }
+    },
     setError: (state, action) => {
       state.error = action.payload;
+    },
+    setAlignMenuOpen: (state, action) => {
+      state.alignMenuOpen = action.payload;
+    },
+    setPopoutOpen: (state, action) => {
+      state.popoutOpen = action.payload;
     },
   },
   extraReducers: (builder) => {

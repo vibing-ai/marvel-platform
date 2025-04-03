@@ -31,7 +31,7 @@ exports.signUpUser = https.onCall(async (data, context) => {
     id: uid,
     email,
     fullName,
-    needsBoarding: true,
+    needsBoarding: false,
   };
 
   await userRef.set(userDoc);

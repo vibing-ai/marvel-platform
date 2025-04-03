@@ -1,6 +1,8 @@
-import { Fade, Grid, Typography } from '@mui/material';
+import { Fade, Grid } from '@mui/material';
 
 import { useSelector } from 'react-redux';
+
+import DocumentEditor from '../../components/DocumentEditor/DocumentEditor';
 
 import styles from './styles';
 
@@ -12,23 +14,12 @@ import styles from './styles';
  * for styling and animations.
  */
 const FlashCardList = () => {
-  const { response } = useSelector((state) => state.tools);
-
-  const renderQuestion = (concept, definition, cardNo) => {
-    return (
-      <Grid key={`flashCard-${cardNo}`} {...styles.questionGridProps}>
-        <Typography {...styles.questionTitleProps}>{concept}</Typography>
-        <Typography {...styles.choiceProps}>{definition}</Typography>
-      </Grid>
-    );
-  };
+  const { content: markdownContent } = useSelector((state) => state.tools.editorState.currentState);
 
   const renderCards = () => {
     return (
       <Grid {...styles.questionsGridProps}>
-        {response?.map((item, i) =>
-          renderQuestion(item?.concept, item?.definition, i + 1)
-        )}
+        <DocumentEditor markdownContent={markdownContent} />
       </Grid>
     );
   };

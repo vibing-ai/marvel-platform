@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 import { Help } from '@mui/icons-material';
 import { Grid, Tooltip, Typography, useTheme } from '@mui/material';
@@ -13,6 +13,7 @@ import PrimaryDatePickerInput from '@/components/PrimaryDatePickerInput';
 import PrimaryFileUpload from '@/components/PrimaryFileUpload';
 import PrimarySelectorInput from '@/components/PrimarySelectorInput';
 import PrimaryTextFieldInput from '@/components/PrimaryTextFieldInput';
+import PrimaryTextAreaInput from '@/components/PrimaryTextAreaInput';
 
 import styles from './styles';
 
@@ -21,22 +22,44 @@ import { AuthContext } from '@/libs/providers/GlobalProvider';
 import { firestore } from '@/libs/redux/store';
 
 import { fetchToolHistory, actions as toolActions } from '@/tools/data';
+import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
 import { INPUT_TYPES } from '@/tools/libs/constants/inputs';
 import submitPrompt from '@/tools/libs/services/submitPrompt';
 import evaluateCondition from '@/tools/libs/utils/evaluateCondition';
+import { convertResponseToMarkdown } from '@/tools/libs/utils/markdownConverter';
+import { usePlateEditor } from '@udecode/plate/react';
+import { MarkdownPlugin } from '@udecode/plate-markdown';
+import { syncHistoryEntry } from '@/tools/data/thunks/editHistory';
 
-const { setCommunicatorLoading, setFormOpen, setResponse } = toolActions;
+const {
+  setCommunicatorLoading,
+  setFormOpen,
+  setResponse,
+  setSessionId,
+  setTopic,
+  setCurrentState,
+} = toolActions;
 
 const ToolRequestForm = (props) => {
-  const { id, inputs } = props;
+  const { id, inputs, isPopout, savedInputs } = props;
   const theme = useTheme();
   const dispatch = useDispatch();
   const { handleOpenSnackBar } = useContext(AuthContext);
   const { communicatorLoading } = useSelector((state) => state.tools);
   const { data: userData } = useSelector((state) => state.user);
 
-  // Extract default values from inputs
+  // Extract default values from savedInputs or input defaults
   const defaultValues = inputs.reduce((acc, input) => {
+    // Check if we have a saved input value in savedInputs
+    if (savedInputs && Array.isArray(savedInputs)) {
+      const savedInput = savedInputs.find(item => item.name === input.name);
+      if (savedInput) {
+        acc[input.name] = savedInput.value;
+        return acc;
+      }
+    }
+    
+    // Otherwise use default values from the input definition
     if (input.defaultValue !== undefined) {
       acc[input.name] = input.defaultValue;
     }
@@ -48,26 +71,24 @@ const ToolRequestForm = (props) => {
   });
   const watchedValues = useWatch({ control });
 
+  const markdownEditor = usePlateEditor({
+    plugins: [MarkdownPlugin],
+  });
+
   const handleSubmitMultiForm = async (values) => {
     try {
       // eslint-disable-next-line no-console
       console.log('Form submission started with values:', values);
       dispatch(setResponse(null));
+      
+      // Only reset topic if not in popout mode
+      if (!isPopout) {
+        dispatch(setTopic(null));
+      }
+      
       dispatch(setCommunicatorLoading(true));
 
-      let updateData = Object.entries(values).map(([name, originalValue]) => {
-        // Convert numeric strings to integers using Number.isNaN instead of isNaN
-        let value = originalValue;
-        if (
-          typeof originalValue === 'string' &&
-          !Number.isNaN(Number(originalValue.trim())) &&
-          originalValue.trim() !== ''
-        ) {
-          value = parseInt(originalValue.trim(), 10);
-        }
-        return { name, value };
-      });
-
+      // Handle file uploads first using original values
       const fileUrls = [];
       const fileInputs = inputs.filter(
         (input) =>
@@ -77,18 +98,6 @@ const ToolRequestForm = (props) => {
 
       // Replace for...of loop with Promise.all and map
       const fileUploadPromises = fileInputs.map(async (input) => {
-        // omit previous values
-        updateData = updateData.filter(
-          (item) =>
-            item.name !== `${input.name}_file` &&
-            item.name !== `${input.name}_url` &&
-            item.name !== input.name
-        );
-        updateData.push({
-          name: `${input.name}_type`,
-          value: values[`${input.name}`].toLowerCase(),
-        });
-
         const fileKey =
           input.type === INPUT_TYPES.FILE_TYPE_SELECTOR
             ? `${input.name}_file`
@@ -114,7 +123,60 @@ const ToolRequestForm = (props) => {
 
       await Promise.all(fileUploadPromises);
 
-      // Remove any existing file inputs from updateData to avoid duplicates
+      // Create a base object with all input names initialized to empty string
+      const baseInputs = inputs.reduce((acc, input) => {
+        // Skip file type inputs as they're handled separately
+        if (input.type !== INPUT_TYPES.FILE && input.type !== INPUT_TYPES.FILE_TYPE_SELECTOR) {
+          acc[input.name] = '';
+        }
+        return acc;
+      }, {});
+
+      // Merge the form values with base inputs to ensure all keys exist
+      const mergedValues = { ...baseInputs, ...values };
+
+      // Convert values and create updateData
+      let updateData = Object.entries(mergedValues).map(([name, originalValue]) => {
+        // Skip file-related fields as they're handled separately
+        if (name.endsWith('_file') || name.endsWith('_url')) {
+          return null;
+        }
+
+        // Skip the original file input names for FILE_TYPE_SELECTOR
+        const fileInput = fileInputs.find(input => input.name === name);
+        if (fileInput) {
+          return null;
+        }
+
+        // Convert numeric strings to integers using Number.isNaN instead of isNaN
+        let value = originalValue;
+        if (
+          typeof originalValue === 'string' &&
+          !Number.isNaN(Number(originalValue.trim())) &&
+          originalValue.trim() !== ''
+        ) {
+          value = parseInt(originalValue.trim(), 10);
+        }
+        // Ensure value key exists even if it's an empty string
+        return {
+          name,
+          value: value === null || value === undefined ? '' : value
+        };
+      }).filter(Boolean); // Remove null entries
+
+      // Add file type information for FILE_TYPE_SELECTOR
+      fileInputs
+        .filter(input => input.type === INPUT_TYPES.FILE_TYPE_SELECTOR)
+        .forEach(input => {
+          if (values[input.name]) {
+            updateData.push({
+              name: `${input.name}_type`,
+              value: values[input.name].toUpperCase(), // Save in uppercase
+            });
+          }
+        });
+
+      // Combine all data
       const finalData = [...updateData, ...fileUrls];
 
       // eslint-disable-next-line no-console
@@ -122,7 +184,7 @@ const ToolRequestForm = (props) => {
         toolData: { toolId: id, inputs: finalData },
       });
 
-      const response = await submitPrompt(
+      const { response, sessionId, topic } = await submitPrompt(
         {
           tool_data: { tool_id: id, inputs: finalData },
           type: 'tool',
@@ -135,7 +197,17 @@ const ToolRequestForm = (props) => {
         dispatch
       );
 
+      const markdown = convertResponseToMarkdown(response, id);
+
       dispatch(setResponse(response));
+      dispatch(setSessionId(sessionId));
+      dispatch(setTopic(topic));
+      const historyEntry = {
+        content: markdown,
+        timestamp: Date.now(),
+        type: EDIT_HISTORY_TYPES.INITIAL,
+      };
+      dispatch(setCurrentState(historyEntry));
       dispatch(setFormOpen(false));
       dispatch(setCommunicatorLoading(false));
       dispatch(fetchToolHistory({ firestore }));
@@ -152,11 +224,19 @@ const ToolRequestForm = (props) => {
   };
 
   const renderTextInput = (inputProps) => {
-    const { name: inputName, placeholder, tooltip, label } = inputProps;
+    const { 
+      name: inputName, 
+      placeholder, 
+      tooltip, 
+      label, 
+      isRequired = true, 
+      rows = null 
+    } = inputProps;
+  
     const renderLabel = () => (
       <Grid {...styles.textFieldLabelGridProps}>
         <Typography {...styles.labelProps(errors?.[inputName])}>
-          {label}
+          {label}{isRequired && ' *'}
         </Typography>
         {tooltip && (
           <Tooltip placement="top" title={tooltip} sx={{ ml: 1 }}>
@@ -165,32 +245,46 @@ const ToolRequestForm = (props) => {
         )}
       </Grid>
     );
-
+  
     return (
       <Grid key={inputName} {...styles.inputGridProps}>
-        <PrimaryTextFieldInput
-          id={inputName}
-          name={inputName}
-          title={renderLabel()}
-          error={errors?.[inputName]}
-          control={control}
-          placeholder={placeholder}
-          helperText={errors?.[inputName]?.message}
-          validation={{
-            required: 'Field is required',
-          }}
-          ref={register}
-        />
+        {rows && Number.isInteger(rows) && rows > 0 ? (
+          <PrimaryTextAreaInput
+            id={inputName}
+            name={inputName}
+            title={renderLabel()}
+            error={errors?.[inputName]}
+            control={control}
+            placeholder={placeholder}
+            helperText={errors?.[inputName]?.message}
+            validation={isRequired ? { required: 'Field is required' } : {}}
+            rows={rows}
+            ref={register}
+          />
+        ) : (
+          <PrimaryTextFieldInput
+            id={inputName}
+            name={inputName}
+            title={renderLabel()}
+            error={errors?.[inputName]}
+            control={control}
+            placeholder={placeholder}
+            helperText={errors?.[inputName]?.message}
+            validation={isRequired ? { required: 'Field is required' } : {}}
+            ref={register}
+          />
+        )}
       </Grid>
     );
   };
+  
 
   const renderNumberInput = (inputProps) => {
-    const { name: inputName, placeholder, tooltip, label } = inputProps;
+    const { name: inputName, placeholder, tooltip, label, isRequired = true } = inputProps;
     const renderLabel = () => (
       <Grid {...styles.textFieldLabelGridProps}>
         <Typography {...styles.labelProps(errors?.[inputName])}>
-          {label}
+          {label}{isRequired && ' *'}
         </Typography>
         {tooltip && (
           <Tooltip placement="top" title={tooltip} sx={{ ml: 1 }}>
@@ -213,9 +307,11 @@ const ToolRequestForm = (props) => {
           extraInputProps={{
             type: 'number',
           }}
-          validation={{
-            required: 'Field is required',
-          }}
+          validation={
+            isRequired
+              ? { required: 'Field is required' }
+              : {}
+          }
           ref={register}
         />
       </Grid>
@@ -223,12 +319,12 @@ const ToolRequestForm = (props) => {
   };
 
   const renderSelectorInput = (inputProps) => {
-    const { name: inputName, label, placeholder, values } = inputProps;
+    const { name: inputName, label, placeholder, values, isRequired = true } = inputProps;
 
     const renderLabel = () => (
       <Grid {...styles.labelGridProps}>
         <Typography {...styles.labelProps(errors?.[inputName])}>
-          {label}
+          {label}{isRequired && ' *'}
         </Typography>
       </Grid>
     );
@@ -249,16 +345,18 @@ const ToolRequestForm = (props) => {
           helperText={errors?.[inputName]?.message}
           control={control}
           ref={register}
-          validation={{
-            required: 'Please select an option.',
-          }}
+          validation={
+            isRequired
+              ? { required: 'Please select an option.' }
+              : {}
+          }
         />
       </Grid>
     );
   };
 
   const renderFileUpload = (inputProps) => {
-    const { name: inputName, label } = inputProps;
+    const { name: inputName, label, isRequired = true } = inputProps;
 
     return (
       <Grid key={inputName} {...styles.inputGridProps}>
@@ -267,7 +365,7 @@ const ToolRequestForm = (props) => {
           name={inputName}
           multiple
           placeholder="Choose Files to Upload"
-          label={label}
+          label={`${label}${isRequired ? ' *' : ''}`}
           error={errors?.[inputName]}
           helperText={errors?.[inputName]?.message}
           color="purple"
@@ -279,13 +377,74 @@ const ToolRequestForm = (props) => {
           showCheckbox
           displayEmpty
           setValue={setValue}
-          validation={{
-            required: 'Please upload a file.',
-            validate: {
-              lessThanThree: (v) =>
-                parseInt(v?.length, 10) < 10 || 'Should be less than 3 files',
-            },
-          }}
+          validation={
+            isRequired
+              ? {
+                  required: 'Please upload a file.',
+                  validate: {
+                    lessThanThree: (v) =>
+                      parseInt(v?.length, 10) < 10 || 'Should be less than 3 files',
+                  },
+                }
+              : {
+                  validate: {
+                    lessThanThree: (v) =>
+                      !v?.length || parseInt(v?.length, 10) < 10 || 'Should be less than 3 files',
+                  },
+                }
+          }
+        />
+      </Grid>
+    );
+  };
+
+  const renderFileTypeSelectorInput = (inputProps) => {
+    const { name, label, values, isRequired = true } = inputProps;
+
+    return (
+      <Grid key={name} {...styles.inputGridProps}>
+        <FileTypeSelectorInput
+          key={name}
+          name={name}
+          label={`${label}${isRequired ? ' *' : ''}`}
+          fileTypes={values}
+          control={control}
+          setValue={setValue}
+          getValues={() => watchedValues}
+          ref={register}
+          validation={
+            isRequired
+              ? { required: 'Please select a file type.' }
+              : {}
+          }
+        />
+      </Grid>
+    );
+  };
+
+  const renderDateInput = (inputProps) => {
+    const { name: inputName, label, placeholder, isRequired = true } = inputProps;
+
+    return (
+      <Grid
+        key={inputName}
+        {...styles.inputGridProps}
+        style={{ paddingTop: '0px', marginBottom: '20px' }}
+      >
+        <PrimaryDatePickerInput
+          id={inputName}
+          name={inputName}
+          title={`${label}${isRequired ? ' *' : ''}`}
+          placeholder={placeholder}
+          error={errors?.[inputName]}
+          helperText={errors?.[inputName]?.message}
+          control={control}
+          setValue={setValue}
+          validation={
+            isRequired
+              ? { required: 'Please select a date.' }
+              : {}
+          }
         />
       </Grid>
     );
@@ -306,67 +465,6 @@ const ToolRequestForm = (props) => {
       </Grid>
     );
   };
-
-  const renderFileTypeSelectorInput = (inputProps) => {
-    const { name, label, values } = inputProps;
-
-    return (
-      <Grid key={name} {...styles.inputGridProps}>
-        <FileTypeSelectorInput
-          key={name}
-          name={name}
-          label={label}
-          fileTypes={values}
-          control={control}
-          setValue={setValue}
-          getValues={() => watchedValues}
-          ref={register}
-        />
-      </Grid>
-    );
-  };
-
-  const renderDateInput = (inputProps) => {
-    const { name: inputName, label, placeholder } = inputProps;
-
-    return (
-      <Grid
-        key={inputName}
-        {...styles.inputGridProps}
-        style={{ paddingTop: '0px', marginBottom: '20px' }}
-      >
-        <PrimaryDatePickerInput
-          id={inputName}
-          name={inputName}
-          title={label}
-          placeholder={placeholder}
-          error={errors?.[inputName]}
-          helperText={errors?.[inputName]?.message}
-          control={control}
-          setValue={setValue}
-          validation={{
-            required: 'Please select a date.',
-          }}
-        />
-      </Grid>
-    );
-  };
-
-  const renderActionButtons = () => (
-    <Grid mt={4} {...styles.actionButtonGridProps}>
-      <GradientOutlinedButton
-        id="submitButton"
-        bgcolor={theme.palette.Common.White['100p']}
-        text="Generate"
-        textColor={theme.palette.Common.White['100p']}
-        loading={communicatorLoading}
-        onHoverTextColor={theme.palette.Background.purple}
-        type="submit"
-        inverted
-        {...styles.submitButtonProps}
-      />
-    </Grid>
-  );
 
   const renderInput = (inputProps) => {
     const { condition, type } = inputProps;
@@ -395,6 +493,38 @@ const ToolRequestForm = (props) => {
     }
   };
 
+  const renderGenerateButton = () => (
+    <Grid mt={4} {...styles.actionButtonGridProps}>
+      <GradientOutlinedButton
+        id="submitButton"
+        bgcolor={theme.palette.Common.White['100p']}
+        text="Generate"
+        textColor={theme.palette.Common.White['100p']}
+        loading={communicatorLoading}
+        onHoverTextColor={theme.palette.Background.purple}
+        type="submit"
+        inverted
+        {...styles.submitButtonProps}
+      />
+    </Grid>
+  );
+
+  const renderRegenerateButton = () => (
+    <Grid {...styles.regenerateButtonGridProps}>
+      <GradientOutlinedButton
+        id="submitButton"
+        bgcolor={theme.palette.Common.White['100p']}
+        text="Regenerate"
+        textColor={theme.palette.Common.White['100p']}
+        loading={communicatorLoading}
+        onHoverTextColor={theme.palette.Background.purple}
+        type="submit"
+        inverted
+        {...styles.submitButtonProps}
+      />
+    </Grid>
+  );
+
   return (
     <FormContainer
       FormProps={{
@@ -406,7 +536,7 @@ const ToolRequestForm = (props) => {
         <Grid {...styles.mainContentGridProps}>
           {inputs?.map((input) => renderInput(input))}
         </Grid>
-        {renderActionButtons()}
+        {isPopout ? renderRegenerateButton() : renderGenerateButton()}
       </Grid>
     </FormContainer>
   );

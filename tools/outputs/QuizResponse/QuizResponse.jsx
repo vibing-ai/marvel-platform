@@ -1,70 +1,36 @@
-import { Fade, Grid, Typography } from '@mui/material';
+import { Fade, Grid } from '@mui/material';
 
 import { useSelector } from 'react-redux';
+
+import DocumentEditor from '../../components/DocumentEditor/DocumentEditor';
 
 import styles from './styles';
 
 /**
- * QuizResponse component renders a list of quiz questions and their choices.
- * It fetches the quiz response data from the Redux store and displays each
- * question with its associated choices in a styled grid layout.
- * The component uses Material-UI's Grid, Typography, and Fade components
- * for styling and animations. It includes optional rendering of a title.
+ * QuizResponse component renders the response from the quiz tool.
+ * It uses the response from the Redux store to display content in a styled grid layout.
+ * The component leverages Material-UI's Grid and Fade components for styling and animations.
+ *
+ * @returns {JSX.Element} The QuizResponse component.
  */
 const QuizResponse = () => {
-  const { response } = useSelector((state) => state.tools);
 
-  const hasTitle = false;
+  // Access the current markdown content from the Redux store
+  const { content: markdownContent } = useSelector(
+    (state) => state.tools.editorState.currentState
+  );
 
-  const renderTitle = () => {
-    return (
-      <Grid {...styles.titleGridProps}>
-        <Typography {...styles.titleProps}>No Title</Typography>
-      </Grid>
-    );
-  };
-
-  const renderQuestion = (question, questionNo) => {
-    const { choices, question: questionTitle } = question;
-
-    const questionChoices = Array.isArray(choices)
-      ? choices
-      : Object.values(choices || {});
-
-    return (
-      <Grid key={`question-${questionNo}`} {...styles.questionGridProps}>
-        <Typography {...styles.questionTitleProps}>
-          {questionNo}. {questionTitle}
-        </Typography>
-        <Grid>
-          {questionChoices?.map((choice, index) => (
-            <Typography
-              key={`${questionNo}-choice-${index}`}
-              {...styles.choiceProps}
-            >
-              {choice?.key}. {choice?.value}
-            </Typography>
-          ))}
-        </Grid>
-      </Grid>
-    );
-  };
-
-  const renderQuestions = () => {
-    return (
-      <Grid {...styles.questionsGridProps}>
-        {response?.map((question, i) => renderQuestion(question, i + 1))}
-      </Grid>
-    );
-  };
-
+  // Render the component with fade-in animation
   return (
     <Fade in>
       <Grid {...styles.mainGridProps}>
-        {hasTitle && renderTitle()}
-        {renderQuestions()}
+        <Grid {...styles.questionsGridProps}>
+          {/* DocumentEditor component displays the markdown content */}
+          <DocumentEditor markdownContent={markdownContent} />
+        </Grid>
       </Grid>
     </Fade>
   );
 };
+
 export default QuizResponse;

@@ -10,13 +10,15 @@ import { firestore } from '@/libs/redux/store'; // Import the existing Firestore
  */
 const saveResponseToFirestore = async (sessionData) => {
   try {
-    await addDoc(collection(firestore, 'toolSessions'), {
+    const docRef = await addDoc(collection(firestore, 'toolSessions'), {
       ...sessionData,
       createdAt: Timestamp.fromMillis(Date.now()),
     });
+    return docRef.id;  // Return the document ID
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error saving tool session to Firestore:', error);
+    return null;
   }
 };
 
@@ -30,7 +32,7 @@ const saveResponseToFirestore = async (sessionData) => {
  * @param {string} payload.user.id - The ID of the user
  * @return {Promise<object>} The response from the backend
  */
-const submitPrompt = async (payload) => {
+const submitPrompt = async (payload, dispatch) => {
   try {
     const url = `${process.env.NEXT_PUBLIC_MARVEL_ENDPOINT}submit-tool`;
 
@@ -40,6 +42,8 @@ const submitPrompt = async (payload) => {
         'API-Key': 'dev',
       },
     });
+
+    console.log('Response:', response.data);
 
     // Safely extract the topic from inputs
     const topicInput = payload.tool_data.inputs.find(
@@ -51,14 +55,26 @@ const submitPrompt = async (payload) => {
     const sessionData = {
       response: response.data.data,
       toolId: payload.tool_data.tool_id, // Extract toolId from tool_data
+      currentState: {
+        content: null,
+        timestamp: null,
+        type: null,
+      },
+      editHistory: [],
       topic, // Use the safely extracted topic
       userId: payload.user.id, // Extract userId from user
+      savedInputs: payload.tool_data.inputs, // Store all input data in the same document
+      lastEditedAt: Timestamp.fromMillis(Date.now()),
     };
 
-    // non-blocking: Save the response to Firestore
-    saveResponseToFirestore(sessionData);
+    // Save the response to Firestore and get the session ID
+    const sessionId = await saveResponseToFirestore(sessionData);
 
-    return response.data?.data;
+    return {
+      response: response.data?.data,
+      sessionId,
+      topic,
+    };
   } catch (err) {
     const { response } = err;
 

@@ -61,6 +61,9 @@ const styles = {
   actionButtonGridProps: {
     alignSelf: 'end',
   },
+  regenerateButtonGridProps: {
+    alignSelf: 'middle',
+  },
   submitButtonProps: {
     color: 'purple',
     extraProps: {

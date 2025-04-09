@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 import { Help } from '@mui/icons-material';
 import { Grid, Tooltip, Typography, useTheme } from '@mui/material';
@@ -22,22 +22,44 @@ import { AuthContext } from '@/libs/providers/GlobalProvider';
 import { firestore } from '@/libs/redux/store';
 
 import { fetchToolHistory, actions as toolActions } from '@/tools/data';
+import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
 import { INPUT_TYPES } from '@/tools/libs/constants/inputs';
 import submitPrompt from '@/tools/libs/services/submitPrompt';
 import evaluateCondition from '@/tools/libs/utils/evaluateCondition';
+import { convertResponseToMarkdown } from '@/tools/libs/utils/markdownConverter';
+import { usePlateEditor } from '@udecode/plate/react';
+import { MarkdownPlugin } from '@udecode/plate-markdown';
+import { syncHistoryEntry } from '@/tools/data/thunks/editHistory';
 
-const { setCommunicatorLoading, setFormOpen, setResponse } = toolActions;
+const {
+  setCommunicatorLoading,
+  setFormOpen,
+  setResponse,
+  setSessionId,
+  setTopic,
+  setCurrentState,
+} = toolActions;
 
 const ToolRequestForm = (props) => {
-  const { id, inputs } = props;
+  const { id, inputs, isPopout, savedInputs } = props;
   const theme = useTheme();
   const dispatch = useDispatch();
   const { handleOpenSnackBar } = useContext(AuthContext);
   const { communicatorLoading } = useSelector((state) => state.tools);
   const { data: userData } = useSelector((state) => state.user);
 
-  // Extract default values from inputs
+  // Extract default values from savedInputs or input defaults
   const defaultValues = inputs.reduce((acc, input) => {
+    // Check if we have a saved input value in savedInputs
+    if (savedInputs && Array.isArray(savedInputs)) {
+      const savedInput = savedInputs.find(item => item.name === input.name);
+      if (savedInput) {
+        acc[input.name] = savedInput.value;
+        return acc;
+      }
+    }
+    
+    // Otherwise use default values from the input definition
     if (input.defaultValue !== undefined) {
       acc[input.name] = input.defaultValue;
     }
@@ -49,11 +71,21 @@ const ToolRequestForm = (props) => {
   });
   const watchedValues = useWatch({ control });
 
+  const markdownEditor = usePlateEditor({
+    plugins: [MarkdownPlugin],
+  });
+
   const handleSubmitMultiForm = async (values) => {
     try {
       // eslint-disable-next-line no-console
       console.log('Form submission started with values:', values);
       dispatch(setResponse(null));
+      
+      // Only reset topic if not in popout mode
+      if (!isPopout) {
+        dispatch(setTopic(null));
+      }
+      
       dispatch(setCommunicatorLoading(true));
 
       // Handle file uploads first using original values
@@ -126,9 +158,9 @@ const ToolRequestForm = (props) => {
           value = parseInt(originalValue.trim(), 10);
         }
         // Ensure value key exists even if it's an empty string
-        return { 
-          name, 
-          value: value === null || value === undefined ? '' : value 
+        return {
+          name,
+          value: value === null || value === undefined ? '' : value
         };
       }).filter(Boolean); // Remove null entries
 
@@ -139,7 +171,7 @@ const ToolRequestForm = (props) => {
           if (values[input.name]) {
             updateData.push({
               name: `${input.name}_type`,
-              value: values[input.name].toLowerCase(),
+              value: values[input.name].toUpperCase(), // Save in uppercase
             });
           }
         });
@@ -152,7 +184,7 @@ const ToolRequestForm = (props) => {
         toolData: { toolId: id, inputs: finalData },
       });
 
-      const response = await submitPrompt(
+      const { response, sessionId, topic } = await submitPrompt(
         {
           tool_data: { tool_id: id, inputs: finalData },
           type: 'tool',
@@ -165,7 +197,17 @@ const ToolRequestForm = (props) => {
         dispatch
       );
 
+      const markdown = convertResponseToMarkdown(response, id);
+
       dispatch(setResponse(response));
+      dispatch(setSessionId(sessionId));
+      dispatch(setTopic(topic));
+      const historyEntry = {
+        content: markdown,
+        timestamp: Date.now(),
+        type: EDIT_HISTORY_TYPES.INITIAL,
+      };
+      dispatch(setCurrentState(historyEntry));
       dispatch(setFormOpen(false));
       dispatch(setCommunicatorLoading(false));
       dispatch(fetchToolHistory({ firestore }));
@@ -451,12 +493,28 @@ const ToolRequestForm = (props) => {
     }
   };
 
-  const renderActionButtons = () => (
+  const renderGenerateButton = () => (
     <Grid mt={4} {...styles.actionButtonGridProps}>
       <GradientOutlinedButton
         id="submitButton"
         bgcolor={theme.palette.Common.White['100p']}
         text="Generate"
+        textColor={theme.palette.Common.White['100p']}
+        loading={communicatorLoading}
+        onHoverTextColor={theme.palette.Background.purple}
+        type="submit"
+        inverted
+        {...styles.submitButtonProps}
+      />
+    </Grid>
+  );
+
+  const renderRegenerateButton = () => (
+    <Grid {...styles.regenerateButtonGridProps}>
+      <GradientOutlinedButton
+        id="submitButton"
+        bgcolor={theme.palette.Common.White['100p']}
+        text="Regenerate"
         textColor={theme.palette.Common.White['100p']}
         loading={communicatorLoading}
         onHoverTextColor={theme.palette.Background.purple}
@@ -478,7 +536,7 @@ const ToolRequestForm = (props) => {
         <Grid {...styles.mainContentGridProps}>
           {inputs?.map((input) => renderInput(input))}
         </Grid>
-        {renderActionButtons()}
+        {isPopout ? renderRegenerateButton() : renderGenerateButton()}
       </Grid>
     </FormContainer>
   );

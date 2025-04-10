@@ -1,4 +1,5 @@
 import HistoryIcon from '@mui/icons-material/History';
+import SchoolIcon from '@mui/icons-material/School'; 
 import { Grid, MenuItem } from '@mui/material';
 import { useRouter } from 'next/router';
 
@@ -29,6 +30,12 @@ const PAGES = [
     link: ROUTES.HISTORY,
     icon: <HistoryIcon />,
     id: 'page_4',
+  },
+  {
+    name: 'Rubric',
+    link: ROUTES.RUBRIC,
+    icon: <SchoolIcon />,
+    id: 'page_5',
   },
 ];
 

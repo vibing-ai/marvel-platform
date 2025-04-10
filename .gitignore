@@ -140,3 +140,9 @@ dist
 **/node_modules/
 **/build/
 **/docs
+
+.firebaserc
+.env
+firebase.json
+
+**firebase-adminsdk**

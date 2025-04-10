@@ -16,8 +16,7 @@
       "port": 5001
     },
     "firestore": {
-      "port": 8080,
-      "rules": "firestore.rules"
+      "port": 8080
     },
     "database": {
       "port": 9000

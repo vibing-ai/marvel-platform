@@ -1,5 +1,4 @@
 const admin = require('firebase-admin');
-const { onCall, HttpsError } = require('firebase-functions/v2/https');
 const { default: axios } = require('axios');
 const { logger } = require('firebase-functions/v1');
 const { Timestamp } = require('firebase-admin/firestore');
@@ -56,6 +55,7 @@ const marvelCommunicator = async (payload) => {
     DEBUG && logger.log('MARVEL_ENDPOINT', MARVEL_ENDPOINT);
     DEBUG && logger.log('marvelPayload', marvelPayload);
 
+    console.log(`MARVEL_ENDPOINT: ${MARVEL_ENDPOINT}`)
     const resp = await axios.post(
       `${MARVEL_ENDPOINT}${AI_ENDPOINTS[type]}`,
       marvelPayload,
@@ -73,7 +73,8 @@ const marvelCommunicator = async (payload) => {
     } = error;
     const { message } = data;
     DEBUG && logger.error('marvelCommunicator error:', data);
-    throw new HttpsError('internal', message);
+
+    return { status: 'error', data: message};
   }
 };
 
@@ -88,11 +89,11 @@ const marvelCommunicator = async (payload) => {
  *
  * @return {object} The response object containing the status and data.
  */
-const chat = onCall(async (props) => {
+const chat = async (props) => {
   try {
-    DEBUG && logger.log('Chat started, data:', props.data);
+    DEBUG && logger.log('Chat started, data:', props);
 
-    const { message, id } = props.data;
+    const { message, id } = props;
 
     DEBUG &&
       logger.log(
@@ -109,7 +110,8 @@ const chat = onCall(async (props) => {
 
     if (!chatSession.exists) {
       logger.log('Chat session not found: ', id);
-      throw new HttpsError('not-found', 'Chat session not found');
+
+      return { status: 'error', data: 'Chat session not found'};
     }
 
     const { user, type, messages } = chatSession.data();
@@ -168,9 +170,10 @@ const chat = onCall(async (props) => {
     return { status: 'success' };
   } catch (error) {
     DEBUG && logger.log('Chat error:', error);
-    throw new HttpsError('internal', error.message);
+
+    return { status: 'error', data: error.message};
   }
-});
+};
 
 /**
  * This creates a chat session for a user.
@@ -187,23 +190,19 @@ const chat = onCall(async (props) => {
  * @return {Promise<Object>} - A promise that resolves to an object containing the status and data of the chat sessions.
  * @throws {HttpsError} Throws an error if there is an internal error.
  */
-const createChatSession = onCall(async (props) => {
+const createChatSession = async (props) => {
   try {
-    DEBUG && logger.log('Communicator started, data:', props.data);
+    DEBUG && logger.log('Communicator started, data:', props);
 
-    const { user, message, type, systemMessage } = props.data;
-
-    // Ensure user id in request is same as user.id
-    if (props.auth.uid !== user.id) {
-      throw new HttpsError(
-        'permission-denied',
-        'User ID does not match the authenticated user'
-      );
-    }
+    const { user, message, type, systemMessage } = props;
 
     if (!user || !message || !type) {
       logger.log('Missing required fields', props.data);
-      throw new HttpsError('invalid-argument', 'Missing required fields');
+
+      return {
+        status: 'error',
+        data: 'Missing required fields',
+      };
     }
 
     /**
@@ -299,9 +298,12 @@ const createChatSession = onCall(async (props) => {
     };
   } catch (error) {
     logger.error(error);
-    throw new HttpsError('internal', error.message);
+    return {
+      status: 'error',
+      data: error.message,
+    };
   }
-});
+};
 
 module.exports = {
   chat,

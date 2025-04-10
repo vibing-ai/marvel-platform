@@ -1,18 +1,21 @@
-import { httpsCallable } from 'firebase/functions';
-
 import {
   setError,
   setStreaming,
   setTyping,
 } from '@/libs/redux/slices/chatSlice';
-import { functions } from '@/libs/redux/store';
+import axios from "axios";
+import functions_urls from '@/libs/constants/google_functions_url_selector';
 
 const sendMessage = async (payload, dispatch) => {
   try {
-    const sendCommunication = httpsCallable(functions, 'chat');
-    const response = await sendCommunication(payload);
-
-    return response.data;
+    const response = await axios.post(functions_urls().chat, payload);
+    
+    if(response.status == 200 && response.data.status !== 'error'){
+      return response.data;
+    }
+    else{
+      throw new Error(response.data.data);
+    }
   } catch (err) {
     dispatch(setError('Error! Couldn\u0027t send message'));
     dispatch(setStreaming(false));

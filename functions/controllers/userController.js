@@ -1,5 +1,5 @@
 const admin = require('firebase-admin');
-const { https } = require('firebase-functions/v1');
+
 
 /**
  * Creates a new user document in the Firestore collection "users" with the provided data.
@@ -16,6 +16,36 @@ const { https } = require('firebase-functions/v1');
  * @returns {string} return.message - A message describing the result of the operation.
  * @throws {https.HttpsError} If any of the required fields (email, fullName, uid) are missing in the data object.
  */
+
+
+exports.signUpUser = async (data) => {
+  try {
+    const { email, fullName, uid } = data;
+
+    if (!email || !fullName || !uid) {
+      return { status: 'error', message: 'Please provide all required fields' };
+    }
+
+    const userRef = admin.firestore().collection('users').doc(uid);
+    const userDoc = {
+      id: uid,
+      email,
+      fullName,
+      needsBoarding: true,
+    };
+
+    await userRef.set(userDoc);
+    return { status: 'success', message: 'User document created successfully' };
+  }
+  catch(Error) 
+  {
+    console.log(Error);
+    return { status: 'error', message: 'Internal server error' };
+  }
+};
+
+
+/*
 exports.signUpUser = https.onCall(async (data, context) => {
   const { email, fullName, uid } = data;
 
@@ -37,3 +67,4 @@ exports.signUpUser = https.onCall(async (data, context) => {
   await userRef.set(userDoc);
   return { status: 'success', message: 'User document created successfully' };
 });
+*/

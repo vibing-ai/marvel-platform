@@ -1,7 +1,12 @@
 import { useContext, useState } from 'react';
 
 import { Grid, useTheme } from '@mui/material';
+import GoogleIcon from '@mui/icons-material/Google';
 import { FormContainer } from 'react-hook-form-mui';
+import { useDispatch } from 'react-redux';
+
+import { signInWithPopup, signOut } from 'firebase/auth';
+import { useRouter } from 'next/router';
 
 import AuthTextField from '@/components/AuthTextField';
 
@@ -13,11 +18,15 @@ import sharedStyles from '@/styles/shared/sharedStyles';
 
 import { AUTH_STEPS, VALIDATION_STATES } from '@/libs/constants/auth';
 import ALERT_COLORS from '@/libs/constants/notification';
+import ROUTES from '@/libs/constants/routes';
 import useWatchFields from '@/libs/hooks/useWatchFields';
 import { AuthContext } from '@/libs/providers/GlobalProvider';
+import { auth, googleAuthProvider, firestore } from '@/libs/redux/store';
+import fetchUserData from '@/libs/redux/thunks/user';
 import AUTH_REGEX from '@/libs/regex/auth';
-import { signUp } from '@/libs/services/user/signUp';
+import { signUp, signUpWithGoogle } from '@/libs/services/user/signUp';
 import { validatePassword } from '@/libs/utils/AuthUtils';
+
 
 const DEFAULT_FORM_VALUES = {
   email: '',
@@ -70,6 +79,8 @@ const SignUpForm = (props) => {
   const [loading, setLoading] = useState(false);
 
   const { handleOpenSnackBar } = useContext(AuthContext);
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   const { register, control, fieldStates } = useWatchFields(WATCH_FIELDS);
   const { email, fullName, password, reEnterPassword } = fieldStates;
@@ -148,10 +159,40 @@ const SignUpForm = (props) => {
         setEmail(email.value);
         handleSwitch();
       } catch (err) {
-        handleOpenSnackBar(ALERT_COLORS.ERROR, err.message);
+        handleOpenSnackBar(ALERT_COLORS.ERROR, err.message || 'Unable to sign up');
       } finally {
         setLoading(false);
       }
+    }
+  };
+
+  const handleGoogleSignUp = async () => {
+    setLoading(true);
+    try {
+      const userCred = await signInWithPopup(auth, googleAuthProvider);
+      const userData = await dispatch(
+        fetchUserData({ firestore, id: userCred.user.uid })
+      ).unwrap();
+
+      // If user doesn't exist, create them
+      if (!userData) {
+        await signUpWithGoogle(userCred.user);
+        // Fetch the newly created user data
+        handleOpenSnackBar(
+          ALERT_COLORS.SUCCESS,
+          'Account created successfully with Google'
+        );
+      }
+
+      router.replace(ROUTES.HOME); //if onboarding is required, useRedirect.jsx will redirect to onboarding
+    } catch (err) {
+      await signOut(auth); //in case error occurs after successful sign in with Popup, user must be signed out
+      handleOpenSnackBar(
+        ALERT_COLORS.ERROR,
+        AUTH_ERROR_MESSAGES[code] || 'Unable to sign up with Google'
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -261,6 +302,20 @@ const SignUpForm = (props) => {
     );
   };
 
+  const renderGoogleButton = () => {
+    return (
+        <GradientOutlinedButton
+          bgcolor={theme.palette.Dark_Colors.Dark[1]}
+          loading={loading}
+          textColor={theme.palette.Common.White['100p']}
+          clickHandler={handleGoogleSignUp}
+          text="Sign up with Google"
+          startIcon={<GoogleIcon />}
+          {...styles.submitButtonProps}
+        />
+    );
+  };
+
   return (
     <FormContainer defaultValues={DEFAULT_FORM_VALUES} onSuccess={handleSubmit}>
       <Grid {...sharedStyles.formGridProps}>
@@ -268,6 +323,7 @@ const SignUpForm = (props) => {
         {renderFullNameInput()}
         {renderPasswordAndConfirmPasswordInputs()}
         {renderSubmitButton()}
+        {renderGoogleButton()}
       </Grid>
     </FormContainer>
   );

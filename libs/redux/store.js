@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { auth, firestore, functions } from '../firebase/firebaseSetup';
+import { auth, googleAuthProvider, firestore, functions } from '../firebase/firebaseSetup';
 
 import authReducer from './slices/authSlice';
 import chatReducer from './slices/chatSlice';
@@ -26,5 +26,5 @@ const store = configureStore({
     }),
 });
 
-export { auth, firestore, functions };
+export { auth, googleAuthProvider, firestore, functions };
 export default store;

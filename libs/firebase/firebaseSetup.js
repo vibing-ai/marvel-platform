@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { initializeApp } from 'firebase/app';
-import { connectAuthEmulator, getAuth } from 'firebase/auth';
+import { connectAuthEmulator, getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
 
@@ -11,6 +11,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const firestore = getFirestore(app);
 const functions = getFunctions(app);
+const googleAuthProvider = new GoogleAuthProvider();
 
 const EMULATOR_HOST = 'localhost';
 const EMULATOR_PORTS = {
@@ -57,4 +58,4 @@ async function conditionallyConnectEmulators() {
 
 conditionallyConnectEmulators();
 
-export { auth, firestore, functions };
+export { auth, firestore, functions, googleAuthProvider };

@@ -1,7 +1,9 @@
 import { useContext, useState } from 'react';
 
 import { Grid, Link, useTheme } from '@mui/material';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import GoogleIcon from '@mui/icons-material/Google';
+
+import { signInWithPopup, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { useRouter } from 'next/router';
 
 import { FormContainer } from 'react-hook-form-mui';
@@ -20,8 +22,10 @@ import ROUTES from '@/libs/constants/routes';
 
 import { AuthContext } from '@/libs/providers/GlobalProvider';
 import { setLoading } from '@/libs/redux/slices/authSlice';
-import { auth, firestore } from '@/libs/redux/store';
+import { auth, googleAuthProvider, firestore } from '@/libs/redux/store';
 import fetchUserData from '@/libs/redux/thunks/user';
+
+import { signUpWithGoogle } from '@/libs/services/user/signUp';
 
 import AUTH_REGEX from '@/libs/regex/auth';
 
@@ -83,7 +87,7 @@ const SignInForm = (props) => {
       // Check if password is entered
       if (!password) {
         setError({ password: { message: 'Password is required' } });
-        return;
+         return;
       }
 
       // Sign in user
@@ -113,6 +117,34 @@ const SignInForm = (props) => {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      setSignInLoading(true);
+      const userCred = await signInWithPopup(auth, googleAuthProvider);
+      const userData = await dispatch(
+        fetchUserData({ firestore, id: userCred.user.uid })
+      ).unwrap();
+
+      // If user doesn't exist, create them
+      if (!userData) {
+        await signUpWithGoogle(userCred.user);
+        handleOpenSnackBar(
+          ALERT_COLORS.SUCCESS,
+          'Account created successfully with Google'
+        );
+      }
+      router.replace(ROUTES.HOME); //if onboarding is required, useRedirect.jsx will redirect to onboarding
+    } catch (code) {
+      await signOut(auth);
+      handleOpenSnackBar(
+        ALERT_COLORS.ERROR,
+        AUTH_ERROR_MESSAGES[code] || 'Unable to sign in with Google'
+      );
+    } finally {
+      setSignInLoading(false);
+    }
+  };
+  
   const renderEmailInput = () => {
     return (
       <AuthTextField
@@ -149,6 +181,20 @@ const SignInForm = (props) => {
     );
   };
 
+  const renderGoogleButton = () => {
+    return (
+      <GradientOutlinedButton
+        onClick={handleGoogleSignIn}
+        bgcolor={theme.palette.Dark_Colors.Dark[1]}
+        text="Sign in with Google"
+        textColor={theme.palette.Common.White['100p']}
+        loading={signInLoading}
+        startIcon={<GoogleIcon />}
+        {...styles.submitButtonProps}
+      />
+    );
+  };
+
   const renderSubmitButton = () => {
     return (
       <GradientOutlinedButton
@@ -170,6 +216,7 @@ const SignInForm = (props) => {
         {renderEmailInput()}
         {renderPaswordInput()}
         {renderSubmitButton()}
+        {renderGoogleButton()}
       </Grid>
     </FormContainer>
   );

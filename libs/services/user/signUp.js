@@ -26,4 +26,18 @@ const signUp = async (email, password, fullName) => {
   }
 };
 
-export { signUp };
+const signUpWithGoogle = async (user) => {
+  try {
+    const createUser = httpsCallable(functions, 'signUpUser');
+    await createUser({ 
+      email: user.email, 
+      fullName: user.displayName, 
+      uid: user.uid 
+    });
+    return user;
+  } catch (error) {
+    throw new Error(AUTH_ERROR_MESSAGES[error?.code]);
+  }
+};
+
+export { signUp, signUpWithGoogle };

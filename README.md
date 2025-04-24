@@ -1,7 +1,7 @@
 ![image](https://github.com/user-attachments/assets/04e5f5a4-9ba7-4887-a158-bca181f7391c)
 
 
-# Marvel AI Platform
+# Marvel AI Platform.
 Marvel AI is an open-source project by Reality AI, designed to provide smart tools and chatbots to assist teachers in education. The platform leverages Firebase, Next.js, and various AI components to create a seamless learning experience.
 
 ![Next.js](https://img.shields.io/badge/Next.js-12.3.0-blue)

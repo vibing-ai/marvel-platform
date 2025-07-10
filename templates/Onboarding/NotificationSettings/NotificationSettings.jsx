@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Switch, Button, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import stylesOnboarding from '../styles.js';
 import styles from './styles';
 
 const StyledSwitch = styled(Switch)(styles.switch);
@@ -26,22 +25,26 @@ const NotificationSettings = ({ onNext, tempData }) => {
 
   const renderTitle = () => (
     <Grid {...styles.titleGrid}>
-      <Typography {...stylesOnboarding.titleProps}>System Configurations</Typography>
-      <Typography {...stylesOnboarding.descriptionProps}>
+      <Typography {...styles.titleProps}>System Configurations</Typography>
+      <Typography {...styles.descriptionProps}>
         We need some permissions to get you started
       </Typography>
     </Grid>
   );
 
   const renderSwitch = (label, value, onChange) => (
-    <Grid {...styles.switchGrid}>
-      <Typography {...styles.labelProps}>{label}</Typography>
-      <StyledSwitch checked={value} onChange={(e) => onChange(e.target.checked)} />
+    <Grid container {...styles.switchGrid}>
+      <Grid item>
+        <Typography {...styles.labelProps}>{label}</Typography>
+      </Grid>
+      <Grid item>
+        <StyledSwitch checked={value} onChange={(e) => onChange(e.target.checked)} />
+      </Grid>
     </Grid>
   );
 
   return (
-    <Grid {...stylesOnboarding.mainGrid}>
+    <Grid container {...styles.mainGrid}>
       {renderTitle()}
       {renderSwitch(
         'Enable Email Notifications',
@@ -53,9 +56,9 @@ const NotificationSettings = ({ onNext, tempData }) => {
         pushNotifications,
         setPushNotifications
       )}
-      <Button 
+      <Button
         onClick={handleFinish}
-        {...stylesOnboarding.buttonProps}
+        {...styles.buttonProps}
       >
         Next
       </Button>

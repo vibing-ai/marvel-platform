@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import Complete from './Complete';
 import FinalSteps from './FinalSteps';
+import NotificationSettings from './NotificationSettings';
 import ProfileSetupForm from './ProfileSetupForm';
 import Welcome from './Welcome';
 
@@ -20,13 +21,13 @@ import { updateUserData } from '@/libs/redux/thunks/user';
 const onboardingComponents = {
   0: Welcome,
   1: ProfileSetupForm,
-  // 2: SystemConfigs,
-  2: FinalSteps,
-  3: Complete,
+  2: NotificationSettings, // Added NotificationSettings to the onboarding steps
+  3: FinalSteps,
+  4: Complete,
 };
 
 /** .
- * The onboarding page component that renders specific screends depending on the users current steps.
+ * The onboarding page component that renders specific screens depending on the user's current step.
  *
  * @param {object} onboardingData - The data for the current onboarding step
  * @return {JSX.Element} The JSX element for the current onboarding step
@@ -46,6 +47,10 @@ const OnboardingPage = ({ onboardingData }) => {
     if (onboardingComponents?.[onboardingData.id] === ProfileSetupForm) {
       dispatch(setTempData(formData));
     }
+
+     if (onboardingComponents?.[onboardingData.id] === NotificationSettings) {
+    dispatch(setTempData({ ...tempData, ...formData }));
+     }
 
     if (onboardingComponents?.[onboardingData.id] === Complete) {
       let downloadURL = null;

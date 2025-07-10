@@ -1,8 +1,9 @@
 const onboardingSteps = [
   { label: 'Welcome' },
   { label: 'Profile Setup' },
-  // { label: 'System Configurations' },
+  { label: 'System Settings ' },
   { label: 'Final Steps' },
+  { label: 'Complete' }
 ];
 
 export { onboardingSteps };

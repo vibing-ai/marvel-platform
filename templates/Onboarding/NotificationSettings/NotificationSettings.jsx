@@ -9,10 +9,10 @@ const StyledSwitch = styled(Switch)(styles.switch);
 
 const NotificationSettings = ({ onNext, tempData }) => {
   const [emailNotifications, setEmailNotifications] = useState(
-    tempData?.emailNotifications ?? true
+    tempData?.emailNotifications ?? false
   );
   const [pushNotifications, setPushNotifications] = useState(
-    tempData?.pushNotifications ?? true
+    tempData?.pushNotifications ?? false
   );
 
   const handleFinish = () => {

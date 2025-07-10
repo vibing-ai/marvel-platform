@@ -78,17 +78,17 @@ const styles = {
           },
         },
       },
-    },
-    '& .MuiSwitch-thumb': {
-      width: 20,
-      height: 20,
-      // Color controlled by parent switchBase
-      boxShadow: 'none',
-    },
-    '& .MuiSwitch-track': {
-      borderRadius: 15,
-      backgroundColor: 'rgba(134, 83, 255, 0.3)',
-      opacity: 1,
+      '& .MuiSwitch-thumb': {
+        width: 20,
+        height: 20,
+        // Color controlled by parent switchBase
+        boxShadow: 'none',
+      },
+      '& .MuiSwitch-track': {
+        borderRadius: 15,
+        backgroundColor: 'rgba(134, 83, 255, 0.3)',
+        opacity: 1,
+      },
     },
   },
 
